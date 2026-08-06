@@ -96,9 +96,9 @@ public class PageRule implements RulesetContainer {
     public boolean applies(@Nullable String pageName, String pseudoPage) {
         if (_name == null && _pseudoPage == null) {
             return true;
-        } else if (_name == null &&
-                (_pseudoPage.equals(pseudoPage) ||
-                        (_pseudoPage.equals("right") && pseudoPage != null && pseudoPage.equals("first")))) { // assume first page is a right page
+        } else if (_name == null && (_pseudoPage.equals(pseudoPage)
+                || (_pseudoPage.equals("right") && pseudoPage != null && pseudoPage.equals("first")))) { // assume
+            // first page is a right page
             return true;
         } else if (_name != null && _name.equals(pageName) && _pseudoPage == null) {
             return true;

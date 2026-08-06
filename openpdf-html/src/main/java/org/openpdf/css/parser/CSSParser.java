@@ -121,9 +121,9 @@ public class CSSParser {
         try {
             reset(new StringReader(expr));
             List<PropertyValue> values = expr(
-                    cssName.equals(CSSName.FONT_FAMILY) ||
-                    cssName.equals(CSSName.FONT_SHORTHAND) ||
-                    cssName.equals(CSSName.FS_PDF_FONT_ENCODING));
+                    cssName.equals(CSSName.FONT_FAMILY)
+                    || cssName.equals(CSSName.FONT_SHORTHAND)
+                    || cssName.equals(CSSName.FS_PDF_FONT_ENCODING));
 
             PropertyBuilder builder = CSSName.getPropertyBuilder(cssName);
             List<PropertyDeclaration> props;
@@ -827,8 +827,8 @@ public class CSSParser {
 
             if (first.getPseudoElement() != null) {
                 throw new CSSParseException(
-                        "A simple selector with a pseudo element cannot be " +
-                        "combined with another simple selector", getCurrentLine());
+                        "A simple selector with a pseudo element cannot be "
+                                + "combined with another simple selector", getCurrentLine());
             }
 
             boolean sibling = false;
@@ -1251,9 +1251,9 @@ public class CSSParser {
                     skip_whitespace();
 
                     List<PropertyValue> values = expr(
-                            CSSName.FONT_FAMILY.equals(cssName) ||
-                            CSSName.FONT_SHORTHAND.equals(cssName) ||
-                            CSSName.FS_PDF_FONT_ENCODING.equals(cssName));
+                            CSSName.FONT_FAMILY.equals(cssName)
+                                    || CSSName.FONT_SHORTHAND.equals(cssName)
+                                    || CSSName.FS_PDF_FONT_ENCODING.equals(cssName));
                     boolean important = false;
 
                     t = la();
@@ -1629,8 +1629,8 @@ public class CSSParser {
             result = value.getFloatValue() / 100.0f;
         } else {
             throw new CSSParseException(
-                    "Parameter " + paramNo + " to the cmyk() function is " +
-                    "not a number or a percentage", getCurrentLine());
+                    "Parameter " + paramNo + " to the cmyk() function is "
+                    + "not a number or a percentage", getCurrentLine());
         }
 
         if (result < 0.0f || result > 1.0f) {
@@ -1678,14 +1678,13 @@ public class CSSParser {
         short type = value.getPrimitiveType();
         if (type != CSS_PERCENTAGE && type != CSS_NUMBER) {
             throw new CSSParseException(
-                    "Parameter " + (index + 1) + " to the rgb() function is " +
-                    "not a number or percentage", getCurrentLine());
+                    "Parameter " + (index + 1) + " to the rgb() function is "
+                    + "not a number or percentage", getCurrentLine());
         }
 
         if (type != CSS_NUMBER && index == 3) {
             throw new CSSParseException(
-                    "Parameter alpha to the rgba() function is " +
-                    "not a number", getCurrentLine());
+                    "Parameter alpha to the rgba() function is " + "not a number", getCurrentLine());
         }
         return type;
     }
@@ -1866,16 +1865,14 @@ public class CSSParser {
             case URI -> {
                 char[] ch = _lexer.yytext().toCharArray();
                 int start = 4;
-                while (ch[start] == '\t' || ch[start] == '\r' ||
-                        ch[start] == '\n' || ch[start] == '\f') {
+                while (ch[start] == '\t' || ch[start] == '\r' || ch[start] == '\n' || ch[start] == '\f') {
                     start++;
                 }
                 if (ch[start] == '\'' || ch[start] == '"') {
                     start++;
                 }
                 int end = ch.length - 2;
-                while (ch[end] == '\t' || ch[end] == '\r' ||
-                        ch[end] == '\n' || ch[end] == '\f') {
+                while (ch[end] == '\t' || ch[end] == '\r' || ch[end] == '\n' || ch[end] == '\f') {
                     end--;
                 }
                 if (ch[end] == '\'' || ch[end] == '"') {
@@ -1981,10 +1978,10 @@ public class CSSParser {
 
                 if (i < end - 2 && (ch[i + 1] == '\r' && ch[i + 2] == '\n')) {
                     i += 2;
-                } else if (i < end - 1 &&
-                        (ch[i + 1] == ' ' || ch[i + 1] == '\t' ||
-                                ch[i + 1] == '\n' || ch[i + 1] == '\r' ||
-                                ch[i + 1] == '\f')) {
+                } else if (i < end - 1
+                        && (ch[i + 1] == ' ' || ch[i + 1] == '\t'
+                                || ch[i + 1] == '\n' || ch[i + 1] == '\r'
+                                || ch[i + 1] == '\f')) {
                     i++;
                 }
             } else {

@@ -743,16 +743,25 @@ public class CFFFontSubset extends CFFFont {
         if (Objects.equals(key, "roll") || Objects.equals(key, "put")) {
             return -2;
         }
-        if (Objects.equals(key, "callsubr") || Objects.equals(key, "callgsubr") || Objects.equals(key, "add")
-                || Objects.equals(key, "sub") ||
-                Objects.equals(key, "div") || Objects.equals(key, "mul") || Objects.equals(key, "drop")
-                || Objects.equals(key, "and") ||
-                Objects.equals(key, "or") || Objects.equals(key, "eq")) {
+        if (Objects.equals(key, "callsubr")
+                || Objects.equals(key, "callgsubr")
+                || Objects.equals(key, "add")
+                || Objects.equals(key, "sub")
+                || Objects.equals(key, "div")
+                || Objects.equals(key, "mul")
+                || Objects.equals(key, "drop")
+                || Objects.equals(key, "and")
+                || Objects.equals(key, "or")
+                || Objects.equals(key, "eq")) {
             return -1;
         }
-        if (Objects.equals(key, "abs") || Objects.equals(key, "neg") || Objects.equals(key, "sqrt") || Objects.equals(
-                key, "exch") ||
-                Objects.equals(key, "index") || Objects.equals(key, "get") || Objects.equals(key, "not")
+        if (Objects.equals(key, "abs")
+                || Objects.equals(key, "neg")
+                || Objects.equals(key, "sqrt")
+                || Objects.equals(key, "exch")
+                || Objects.equals(key, "index")
+                || Objects.equals(key, "get")
+                || Objects.equals(key, "not")
                 || Objects.equals(key, "return")) {
             return 0;
         }

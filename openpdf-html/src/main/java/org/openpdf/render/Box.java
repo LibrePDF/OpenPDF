@@ -446,8 +446,7 @@ public abstract class Box implements Styleable {
     }
 
     private boolean isPaintsRootElementBackground() {
-        return (isRoot() && getStyle().isHasBackground()) ||
-                (isBody() && ! getParent().getStyle().isHasBackground());
+        return (isRoot() && getStyle().isHasBackground()) || (isBody() && ! getParent().getStyle().isHasBackground());
     }
 
     public void paintBackground(RenderingContext c) {
@@ -605,8 +604,8 @@ public abstract class Box implements Styleable {
                     c.getRootLayer().addPage(c);
                 }
             }
-            if ((page.isLeftPage() && pageBreakValue == IdentValue.LEFT) ||
-                    (page.isRightPage() && pageBreakValue == IdentValue.RIGHT)) {
+            if ((page.isLeftPage() && pageBreakValue == IdentValue.LEFT)
+                    || (page.isRightPage() && pageBreakValue == IdentValue.RIGHT)) {
                 pageBreakCount++;
             }
 
@@ -647,13 +646,13 @@ public abstract class Box implements Styleable {
         PageBox page = c.getRootLayer().getLastPage(c, this);
 
         if (page != null) {
-            if ((page.isLeftPage() && pageBreakValue == IdentValue.LEFT) ||
-                    (page.isRightPage() && pageBreakValue == IdentValue.RIGHT)) {
+            if ((page.isLeftPage() && pageBreakValue == IdentValue.LEFT)
+                    || (page.isRightPage() && pageBreakValue == IdentValue.RIGHT)) {
                 needSecondPageBreak = true;
             }
 
-            int delta = page.getBottom() + c.getExtraSpaceTop() - (getAbsY() +
-                    getMarginBorderPadding(c, Edge.TOP) + getHeight());
+            int delta = page.getBottom() + c.getExtraSpaceTop() - (getAbsY()
+                    + getMarginBorderPadding(c, Edge.TOP) + getHeight());
 
             if (page == c.getRootLayer().getLastPage()) {
                 c.getRootLayer().addPage(c);

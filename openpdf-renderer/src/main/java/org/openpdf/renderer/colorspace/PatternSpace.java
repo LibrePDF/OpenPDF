@@ -76,8 +76,7 @@ public class PatternSpace extends PDFColorSpace {
      * given components.
      */
     @Override public PDFPaint getPaint(float[] components) {
-        throw new IllegalArgumentException("Pattern spaces require a pattern " +
-            "name!");
+        throw new IllegalArgumentException("Pattern spaces require a pattern " + "name!");
     }
     
     /**

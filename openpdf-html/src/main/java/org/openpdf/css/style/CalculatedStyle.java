@@ -162,9 +162,9 @@ public class CalculatedStyle {
     }
 
     private boolean checkPaddingAllowed(IdentValue display) {
-        return display != IdentValue.TABLE_HEADER_GROUP && display != IdentValue.TABLE_ROW_GROUP &&
-                display != IdentValue.TABLE_FOOTER_GROUP && display != IdentValue.TABLE_ROW &&
-                (!isTable(display) || !isCollapseBorders());
+        return display != IdentValue.TABLE_HEADER_GROUP && display != IdentValue.TABLE_ROW_GROUP
+                && display != IdentValue.TABLE_FOOTER_GROUP && display != IdentValue.TABLE_ROW
+                && (!isTable(display) || !isCollapseBorders());
     }
 
     private static boolean isTable(IdentValue display) {
@@ -233,9 +233,9 @@ public class CalculatedStyle {
         try {
             isAbs = valueByName(cssName).hasAbsoluteUnit();
         } catch (Exception e) {
-            XRLog.layout(Level.WARNING, "Property " + cssName + " has an assignment we don't understand, " +
-                    "and can't tell if it's an absolute unit or not. Assuming it is not. Exception was: " +
-                    e.getMessage());
+            XRLog.layout(Level.WARNING, "Property " + cssName + " has an assignment we don't understand, "
+                    + "and can't tell if it's an absolute unit or not. Assuming it is not. Exception was: "
+                    + e.getMessage());
             isAbs = false;
         }
         return isAbs;
@@ -540,8 +540,8 @@ public class CalculatedStyle {
                 // otherwise, use the initial value (defined by the CSS2 Spec)
                 String initialValue = CSSName.initialValue(cssName);
                 if (initialValue == null) {
-                    throw new XRRuntimeException("Property '" + cssName + "' has no initial values assigned. " +
-                            "Check CSSName declarations.");
+                    throw new XRRuntimeException("Property '" + cssName + "' has no initial values assigned. "
+                            + "Check CSSName declarations.");
                 }
                 if (initialValue.charAt(0) == '=') {
                     CSSName ref = CSSName.getByPropertyName(initialValue.substring(1));
@@ -730,8 +730,8 @@ public class CalculatedStyle {
     }
 
     public boolean isInline() {
-        return isIdent(CSSName.DISPLAY, IdentValue.INLINE) &&
-                ! (isFloated() || isAbsolute() || isFixed() || isRunning());
+        return isIdent(CSSName.DISPLAY, IdentValue.INLINE)
+                && !(isFloated() || isAbsolute() || isFixed() || isRunning());
     }
 
     public boolean isInlineBlock() {
@@ -871,10 +871,9 @@ public class CalculatedStyle {
             IdentValue display = getDisplay();
             IdentValue position = (IdentValue) value;
 
-            return isFloated() ||
-                    position == IdentValue.ABSOLUTE || position == IdentValue.FIXED ||
-                    display == IdentValue.INLINE_BLOCK || display == IdentValue.TABLE_CELL ||
-                    ! isIdent(CSSName.OVERFLOW, IdentValue.VISIBLE);
+            return isFloated() || position == IdentValue.ABSOLUTE || position == IdentValue.FIXED
+                    || display == IdentValue.INLINE_BLOCK || display == IdentValue.TABLE_CELL
+                    || !isIdent(CSSName.OVERFLOW, IdentValue.VISIBLE);
         }
     }
 
@@ -886,14 +885,12 @@ public class CalculatedStyle {
         } else {
             IdentValue position = getIdent(CSSName.POSITION);
 
-            if (position == IdentValue.ABSOLUTE ||
-                    position == IdentValue.RELATIVE || position == IdentValue.FIXED) {
+            if (position == IdentValue.ABSOLUTE || position == IdentValue.RELATIVE || position == IdentValue.FIXED) {
                 return true;
             }
 
             IdentValue overflow = getIdent(CSSName.OVERFLOW);
-            return (overflow == IdentValue.SCROLL || overflow == IdentValue.AUTO) &&
-                    isOverflowApplies();
+            return (overflow == IdentValue.SCROLL || overflow == IdentValue.AUTO) && isOverflowApplies();
         }
     }
 
@@ -904,8 +901,8 @@ public class CalculatedStyle {
 
     public boolean isLinearGradient() {
         FSDerivedValue value = valueByName(CSSName.BACKGROUND_IMAGE);
-        return value instanceof FunctionValue function &&
-                GeneralUtil.ciEquals(function.getFunction().getName(), "linear-gradient");
+        return value instanceof FunctionValue function
+                && GeneralUtil.ciEquals(function.getFunction().getName(), "linear-gradient");
     }
 
     public FSLinearGradient getLinearGradient(final CssContext cssContext, final int w, final int h) {
@@ -989,8 +986,8 @@ public class CalculatedStyle {
     }
 
     public boolean isMayCollapseMarginsWithChildren() {
-        return isIdent(CSSName.OVERFLOW, IdentValue.VISIBLE) &&
-                ! (isFloated() || isAbsolute() || isFixed() || isInlineBlock());
+        return isIdent(CSSName.OVERFLOW, IdentValue.VISIBLE)
+                && !(isFloated() || isAbsolute() || isFixed() || isInlineBlock());
     }
 
     public boolean isAbsFixedOrInlineBlockEquiv() {
@@ -1065,8 +1062,8 @@ public class CalculatedStyle {
     }
 
     public boolean isHasBackground() {
-        return ! (isIdent(CSSName.BACKGROUND_COLOR, IdentValue.TRANSPARENT) &&
-                isIdent(CSSName.BACKGROUND_IMAGE, IdentValue.NONE));
+        return !(isIdent(CSSName.BACKGROUND_COLOR, IdentValue.TRANSPARENT)
+                && isIdent(CSSName.BACKGROUND_IMAGE, IdentValue.NONE));
     }
 
     @Nullable
@@ -1135,9 +1132,9 @@ public class CalculatedStyle {
     }
 
     public boolean isTextJustify() {
-        return isIdent(CSSName.TEXT_ALIGN, IdentValue.JUSTIFY) &&
-                ! (isIdent(CSSName.WHITE_SPACE, IdentValue.PRE) ||
-                        isIdent(CSSName.WHITE_SPACE, IdentValue.PRE_LINE));
+        return isIdent(CSSName.TEXT_ALIGN, IdentValue.JUSTIFY)
+                && !(isIdent(CSSName.WHITE_SPACE, IdentValue.PRE)
+                        || isIdent(CSSName.WHITE_SPACE, IdentValue.PRE_LINE));
     }
 
     public boolean isListMarkerInside() {

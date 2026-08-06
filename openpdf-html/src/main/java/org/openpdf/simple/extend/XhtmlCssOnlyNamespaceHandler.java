@@ -339,8 +339,8 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
     private URL getDefaultStylesheetUrl() {
         String defaultStyleSheet = Configuration.valueFor("xr.css.user-agent-default-css") + "XhtmlNamespaceHandler.css";
         return requireNonNull(getClass().getResource(defaultStyleSheet), () ->
-                "Can't load default CSS from " + defaultStyleSheet + "." +
-                        "This file must be on your CLASSPATH. Please check before continuing.");
+                "Can't load default CSS from " + defaultStyleSheet + "."
+                        + "This file must be on your CLASSPATH. Please check before continuing.");
     }
 
     private Map<String, String> getMetaInfo(Document doc) {

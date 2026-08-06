@@ -98,13 +98,13 @@ public class FSImageWriter {
         File file = new File(filePath);
         if (file.exists()) {
             if (!file.delete()) {
-                throw new IOException("File " + filePath + " exists already, and call to .delete() failed " +
-                        "unexpectedly");
+                throw new IOException("File " + filePath + " exists already, and call to .delete() failed "
+                        + "unexpectedly");
             }
         } else {
             if (!file.createNewFile()) {
-                throw new IOException("Unable to create file at path " + filePath + ", call to .createNewFile() " +
-                        "failed unexpectedly.");
+                throw new IOException("Unable to create file at path " + filePath + ", call to .createNewFile() "
+                        + "failed unexpectedly.");
             }
         }
 

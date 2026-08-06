@@ -572,9 +572,9 @@ public class ITextRenderer {
     }
 
     private String createXPacket(String metadata) {
-        return "<?xpacket begin='\uFEFF' id='W5M0MpCehiHzreSzNTczkc9d'?>\n" +
-                metadata +
-                "\n<?xpacket end='r'?>";
+        return "<?xpacket begin='\uFEFF' id='W5M0MpCehiHzreSzNTczkc9d'?>\n"
+                + metadata
+                + "\n<?xpacket end='r'?>";
     }
 
     public ITextOutputDevice getOutputDevice() {

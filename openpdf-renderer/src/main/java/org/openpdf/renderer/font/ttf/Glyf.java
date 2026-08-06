@@ -70,8 +70,7 @@ public class Glyf {
             // simple glyf
             g = new GlyfSimple();
         } else {
-            throw new IllegalArgumentException("Unknown glyf type: " + 
-                                               numContours);
+            throw new IllegalArgumentException("Unknown glyf type: " + numContours);
         }
         
         g.setNumContours(numContours);

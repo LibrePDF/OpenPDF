@@ -136,8 +136,8 @@ public class XMLResource extends AbstractResource {
             } catch (Exception ex) {
                 XRLog.load(Level.WARNING,
                         "Could not instantiate custom XMLReader class for XML parsing: "
-                                + xmlReaderClass + ". Please check classpath. Use value 'default' in " +
-                                "FS configuration if necessary. Will now try JDK default.", ex);
+                                + xmlReaderClass + ". Please check classpath. Use value 'default' in "
+                                + "FS configuration if necessary. Will now try JDK default.", ex);
             }
         }
 
@@ -176,9 +176,9 @@ public class XMLResource extends AbstractResource {
             }
         }
         if (xmlReader == null) {
-            throw new XRRuntimeException("Could not instantiate any SAX 2 parser, including JDK default. " +
-                    "The name of the class to use should have been read from the org.xml.sax.driver System " +
-                    "property, which is set to: "/*CHECK: is this meaningful? + System.getProperty("org.xml.sax.driver")*/);
+            throw new XRRuntimeException("Could not instantiate any SAX 2 parser, including JDK default. "
+                    + "The name of the class to use should have been read from the org.xml.sax.driver System "
+                    + "property, which is set to: "/*CHECK: is this meaningful? + System.getProperty("org.xml.sax.driver")*/);
         }
         XRLog.load("SAX XMLReader in use (parser): " + xmlReader.getClass().getName());
         return xmlReader;
@@ -235,8 +235,8 @@ public class XMLResource extends AbstractResource {
                 } catch (IllegalArgumentException e) {
                     // These attributes are not supported on this platform (e.g., Android)
                     // Log and continue - FEATURE_SECURE_PROCESSING is already enabled
-                    XRLog.load(Level.FINE, "TransformerFactory does not support ACCESS_EXTERNAL_DTD/STYLESHEET attributes. " +
-                            "This is expected on some platforms like Android. Continuing with FEATURE_SECURE_PROCESSING enabled.");
+                    XRLog.load(Level.FINE, "TransformerFactory does not support ACCESS_EXTERNAL_DTD/STYLESHEET attributes. "
+                           + "This is expected on some platforms like Android. Continuing with FEATURE_SECURE_PROCESSING enabled.");
                 }
 
                 Transformer transformer = factory.newTransformer();
@@ -311,8 +311,8 @@ public class XMLResource extends AbstractResource {
                 xmlReader.setFeature("http://xml.org/sax/features/namespaces", true);
             } catch (SAXException s) {
                 // nothing to do--some parsers will not allow setting features
-                XRLog.load(Level.WARNING, "Could not set validation/namespace features for XML parser," +
-                        "exception thrown.", s);
+                XRLog.load(Level.WARNING, "Could not set validation/namespace features for XML parser,"
+                        + "exception thrown.", s);
             }
             if (Configuration.isFalse("xr.load.configure-features", false)) {
                 XRLog.load(Level.FINE, "SAX Parser: by request, not changing any parser features.");
@@ -346,15 +346,14 @@ public class XMLResource extends AbstractResource {
             try {
                 xmlReader.setFeature(featureUri, value);
 
-                XRLog.load(Level.FINE, "SAX Parser feature: " +
-                        featureUri.substring(featureUri.lastIndexOf('/')) +
-                        " set to " +
-                        xmlReader.getFeature(featureUri));
+                XRLog.load(Level.FINE, "SAX Parser feature: "
+                        + featureUri.substring(featureUri.lastIndexOf('/'))
+                        + " set to " + xmlReader.getFeature(featureUri));
             } catch (SAXNotSupportedException ex) {
                 XRLog.load(Level.WARNING, "SAX feature not supported on this XMLReader: " + featureUri, ex);
             } catch (SAXNotRecognizedException ex) {
-                XRLog.load(Level.WARNING, "SAX feature not recognized on this XMLReader: " + featureUri +
-                        ". Feature may be properly named, but not recognized by this parser.", ex);
+                XRLog.load(Level.WARNING, "SAX feature not recognized on this XMLReader: " + featureUri
+                        + ". Feature may be properly named, but not recognized by this parser.", ex);
             }
         }
 

@@ -138,8 +138,9 @@ public class RenderingContext implements CssContext {
     }
 
     public Rectangle getFixedRectangle() {
-        Rectangle result = isPrint() ?
-            new Rectangle(0, -this.page.getTop(), this.page.getContentWidth(this), this.page.getContentHeight(this) - 1) :
+        Rectangle result = isPrint()
+            ? new Rectangle(0, -this.page.getTop(), this.page.getContentWidth(this),
+                this.page.getContentHeight(this) - 1) :
             sharedContext.getFixedRectangle();
         result.translate(-1, -1);
         return result;

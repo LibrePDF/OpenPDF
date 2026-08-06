@@ -295,8 +295,7 @@ public abstract class AbstractTool implements ActionListener {
      */
     public void actionPerformed(ActionEvent evt) {
         if (ToolMenuItems.CLOSE.equals(evt.getActionCommand())) {
-            System.out.println("=== " + getInternalFrame().getTitle() +
-                    " CLOSED ===");
+            System.out.println("=== " + getInternalFrame().getTitle() + " CLOSED ===");
             internalFrame.dispose();
         }
         if (ToolMenuItems.USAGE.equals(evt.getActionCommand())) {
@@ -311,8 +310,7 @@ public abstract class AbstractTool implements ActionListener {
         if (ToolMenuItems.EXECUTESHOW.equals(evt.getActionCommand())) {
             this.execute();
             try {
-                if (awtdesktop != null &&
-                        awtdesktop.isSupported(Desktop.Action.OPEN)) {
+                if (awtdesktop != null && awtdesktop.isSupported(Desktop.Action.OPEN)) {
                     awtdesktop.open(getDestPathPDF());
                 } else {
                     Executable.openDocument(getDestPathPDF());
@@ -324,8 +322,7 @@ public abstract class AbstractTool implements ActionListener {
         if (ToolMenuItems.EXECUTEPRINT.equals(evt.getActionCommand())) {
             this.execute();
             try {
-                if (awtdesktop != null &&
-                        awtdesktop.isSupported(Desktop.Action.PRINT)) {
+                if (awtdesktop != null && awtdesktop.isSupported(Desktop.Action.PRINT)) {
                     awtdesktop.print(getDestPathPDF());
                 } else {
                     Executable.printDocument(getDestPathPDF());

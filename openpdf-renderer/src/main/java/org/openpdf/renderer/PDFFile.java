@@ -449,21 +449,21 @@ public class PDFFile {
                     int startPos = this.buf.position();
 
             PDFObject testnum = readObject(-1, -1, true, decrypter);
-                    if (testnum != null &&
-                            testnum.getType() == PDFObject.NUMBER) {
+                    if (testnum != null
+                            && testnum.getType() == PDFObject.NUMBER) {
             PDFObject testR = readObject(-1, -1, true, decrypter);
-                        if (testR != null &&
-                                testR.getType() == PDFObject.KEYWORD &&
-                                testR.getStringValue().equals("R")) {
+                        if (testR != null
+                                && testR.getType() == PDFObject.KEYWORD
+                                && testR.getStringValue().equals("R")) {
                             // yup.  it's a reference.
                             PDFXref xref = new PDFXref(obj.getIntValue(),
                                     testnum.getIntValue());
                             // Create a placeholder that will be dereferenced
                             // as needed
                             obj = new PDFObject(this, xref);
-                        } else if (testR != null &&
-                                testR.getType() == PDFObject.KEYWORD &&
-                                testR.getStringValue().equals("obj")) {
+                        } else if (testR != null
+                                && testR.getType() == PDFObject.KEYWORD
+                                && testR.getStringValue().equals("obj")) {
                             // it's an object description
                 obj = readObjectDescription(
                                     obj.getIntValue(),
@@ -1063,8 +1063,7 @@ public class PDFFile {
             while (true) {
                 // read until the word "trailer"
                 PDFObject obj = readObject(-1, -1, IdentityDecrypter.getInstance());
-                if (obj.getType() == PDFObject.KEYWORD &&
-                        obj.getStringValue().equals("trailer")) {
+                if (obj.getType() == PDFObject.KEYWORD && obj.getStringValue().equals("trailer")) {
                     break;
                 }
 
@@ -1454,9 +1453,7 @@ public class PDFFile {
         } // skip over possible leading blanks
         // read number
         int numstart = loc;
-        while (loc < scans.length() &&
-                scans.charAt(loc) >= '0' &&
-                scans.charAt(loc) <= '9') {
+        while (loc < scans.length() && scans.charAt(loc) >= '0' && scans.charAt(loc) <= '9') {
             loc++;
         }
         int xrefpos = Integer.parseInt(scans.substring(numstart, loc));
@@ -1682,8 +1679,7 @@ public class PDFFile {
         for (int i = 0; i < contents.length; i++) {
             byte[] data = contents[i].getStream();
             if (data == null) {
-                throw new PDFParseException("No stream on content " + i +
-                        ": " + contents[i]);
+                throw new PDFParseException("No stream on content " + i + ": " + contents[i]);
             }
             len += data.length;
         }

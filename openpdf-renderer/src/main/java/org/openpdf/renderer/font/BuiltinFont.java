@@ -129,8 +129,8 @@ public class BuiltinFont extends Type1Font {
         if (fontName.indexOf("Bold") > 0) {
             style |= Font.BOLD;
         }
-        if ((descriptor.getItalicAngle() != 0) ||
-                ((flags & (PDFFontDescriptor.SCRIPT | PDFFontDescriptor.ITALIC)) != 0)) {
+        if ((descriptor.getItalicAngle() != 0)
+                || ((flags & (PDFFontDescriptor.SCRIPT | PDFFontDescriptor.ITALIC)) != 0)) {
             style |= Font.ITALIC;
         }
         String name = null;

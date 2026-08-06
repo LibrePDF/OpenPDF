@@ -507,10 +507,10 @@ public class Type1Font extends OutlineFont {
             int v = (cs[loc++]) & 0xff;
             if (v == 255) {
                 this.stack[this.sloc++] = (float) (
-                        (((cs[loc]) & 0xff) << 24) +
-                                (((cs[loc + 1]) & 0xff) << 16) +
-                                (((cs[loc + 2]) & 0xff) << 8) +
-                                ((cs[loc + 3]) & 0xff));
+                        (((cs[loc]) & 0xff) << 24)
+                                + (((cs[loc + 1]) & 0xff) << 16)
+                                + (((cs[loc + 2]) & 0xff) << 8)
+                                + ((cs[loc + 3]) & 0xff));
                 loc += 4;
             } else if (v >= 251) {
                 this.stack[this.sloc++] = (float) (-((v - 251) << 8) - ((cs[loc]) & 0xff) - 108);
