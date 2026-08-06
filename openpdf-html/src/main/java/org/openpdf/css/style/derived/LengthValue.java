@@ -32,10 +32,10 @@ import org.openpdf.util.XRLog;
 import java.util.logging.Level;
 
 public class LengthValue extends DerivedValue {
-    private final static int MM__PER__CM = 10;
-    private final static float CM__PER__IN = 2.54F;
-    private final static float PT__PER__IN = 1f / 72f;
-    private final static float PC__PER__PT = 12;
+    private static final int MM__PER__CM = 10;
+    private static final float CM__PER__IN = 2.54F;
+    private static final float PT__PER__IN = 1f / 72f;
+    private static final float PC__PER__PT = 12;
 
     /**
      * The specified length value, as a float; pulled from the CSS text

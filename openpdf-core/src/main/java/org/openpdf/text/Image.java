@@ -1272,7 +1272,7 @@ public abstract class Image extends Rectangle {
      *
      * @return a new serial id
      */
-    static protected synchronized Long getSerialId() {
+    protected static synchronized Long getSerialId() {
         ++serialId;
         return serialId;
     }

@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
  */
 class EncryptAES256R6Test {
 
-    final static File RESULT_FOLDER = new File("target/test-outputs", "issue375");
+    static final File RESULT_FOLDER = new File("target/test-outputs", "issue375");
 
     @BeforeAll
     static void setUpBeforeClass() throws Exception {

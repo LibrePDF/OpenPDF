@@ -30,24 +30,24 @@ import org.openpdf.renderer.PDFObject;
 public class PDFFontDescriptor {
 
     /** All glyphs have the same width. */
-    public final static int FIXED_PITCH = 1;
+    public static final int FIXED_PITCH = 1;
     /** Glyphs have serifs. */
-    public final static int SERIF = 1 << (2 - 1);
+    public static final int SERIF = 1 << (2 - 1);
     /** Font contains glyphs outside the Adobe standard Latin. */
-    public final static int SYMBOLIC = 1 << (3 - 1);
+    public static final int SYMBOLIC = 1 << (3 - 1);
     /** Glyphs resemble cursive handwriting. */
-    public final static int SCRIPT = 1 << (4 - 1);
+    public static final int SCRIPT = 1 << (4 - 1);
     /** Font uses the Adobe standard Latic character set. */
-    public final static int NONSYMBOLIC = 1 << (6 - 1);
+    public static final int NONSYMBOLIC = 1 << (6 - 1);
     /** Glyphs have dominant vertical strokes that are slanted. */
-    public final static int ITALIC = 1 << (7 - 1);
+    public static final int ITALIC = 1 << (7 - 1);
     /** Font contains no lowercase letters. */
-    public final static int ALLCAP = 1 << (17 - 1);
+    public static final int ALLCAP = 1 << (17 - 1);
     /** Font contains both uppercase and lowercase letters.. */
-    public final static int SMALLCAP = 1 << (18 - 1);
+    public static final int SMALLCAP = 1 << (18 - 1);
     /** Determines whether bold glyphs shall be painted with
      * extra pixels even at very small text sizes. */
-    public final static int FORCEBOLD = 1 << (19 - 1);
+    public static final int FORCEBOLD = 1 << (19 - 1);
     /** Holds value of property ascent. */
     private int ascent;
     /** Holds value of property capHeight. */

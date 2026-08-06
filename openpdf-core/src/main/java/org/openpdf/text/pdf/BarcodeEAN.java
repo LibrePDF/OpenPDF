@@ -250,7 +250,7 @@ public class BarcodeEAN extends Barcode {
      * @param text the code to convert. It must have 12 numeric characters
      * @return the 8 converted digits or <CODE>null</CODE> if the code could not be converted
      */
-    static public String convertUPCAtoUPCE(String text) {
+    public static String convertUPCAtoUPCE(String text) {
         if (text.length() != 12 || !(text.startsWith("0") || text.startsWith("1"))) {
             return null;
         }

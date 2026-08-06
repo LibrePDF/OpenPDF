@@ -162,7 +162,7 @@ public abstract class BaseField {
      * combo box flag.
      */
     public static final int COMB = PdfFormField.FF_COMB;
-    private final static Map<PdfName, Integer> fieldKeys = new HashMap<>();
+    private static final Map<PdfName, Integer> fieldKeys = new HashMap<>();
 
     static {
         fieldKeys.putAll(PdfCopyFieldsImp.fieldKeys);

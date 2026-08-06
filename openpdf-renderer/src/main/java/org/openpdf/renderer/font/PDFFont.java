@@ -88,7 +88,7 @@ public abstract class PDFFont {
      * CharProcs = (dictionary)
      * Resources = (dictionary)
      */
-    public synchronized static PDFFont getFont(PDFObject obj,
+    public static synchronized PDFFont getFont(PDFObject obj,
             HashMap<String, PDFObject> resources)
             throws IOException {
         // the obj is actually a dictionary containing:
@@ -240,7 +240,7 @@ public abstract class PDFFont {
         return namedFontsToLocalTtfFiles.get(fontName);
     }
 
-    private synchronized static void ensureNamedTtfFontFiles() {
+    private static synchronized void ensureNamedTtfFontFiles() {
         if (namedFontsToLocalTtfFiles == null) {
             namedFontsToLocalTtfFiles = new HashMap<String, File>();
 

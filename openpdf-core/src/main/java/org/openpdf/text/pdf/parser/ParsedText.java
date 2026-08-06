@@ -67,7 +67,7 @@ public class ParsedText extends ParsedTextImpl {
      */
     private PdfString pdfText = null;
 
-    static protected ParsedText create(PdfString text, GraphicsState graphicsState, Matrix textMatrix) {
+    protected static ParsedText create(PdfString text, GraphicsState graphicsState, Matrix textMatrix) {
         // Calculate width using the string representation (font codes), not decoded Unicode
         float totalWidth = getStringWidth(text.toString(), graphicsState);
         return new ParsedText(text, totalWidth, graphicsState, textMatrix);

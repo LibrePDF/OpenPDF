@@ -60,15 +60,15 @@ import org.openpdf.renderer.decrypt.UnsupportedEncryptionException;
 @Deprecated
 public class PDFFile {
 
-    public final static int             NUL_CHAR = 0;
-    public final static int             FF_CHAR = 12;
+    public static final int             NUL_CHAR = 0;
+    public static final int             FF_CHAR = 12;
 
     private String versionString = "1.1";
     private int majorVersion = 1;
     private int minorVersion = 1;
     /** the end of line character */
     /** the comment text to begin the file to determine it's version */
-    private final static String VERSION_COMMENT = "%PDF-";
+    private static final String VERSION_COMMENT = "%PDF-";
     /**
      * A ByteBuffer containing the file data
      */

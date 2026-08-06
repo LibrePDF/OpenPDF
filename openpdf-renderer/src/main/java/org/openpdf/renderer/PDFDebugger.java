@@ -11,7 +11,7 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 public class PDFDebugger {
-    public final static String DEBUG_DCTDECODE_DATA = "debugdctdecode";
+    public static final String DEBUG_DCTDECODE_DATA = "debugdctdecode";
     public static final boolean DEBUG_TEXT = false;
     public static final boolean DEBUG_IMAGES = false;
     public static final boolean DEBUG_OPERATORS = false;

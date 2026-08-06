@@ -32,15 +32,15 @@ import java.util.regex.Pattern;
  * @author Torbjoern Gannholm
  */
 public class WhitespaceStripper {
-    public final static String SPACE = " ";
-    public final static String EOL = "\n";
-    public final static char EOLC = '\n';
+    public static final String SPACE = " ";
+    public static final String EOL = "\n";
+    public static final char EOLC = '\n';
 
-    public final static Pattern linefeed_space_collapse = Pattern.compile("\\s+\\n\\s+"); //Pattern is thread-safe
-    public final static Pattern linefeed_to_space = Pattern.compile("\\n");
-    public final static Pattern tab_to_space = Pattern.compile("\\t");
-    public final static Pattern space_collapse = Pattern.compile("(?: )+");
-    public final static Pattern space_before_linefeed_collapse = Pattern.compile("[\\s&&[^\\n]]\\n");
+    public static final Pattern linefeed_space_collapse = Pattern.compile("\\s+\\n\\s+"); //Pattern is thread-safe
+    public static final Pattern linefeed_to_space = Pattern.compile("\\n");
+    public static final Pattern tab_to_space = Pattern.compile("\\t");
+    public static final Pattern space_collapse = Pattern.compile("(?: )+");
+    public static final Pattern space_before_linefeed_collapse = Pattern.compile("[\\s&&[^\\n]]\\n");
 
     /**
      * Strips whitespace early in inline content generation. This can be done

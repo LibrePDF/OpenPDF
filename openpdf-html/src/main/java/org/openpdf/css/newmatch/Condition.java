@@ -273,7 +273,7 @@ abstract class Condition {
         }
     }
 
-    final static class ClassCondition extends Condition {
+    static final class ClassCondition extends Condition {
         private final String className;
         private final int classNameLength;
 

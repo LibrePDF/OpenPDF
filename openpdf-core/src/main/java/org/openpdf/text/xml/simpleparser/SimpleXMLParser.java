@@ -77,21 +77,21 @@ public final class SimpleXMLParser {
     /**
      * possible states
      */
-    private final static int UNKNOWN = 0;
-    private final static int TEXT = 1;
-    private final static int TAG_ENCOUNTERED = 2;
-    private final static int EXAMIN_TAG = 3;
-    private final static int TAG_EXAMINED = 4;
-    private final static int IN_CLOSETAG = 5;
-    private final static int SINGLE_TAG = 6;
-    private final static int CDATA = 7;
-    private final static int COMMENT = 8;
-    private final static int PI = 9;
-    private final static int ENTITY = 10;
-    private final static int QUOTE = 11;
-    private final static int ATTRIBUTE_KEY = 12;
-    private final static int ATTRIBUTE_EQUAL = 13;
-    private final static int ATTRIBUTE_VALUE = 14;
+    private static final int UNKNOWN = 0;
+    private static final int TEXT = 1;
+    private static final int TAG_ENCOUNTERED = 2;
+    private static final int EXAMIN_TAG = 3;
+    private static final int TAG_EXAMINED = 4;
+    private static final int IN_CLOSETAG = 5;
+    private static final int SINGLE_TAG = 6;
+    private static final int CDATA = 7;
+    private static final int COMMENT = 8;
+    private static final int PI = 9;
+    private static final int ENTITY = 10;
+    private static final int QUOTE = 11;
+    private static final int ATTRIBUTE_KEY = 12;
+    private static final int ATTRIBUTE_EQUAL = 13;
+    private static final int ATTRIBUTE_VALUE = 14;
 
     /**
      * the state stack

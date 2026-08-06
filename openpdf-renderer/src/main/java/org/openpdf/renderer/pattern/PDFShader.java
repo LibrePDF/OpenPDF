@@ -72,13 +72,13 @@ import org.openpdf.renderer.PDFParseException;
  */
 public abstract class PDFShader {
     
-    public final static int             FUNCTION_SHADING = 1;
-    public final static int             AXIAL_SHADING = 2;
-    public final static int             RADIAL_SHADING = 3;
-    public final static int             FREE_FORM_SHADING = 4;
-    public final static int             LATTICE_SHADING = 5;
-    public final static int             COONS_PATCH_MESH_SHADING = 6;
-    public final static int             TENSOR_PRODUCTS_MESH_SHADING = 7;
+    public static final int             FUNCTION_SHADING = 1;
+    public static final int             AXIAL_SHADING = 2;
+    public static final int             RADIAL_SHADING = 3;
+    public static final int             FREE_FORM_SHADING = 4;
+    public static final int             LATTICE_SHADING = 5;
+    public static final int             COONS_PATCH_MESH_SHADING = 6;
+    public static final int             TENSOR_PRODUCTS_MESH_SHADING = 7;
 
     /** The tolerance for reevaluating the shading function again */
     public static float TOLERANCE = 1e-4f;
