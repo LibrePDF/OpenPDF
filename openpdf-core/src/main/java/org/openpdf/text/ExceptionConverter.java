@@ -69,18 +69,15 @@ package org.openpdf.text;
 
 /**
  * The ExceptionConverter changes a checked exception into an unchecked exception.
+ * <p>
+ * The wrapped exception is set as the {@linkplain #getCause() cause}, so logging frameworks and
+ * {@link #getStackTrace()} see the complete stack trace of both the conversion point and the
+ * original exception (issue #1296 reported {@code getStackTrace()} returning an empty array
+ * because the stack trace was suppressed and the original exception was not set as the cause).
  */
 public class ExceptionConverter extends RuntimeException {
 
     private static final long serialVersionUID = 8657630363395849399L;
-    /**
-     * we keep a handle to the wrapped exception
-     */
-    private Exception ex;
-    /**
-     * prefix for the exception
-     */
-    private String prefix;
 
     /**
      * Construct a RuntimeException based on another Exception
@@ -88,8 +85,7 @@ public class ExceptionConverter extends RuntimeException {
      * @param ex the exception that has to be turned into a RuntimeException
      */
     public ExceptionConverter(Exception ex) {
-        this.ex = ex;
-        prefix = (ex instanceof RuntimeException) ? "" : "ExceptionConverter: ";
+        super(ex);
     }
 
     /**
@@ -113,7 +109,7 @@ public class ExceptionConverter extends RuntimeException {
      * @return the original exception
      */
     public Exception getException() {
-        return ex;
+        return (Exception) getCause();
     }
 
     /**
@@ -121,8 +117,9 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @return message of the original exception
      */
+    @Override
     public String getMessage() {
-        return ex.getMessage();
+        return getCause().getMessage();
     }
 
     /**
@@ -130,8 +127,9 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @return localized version of the message
      */
+    @Override
     public String getLocalizedMessage() {
-        return ex.getLocalizedMessage();
+        return getCause().getLocalizedMessage();
     }
 
     /**
@@ -139,48 +137,9 @@ public class ExceptionConverter extends RuntimeException {
      *
      * @return String version of the exception
      */
+    @Override
     public String toString() {
-        return prefix + ex;
-    }
-
-    /**
-     * we have to override this as well
-     */
-    public void printStackTrace() {
-        printStackTrace(System.err);
-    }
-
-    /**
-     * here we prefix, with printStream.print(), not printStream.println(), the stack trace with "ExceptionConverter:"
-     *
-     * @param printStream printStream
-     */
-    public void printStackTrace(java.io.PrintStream printStream) {
-        synchronized (printStream) {
-            printStream.print(prefix);
-            ex.printStackTrace(printStream);
-        }
-    }
-
-    /**
-     * Again, we prefix the stack trace with "ExceptionConverter:"
-     *
-     * @param printWriter printWriter
-     */
-    public void printStackTrace(java.io.PrintWriter printWriter) {
-        synchronized (printWriter) {
-            printWriter.print(prefix);
-            ex.printStackTrace(printWriter);
-        }
-    }
-
-    /**
-     * requests to fill in the stack trace we will have to ignore. We can't throw an exception here, because this method
-     * is called by the constructor of Throwable
-     *
-     * @return a Throwable
-     */
-    public synchronized Throwable fillInStackTrace() {
-        return this;
+        Throwable cause = getCause();
+        return (cause instanceof RuntimeException ? "" : "ExceptionConverter: ") + String.valueOf(cause);
     }
 }
