@@ -274,6 +274,102 @@ class OpenPdfCorePageRendererOperatorsTest {
         }
     }
 
+    /**
+     * PDF §11.6.5.3: an Image XObject's {@code /SMask} entry is a soft mask that supplies
+     * a per-pixel alpha channel. This is exactly how a transparent-background PNG (a logo,
+     * a product photo, ...) ends up embedded in a PDF. Before {@code /SMask} support, the
+     * renderer ignored it entirely and painted every image fully opaque, hiding whatever was
+     * underneath. Build a red image with three alpha bands &mdash; fully transparent, half
+     * transparent, fully opaque &mdash; over a green background rectangle, and verify all
+     * three composite differently.
+     */
+    @Test
+    void rendersImageSoftMaskAsPerPixelAlpha() throws Exception {
+        int size = 30;
+        BufferedImage argb = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                int band = x / (size / 3);
+                // band 0 = fully transparent, 1 = half transparent, 2 = fully opaque; all red.
+                int alpha = switch (band) {
+                    case 0 -> 0;
+                    case 1 -> 128;
+                    default -> 255;
+                };
+                argb.setRGB(x, y, (alpha << 24) | 0xFF0000);
+            }
+        }
+        // color=null so Image.getInstance() derives a real /SMask stream from the alpha
+        // channel rather than binary color-key masking (the mixed 0/128/255 alpha values
+        // force openpdf-core's "shades" detection down the SMask path).
+        org.openpdf.text.Image pdfImage = org.openpdf.text.Image.getInstance((java.awt.Image) argb, null);
+
+        // Placement in PDF user-space points: a 150x150pt image with its lower-left corner at
+        // (50, 75), i.e. spanning x:[50,200], y:[75,225].
+        float imgXPt = 50f;
+        float imgYPt = 75f;
+        float imgWPt = 150f;
+        float imgHPt = 150f;
+        byte[] pdf = buildPdf(cb -> {
+            cb.setRGBColorFillF(0f, 1f, 0f); // green background, full page
+            cb.rectangle(0, 0, 300, 300);
+            cb.fill();
+            cb.addImage(pdfImage, imgWPt, 0f, 0f, imgHPt, imgXPt, imgYPt);
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "image-smask.png");
+
+            // Translate the PDF-space placement into device pixels the same way the renderer
+            // does (dpi/72 scale, Y flipped against the page height) so band samples land
+            // squarely inside the image regardless of the test page's exact dimensions.
+            float dpi = 150f;
+            float scale = dpi / 72f;
+            double pageHeightPt = r.getPageSize(1).getHeight();
+            int imgLeftPx = Math.round(imgXPt * scale);
+            int imgWidthPx = Math.round(imgWPt * scale);
+            int imgTopPx = Math.round((float) (pageHeightPt - (imgYPt + imgHPt)) * scale);
+            int imgBottomPx = Math.round((float) (pageHeightPt - imgYPt) * scale);
+            int sampleY = (imgTopPx + imgBottomPx) / 2;
+            int transparentX = imgLeftPx + imgWidthPx / 6;   // center of the first (transparent) third
+            int halfX = imgLeftPx + imgWidthPx / 2;          // center of the middle (half-alpha) third
+            int opaqueX = imgLeftPx + imgWidthPx * 5 / 6;    // center of the last (opaque) third
+
+            int[] transparentRgb = channelsAt(img, transparentX, sampleY);
+            int[] halfRgb = channelsAt(img, halfX, sampleY);
+            int[] opaqueRgb = channelsAt(img, opaqueX, sampleY);
+
+            assertThat(transparentRgb[1])
+                    .as("fully transparent (alpha=0) band must let the green background show through")
+                    .isGreaterThan(150);
+            assertThat(transparentRgb[0])
+                    .as("fully transparent band must not show the image's red")
+                    .isLessThan(80);
+
+            assertThat(opaqueRgb[0])
+                    .as("fully opaque (alpha=255) band must show the image's red")
+                    .isGreaterThan(200);
+            assertThat(opaqueRgb[1])
+                    .as("fully opaque band must not let the green background show through")
+                    .isLessThan(80);
+
+            assertThat(halfRgb[0])
+                    .as("half-transparent (alpha=128) band must blend red and the green background, "
+                            + "not read as pure background")
+                    .isBetween(70, 200);
+            assertThat(halfRgb[1])
+                    .as("half-transparent band must blend red and the green background, "
+                            + "not read as pure opaque red")
+                    .isBetween(70, 200);
+        }
+    }
+
+    private static int[] channelsAt(BufferedImage img, int x, int y) {
+        int argb = img.getRGB(x, y);
+        return new int[]{(argb >> 16) & 0xFF, (argb >> 8) & 0xFF, argb & 0xFF};
+    }
+
     @Test
     void rendersFormXObjectViaNestedContentStream() throws Exception {
         // Form XObjects embed their own content stream. Wrap a colored rectangle
