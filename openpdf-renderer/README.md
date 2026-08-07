@@ -105,8 +105,8 @@ PDF content-stream operators &mdash; sufficient for typical text + vector PDFs:
 | Path construction | `m`, `l`, `c`, `v`, `y`, `re`, `h` |
 | Path painting | `S`, `s`, `f`, `F`, `f*`, `B`, `B*`, `b`, `b*`, `n` |
 | Clipping | `W`, `W*` |
-| Colors (DeviceGray / DeviceRGB / DeviceCMYK) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
-| Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts` |
+| Colors (Device + ICCBased/CalGray/CalRGB/Lab) | `g`, `G`, `rg`, `RG`, `k`, `K`, `cs`, `CS`, `sc`, `SC`, `scn`, `SCN` |
+| Text state | `BT`, `ET`, `Tf`, `Tc`, `Tw`, `TL`, `Tz`, `Td`, `TD`, `Tm`, `T*`, `Ts`, `Tr` |
 | Text showing | `Tj`, `TJ`, `'`, `"` |
 | XObjects | `Do` (see below) |
 
@@ -122,6 +122,25 @@ XObject coverage:
   DeviceCMYK streams (CMYK approximated to sRGB on the fly). 8-bit Indexed
   color images are expanded through their palette into the base color space
   (DeviceGray / DeviceRGB / DeviceCMYK).
+- An image's `/SMask` (soft mask, PDF §11.6.5.3) is decoded as an 8-bit
+  DeviceGray alpha channel and composited onto it &mdash; the mechanism behind
+  transparent-background PNGs (logos, product photos, ...) embedded in a PDF.
+  The soft mask may be JPEG/JPX, Flate-decoded or uncompressed, and its own
+  `/Width`/`/Height` need not match the base image (resampled with nearest-
+  neighbor when they differ). `/Mask` (stencil / color-key masking) is not
+  yet supported.
+
+Color spaces: `cs`/`CS` resolve literal device names (`/DeviceGray`,
+`/DeviceRGB`, `/DeviceCMYK`) directly, and also resolve any other name
+through the page's `/ColorSpace` resource dictionary (PDF §8.6.3) &mdash;
+the common case being a named `ICCBased` color space (classified by its
+stream's `/N` component count into gray/RGB/CMYK), `CalGray`, `CalRGB`,
+or `Lab` (converted via the standard CIE L\*a\*b\* &rarr; XYZ &rarr; sRGB
+transform, using the color space's own `/WhitePoint` when present, D50
+otherwise). Color spaces this renderer doesn't specifically understand
+(Separation, DeviceN, Indexed, Pattern, ...) fall back to inferring
+gray/RGB/CMYK from the `sc`/`scn` operand count, which is usually right
+for those color spaces' most common shapes but not guaranteed.
 
 Text rendering: for each `Tf`-selected font, the renderer pulls the
 embedded font program (`FontFile2`/`FontFile3`/`FontFile`) out of the
@@ -131,6 +150,15 @@ font isn't embedded (or the embedded program can't be loaded), the
 renderer falls back to a generic Java2D family picked by PostScript-name
 heuristics &mdash; glyph widths from the PDF font are still respected,
 but shapes are only approximate.
+
+The text rendering mode (`Tr`, PDF §9.3.3) is honored: mode 0 fills glyphs
+(the default), mode 1 strokes their outlines in the current stroke color/line
+style, mode 2 fills then strokes, and modes 3 and 7 are invisible &mdash; the
+glyphs are not painted at all, which is exactly what scanned-PDF / OCR
+workflows rely on to lay an invisible, searchable text layer over a page-image
+XObject. Modes 4-6 (which additionally add the glyphs to the clipping path)
+render using their 0-2 fill/stroke behavior but do not affect the clip, since
+text-based clipping paths are not implemented.
 
 Tables: `OpenPdfCorePageRenderer` honors the PDF §8.4.3.2 zero-width hairline
 rule (`w 0` strokes are rendered as one device pixel rather than collapsing to
@@ -150,6 +178,19 @@ and JPEG inline images are supported. Shading (`sh`), pattern / shading
 colors and type 3 font glyph operators are silently ignored. Pages that
 rely heavily on those features may render with missing content. Adding more
 operators is a localized change in `OpenPdfCorePageRenderer`.
+
+Annotations: after the page content stream, each entry in `/Annots` has its
+normal appearance stream (`/AP /N` &mdash; directly a stream, or a
+sub-dictionary of named states selected by `/AS`, e.g. a checkbox's
+`/Yes`/`/Off`) rendered at its `/Rect`, per the PDF §12.5.5 placement
+algorithm (the appearance's `/BBox` is mapped through its own `/Matrix`,
+then fitted to `/Rect` by independent X/Y scale + translate). This covers
+stamps, highlights, free text callouts, square/circle markup, and filled-in
+form field appearances &mdash; anything a PDF producer already baked into an
+appearance stream. Annotations flagged Hidden or NoView (`/F` bits 2/6),
+Popup annotations, and annotations with no usable `/AP` (or an `/AS` that
+doesn't resolve to a state) are skipped; the renderer doesn't synthesize an
+appearance (e.g. a Link's default invisible border) when one isn't present.
 
 For pages that need features outside this supported subset and you want
 pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
@@ -408,7 +449,7 @@ mvn javadoc:javadoc
 | ICC Profiles | ✅ Full |
 | Images (JPEG, PNG) | ✅ Full |
 | Transparency | ✅ Partial |
-| Annotations | ⚠️ Basic |
+| Annotations | ⚠️ Appearance streams only (no synthesized default appearances) |
 | Forms | ⚠️ Limited |
 | Encryption | ❌ Removed |
 
