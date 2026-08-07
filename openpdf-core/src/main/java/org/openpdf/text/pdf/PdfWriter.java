@@ -588,7 +588,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * A number referring to the previous Cross-Reference Table.
      */
-    protected int prevxref = 0;
+    protected long prevxref = 0;
     protected List newBookmarks;
     /**
      * Stores the version information for the header and the catalog.
@@ -3263,7 +3263,7 @@ public class PdfWriter extends DocWriter implements
          */
 
         void writeCrossReferenceTable(OutputStream os, PdfIndirectReference root, PdfIndirectReference info,
-                PdfIndirectReference encryption, PdfObject fileID, int prevxref) throws IOException {
+                PdfIndirectReference encryption, PdfObject fileID, long prevxref) throws IOException {
             int refNumber = 0;
             // Old-style xref tables limit object offsets to 10 digits
             boolean useNewXrefFormat = writer.isFullCompression() || position > 9_999_999_999L;
@@ -3484,7 +3484,7 @@ public class PdfWriter extends DocWriter implements
          */
 
         PdfTrailer(int size, PdfIndirectReference root, PdfIndirectReference info, PdfIndirectReference encryption,
-                PdfObject fileID, int prevxref) {
+                PdfObject fileID, long prevxref) {
             put(PdfName.SIZE, new PdfNumber(size));
             put(PdfName.ROOT, root);
             if (info != null) {
