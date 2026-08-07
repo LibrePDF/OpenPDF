@@ -81,7 +81,8 @@ import org.openpdf.text.pdf.PdfString;
  *       {@code cs}, {@code CS}, {@code sc}, {@code SC}, {@code scn}, {@code SCN}</li>
  *   <li>Text state: {@code BT}, {@code ET}, {@code Tf}, {@code Tc}, {@code Tw},
  *       {@code TL}, {@code Tz}, {@code Td}, {@code TD}, {@code Tm}, {@code T*},
- *       {@code Ts} (text rise)</li>
+ *       {@code Ts} (text rise), {@code Tr} (text rendering mode: fill / stroke /
+ *       invisible; clipping modes 4-7 fall back to their non-clipping counterpart)</li>
  *   <li>Text showing: {@code Tj}, {@code TJ}, {@code '}, {@code "}</li>
  *   <li>Marked content / compatibility (no-op): {@code BMC}, {@code BDC},
  *       {@code EMC}, {@code MP}, {@code DP}, {@code BX}, {@code EX}</li>
@@ -900,6 +901,9 @@ final class OpenPdfCorePageRenderer {
             case "Ts":
                 state.textRise = num(operands, 0);
                 break;
+            case "Tr":
+                state.renderMode = (int) num(operands, 0);
+                break;
             case "Td":
                 textMoveTo(num(operands, 0), num(operands, 1));
                 break;
@@ -1561,23 +1565,21 @@ final class OpenPdfCorePageRenderer {
         if (!inTextObject || text == null || text.isEmpty()) {
             return;
         }
-        Font awtFont = mapFont(state.font, state.fontSize);
-        g2.setFont(awtFont);
-        g2.setColor(state.fillColor);
-
-        AffineTransform saved = g2.getTransform();
-        try {
-            // Text matrix maps text-space to user space; we then need a Y-flip
-            // because Graphics2D's font baseline is drawn in image-Y orientation.
-            g2.transform(textMatrix);
-            g2.scale(state.horizontalScaling, 1.0);
-            if (state.textRise != 0f) {
-                g2.translate(0, state.textRise);
+        if (!isInvisibleRenderMode(state.renderMode)) {
+            AffineTransform saved = g2.getTransform();
+            try {
+                // Text matrix maps text-space to user space; we then need a Y-flip
+                // because Graphics2D's font baseline is drawn in image-Y orientation.
+                g2.transform(textMatrix);
+                g2.scale(state.horizontalScaling, 1.0);
+                if (state.textRise != 0f) {
+                    g2.translate(0, state.textRise);
+                }
+                g2.scale(1, -1);
+                drawGlyphs(text);
+            } finally {
+                g2.setTransform(saved);
             }
-            g2.scale(1, -1);
-            g2.drawString(text, 0f, 0f);
-        } finally {
-            g2.setTransform(saved);
         }
 
         // Advance text matrix using actual PDF font widths + char/word spacing.
@@ -1585,6 +1587,57 @@ final class OpenPdfCorePageRenderer {
         AffineTransform adv = new AffineTransform(textMatrix);
         adv.translate(advance, 0);
         textMatrix = adv;
+    }
+
+    /**
+     * Draws {@code text} at the origin of the (already positioned) current transform,
+     * honoring the active PDF §9.3.3 text rendering mode ({@code Tr}).
+     *
+     * <p>Fill-only text (the common case, mode 0) uses {@link Graphics2D#drawString}
+     * directly. Stroke modes (1, 2, 5, 6) need the glyph outlines so they can be
+     * stroked with the current line width / dash / join settings, so those go through
+     * {@link Font#createGlyphVector}. Modes 4-7 (add to clipping path) fall back to
+     * their non-clipping counterpart since text clipping isn't implemented.</p>
+     */
+    private void drawGlyphs(String text) {
+        boolean fill = fillsRenderMode(state.renderMode);
+        boolean stroke = strokesRenderMode(state.renderMode);
+        Font awtFont = mapFont(state.font, state.fontSize);
+        if (fill && !stroke) {
+            g2.setFont(awtFont);
+            g2.setColor(state.fillColor);
+            g2.drawString(text, 0f, 0f);
+            return;
+        }
+        Shape outline = awtFont.createGlyphVector(g2.getFontRenderContext(), text).getOutline(0f, 0f);
+        if (fill) {
+            g2.setColor(state.fillColor);
+            g2.fill(outline);
+        }
+        if (stroke) {
+            g2.setColor(state.strokeColor);
+            g2.setStroke(new BasicStroke(
+                    effectiveLineWidth(),
+                    state.lineCap, state.lineJoin, state.miterLimit,
+                    state.dashPattern, state.dashPhase));
+            g2.draw(outline);
+        }
+    }
+
+    /**
+     * PDF §9.3.3 text rendering modes 3 and 7 render nothing (7 only adds the glyphs to
+     * the clipping path, which we don't implement, so it degrades to fully invisible).
+     */
+    private static boolean isInvisibleRenderMode(int mode) {
+        return mode == 3 || mode == 7;
+    }
+
+    private static boolean fillsRenderMode(int mode) {
+        return mode == 0 || mode == 2 || mode == 4 || mode == 6;
+    }
+
+    private static boolean strokesRenderMode(int mode) {
+        return mode == 1 || mode == 2 || mode == 5 || mode == 6;
     }
 
     private void showTextArray(PdfArray array) {
@@ -1904,6 +1957,11 @@ final class OpenPdfCorePageRenderer {
         float leading;
         float horizontalScaling = 1.0f;
         float textRise;
+        // PDF §9.3.3 text rendering mode (Tr): 0=fill, 1=stroke, 2=fill+stroke, 3=invisible,
+        // 4-7 add the glyphs to the clipping path in addition to the 0-3 behavior. Clipping
+        // is not implemented; modes 4-7 fall back to their 0-3 counterpart (see
+        // fillsRenderMode/strokesRenderMode/isInvisibleRenderMode).
+        int renderMode;
 
         GState() {
         }
@@ -1929,6 +1987,7 @@ final class OpenPdfCorePageRenderer {
             this.leading = other.leading;
             this.horizontalScaling = other.horizontalScaling;
             this.textRise = other.textRise;
+            this.renderMode = other.renderMode;
             // hasPendingClip / pendingClipRule are intentionally not copied:
             // the W / W* operators apply to the current path before any q/Q boundary.
         }
