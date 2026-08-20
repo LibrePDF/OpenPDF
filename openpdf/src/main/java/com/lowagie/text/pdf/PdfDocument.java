@@ -246,6 +246,9 @@ public class PdfDocument extends Document {
     //    [L10] DocListener interface
     protected int markPoint;
 
+    // structure parent tree key reserved for the current page (tagged PDF)
+    protected int currentPageStructParentIndex;
+
 //    [L11] DocListener interface
     /**
      * This is the size of the next page.
@@ -977,7 +980,7 @@ public class PdfDocument extends Document {
 
             // [F12] we add tag info
             if (writer.isTagged()) {
-                page.put(PdfName.STRUCTPARENTS, new PdfNumber(writer.getCurrentPageNumber() - 1));
+                page.put(PdfName.STRUCTPARENTS, new PdfNumber(getCurrentPageStructParentIndex()));
             }
 
             if (text.size() > textEmptySize) {
@@ -1144,6 +1147,11 @@ public class PdfDocument extends Document {
         textEmptySize = text.size();
 
         markPoint = 0;
+        // reserve a structure parent tree key for this page so that page content and any tagged objects
+        // (annotations) on it share the same, collision-free key space (see PdfStructureTreeRoot)
+        if (writer.isTagged()) {
+            currentPageStructParentIndex = writer.getStructureTreeRoot().obtainStructureParentIndex();
+        }
         setNewPageSizeAndMargins();
         imageEnd = -1;
         indentation.imageIndentRight = 0;
@@ -2242,6 +2250,16 @@ public class PdfDocument extends Document {
 
     void incMarkPoint() {
         ++markPoint;
+    }
+
+    /**
+     * Returns the structure parent tree key reserved for the current page. Marked content on the page
+     * and this value (written as the page's StructParents entry) must agree.
+     *
+     * @return the current page's structure parent tree key
+     */
+    int getCurrentPageStructParentIndex() {
+        return currentPageStructParentIndex;
     }
 
 //    [U3] page actions

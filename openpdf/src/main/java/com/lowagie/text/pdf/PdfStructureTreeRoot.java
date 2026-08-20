@@ -60,6 +60,18 @@ import java.util.Map;
 public class PdfStructureTreeRoot extends PdfDictionary {
 
     private final Map<Integer, PdfArray> parentTree = new HashMap<>();
+    /**
+     * Parent tree entries that map a single StructParent key directly to a structure element. This is
+     * used for whole objects (such as annotations) referenced from the structure tree through an OBJR
+     * entry, which - unlike marked-content sequences - must resolve to the structure element itself and
+     * not to an array (see ISO 32000-1, 14.7.4.4 and ISO 14289-1).
+     */
+    private final Map<Integer, PdfIndirectReference> objectParents = new HashMap<>();
+    /**
+     * A monotonically increasing counter used to hand out unique StructParent / StructParents keys for
+     * both pages and objects, so that their entries in the structure parent tree never collide.
+     */
+    private int parentTreeNextKey = 0;
     private final PdfIndirectReference reference;
 
     /**
@@ -121,16 +133,44 @@ public class PdfStructureTreeRoot extends PdfDictionary {
         ar.add(reference);
     }
 
+    /**
+     * Returns the next available StructParent / StructParents key and advances the internal counter.
+     * Pages and objects (annotations) share this key space so that their structure parent tree entries
+     * remain unique.
+     *
+     * @return the next parent tree key
+     */
+    public int obtainStructureParentIndex() {
+        return parentTreeNextKey++;
+    }
+
+    /**
+     * Registers a structure parent tree entry that maps a StructParent key directly to a structure
+     * element. Used for whole objects (annotations) referenced through an OBJR entry.
+     *
+     * @param structParent     the StructParent key stored on the object
+     * @param structureElement the reference of the structure element that is the object's parent
+     */
+    void setObjectParent(int structParent, PdfIndirectReference structureElement) {
+        objectParents.put(structParent, structureElement);
+    }
+
     private void nodeProcess(PdfDictionary dictionary, PdfIndirectReference reference)
             throws IOException {
         PdfObject obj = dictionary.get(PdfName.K);
-        if (obj != null && obj.isArray() && !((PdfArray) obj).getElements().isEmpty() && !((PdfArray) obj).getElements()
-                .get(0).isNumber()) {
+        if (obj != null && obj.isArray()) {
             PdfArray ar = (PdfArray) obj;
             for (int k = 0; k < ar.size(); ++k) {
-                PdfStructureElement e = (PdfStructureElement) ar.getDirectObject(k);
-                ar.set(k, e.getReference());
-                nodeProcess(e, e.getReference());
+                // Only structure elements are recursed into and replaced by their reference. Other kids
+                // (marked-content identifiers, MCR dictionaries and OBJR references to annotations) are
+                // left untouched so that mixed kids - e.g. a Link element containing both link text and
+                // an OBJR - are handled correctly.
+                PdfObject direct = ar.getDirectObject(k);
+                if (direct instanceof PdfStructureElement) {
+                    PdfStructureElement e = (PdfStructureElement) direct;
+                    ar.set(k, e.getReference());
+                    nodeProcess(e, e.getReference());
+                }
             }
         }
         if (reference != null) {
@@ -144,9 +184,12 @@ public class PdfStructureTreeRoot extends PdfDictionary {
             PdfArray ar = parentTree.get(i);
             numTree.put(i, writer.addToBody(ar).getIndirectReference());
         }
+        // Object (annotation) entries map their key directly to the parent structure element.
+        numTree.putAll(objectParents);
         PdfDictionary dicTree = PdfNumberTree.writeTree(numTree, writer);
         if (dicTree != null) {
             put(PdfName.PARENTTREE, writer.addToBody(dicTree).getIndirectReference());
+            put(PdfName.PARENTTREENEXTKEY, new PdfNumber(parentTreeNextKey));
         }
 
         nodeProcess(this, reference);

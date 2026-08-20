@@ -139,4 +139,47 @@ public class PdfStructureElement extends PdfDictionary {
     public PdfIndirectReference getReference() {
         return this.reference;
     }
+
+    /**
+     * References a whole annotation from this structure element, as required to tag annotations
+     * (typically links) in a tagged or PDF/UA document. This
+     * <ul>
+     *   <li>adds an OBJR entry pointing at the annotation to this element's kids,</li>
+     *   <li>stores a unique {@code StructParent} key on the annotation, and</li>
+     *   <li>registers that key in the structure parent tree, mapping it directly to this element.</li>
+     * </ul>
+     * The annotation must already have been added to the document (for example through
+     * {@link PdfWriter#addAnnotation(PdfAnnotation)}) and must live on the current page. Any visible
+     * content of the annotation (such as the link text) should be marked before calling this method so
+     * that it becomes a preceding kid of this element.
+     *
+     * @param annotation the annotation to reference; its indirect reference is used for the OBJR entry
+     */
+    public void addAnnotation(PdfAnnotation annotation) {
+        PdfWriter writer = top.getWriter();
+        int structParent = top.obtainStructureParentIndex();
+        annotation.put(PdfName.STRUCTPARENT, new PdfNumber(structParent));
+        top.setObjectParent(structParent, reference);
+
+        PdfDictionary objr = new PdfDictionary(PdfName.OBJR);
+        objr.put(PdfName.OBJ, annotation.getIndirectReference());
+        objr.put(PdfName.PG, writer.getCurrentPage());
+        addKid(objr);
+    }
+
+    private void addKid(PdfObject kid) {
+        PdfObject k = get(PdfName.K);
+        PdfArray kids;
+        if (k == null) {
+            kids = new PdfArray();
+            put(PdfName.K, kids);
+        } else if (k.isArray()) {
+            kids = (PdfArray) k;
+        } else {
+            kids = new PdfArray();
+            kids.add(k);
+            put(PdfName.K, kids);
+        }
+        kids.add(kid);
+    }
 }
