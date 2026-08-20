@@ -151,6 +151,7 @@ public class PdfContentByte {
      */
     public static final int TEXT_RENDER_MODE_CLIP = 7;
     static final float MIN_FONT_SIZE = 0.0001f;
+    private static final double GLYPH_POSITION_TOLERANCE = 0.1;
     private static final float[] unitRect = {0, 0, 0, 1, 1, 0, 1, 1};
     private static final Map<PdfName, String> abrev = new HashMap<>();
     // membervariables
@@ -1746,9 +1747,39 @@ public class PdfContentByte {
             throw new NullPointerException(
                     MessageLocalization.getComposedMessage("font.and.size.must.be.set.before.writing.any.text"));
         }
-        byte[] b = state.fontDetails.convertToBytes(glyphVector, beginIndex, endIndex);
-        escapeString(b, content);
-        content.append("Tj").append_i(separator);
+        boolean neededAdjustment = false;
+        double expectedPos = glyphVector.getGlyphPosition(beginIndex).getX();
+        int segmentStart = beginIndex;
+        for (int i = beginIndex; i < endIndex; i++) {
+            int glyphCode = glyphVector.getGlyphCode(i);
+            if (glyphCode == 0xFFFE || glyphCode == 0xFFFF) {
+                continue;
+            }
+
+            double actualPos = glyphVector.getGlyphPosition(i).getX();
+            double delta = actualPos - expectedPos;
+            if (Math.abs(delta) > GLYPH_POSITION_TOLERANCE && i > segmentStart) {
+                if (!neededAdjustment) {
+                    neededAdjustment = true;
+                    content.append("[");
+                }
+                byte[] segmentBytes = state.fontDetails.convertToBytes(glyphVector, segmentStart, i);
+                escapeString(segmentBytes, content);
+                content.append(-(delta * 1000 / state.size));
+                segmentStart = i;
+            }
+            expectedPos = actualPos + glyphVector.getGlyphMetrics(i).getAdvanceX();
+        }
+
+        if (!neededAdjustment) {
+            byte[] b = state.fontDetails.convertToBytes(glyphVector, beginIndex, endIndex);
+            escapeString(b, content);
+            content.append("Tj").append_i(separator);
+        } else {
+            byte[] remaining = state.fontDetails.convertToBytes(glyphVector, segmentStart, endIndex);
+            escapeString(remaining, content);
+            content.append("]TJ").append_i(separator);
+        }
     }
 
     /**
