@@ -141,8 +141,8 @@ public class Type3Font extends PDFFont {
     @Override
     protected PDFGlyph getGlyph(char src, String name) {
         if (name == null) {
-            throw new IllegalArgumentException("Glyph name required for Type3 font!" +
-                    "Source character: " + (int) src);
+            throw new IllegalArgumentException("Glyph name required for Type3 font!"
+                    + "Source character: " + (int) src);
         }
 
         PDFObject pageObj = (PDFObject) this.charProcs.get(name);

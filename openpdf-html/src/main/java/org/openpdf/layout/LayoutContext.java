@@ -144,8 +144,8 @@ public class LayoutContext implements CssContext {
     }
 
     public LayoutState captureLayoutState() {
-        return isPrint() ?
-                new LayoutState(_firstLines, _firstLetters, _currentMarkerData, _blockFormattingContexts, getPageName(), getExtraSpaceBottom(), getExtraSpaceTop(), getNoPageBreak()) :
+        return isPrint()
+                ? new LayoutState(_firstLines, _firstLetters, _currentMarkerData, _blockFormattingContexts, getPageName(), getExtraSpaceBottom(), getExtraSpaceTop(), getNoPageBreak()) :
                 new LayoutState(_firstLines, _firstLetters, _currentMarkerData, _blockFormattingContexts);
     }
 
@@ -167,8 +167,8 @@ public class LayoutContext implements CssContext {
     }
 
     public LayoutState copyStateForRelayout() {
-        return isPrint() ?
-                new LayoutState(_firstLines.copyOf(), _firstLetters.copyOf(), _currentMarkerData, emptyList(), getPageName(), 0, 0, 0) :
+        return isPrint()
+                ? new LayoutState(_firstLines.copyOf(), _firstLetters.copyOf(), _currentMarkerData, emptyList(), getPageName(), 0, 0, 0) :
                 new LayoutState(_firstLines.copyOf(), _firstLetters.copyOf(), _currentMarkerData, emptyList());
     }
 

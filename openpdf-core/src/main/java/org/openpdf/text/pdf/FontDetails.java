@@ -342,8 +342,7 @@ class FontDetails {
     }
 
     private static boolean isVariationSelector(int codePoint) {
-        return (codePoint >= 0xFE00 && codePoint <= 0xFE0F) ||
-                (codePoint >= 0xE0100 && codePoint <= 0xE01EF);
+        return (codePoint >= 0xFE00 && codePoint <= 0xFE0F) || (codePoint >= 0xE0100 && codePoint <= 0xE01EF);
     }
 
     private byte[] getCJKEncodingBytes(int[] glyph, int size) {

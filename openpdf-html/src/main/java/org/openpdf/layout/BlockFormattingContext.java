@@ -68,8 +68,8 @@ public class BlockFormattingContext {
     }
 
     public int getFloatDistance(CssContext cssCtx, LineBox line, int containingBlockWidth) {
-        return getLeftFloatDistance(cssCtx, line, containingBlockWidth) +
-                    getRightFloatDistance(cssCtx, line, containingBlockWidth);
+        return getLeftFloatDistance(cssCtx, line, containingBlockWidth)
+                    + getRightFloatDistance(cssCtx, line, containingBlockWidth);
     }
 
     public int getNextLineBoxDelta(CssContext cssCtx, LineBox line, int containingBlockWidth) {

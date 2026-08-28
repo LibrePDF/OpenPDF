@@ -231,8 +231,8 @@ public class PrimitivePropertyBuilders {
 
     private static void assertFoundSingleValue(CSSName cssName, List<? extends CSSPrimitiveValue> values) {
         if (values.size() != 1) {
-            throw new CSSParseException("Found " + values.size() + " value(s) for " +
-                    cssName + " when " + 1 + " value(s) were expected", -1);
+            throw new CSSParseException("Found " + values.size() + " value(s) for "
+                    + cssName + " when " + 1 + " value(s) were expected", -1);
         }
     }
 
@@ -672,8 +672,7 @@ public class PrimitivePropertyBuilders {
             }
 
             checkInheritAllowed(first, inheritAllowed);
-            if (values.size() == 1 &&
-                    first.getCssValueType() == CSS_INHERIT) {
+            if (values.size() == 1 && first.getCssValueType() == CSS_INHERIT) {
                 return singletonList(
                         new PropertyDeclaration(cssName, first, important, origin));
             }
@@ -736,8 +735,7 @@ public class PrimitivePropertyBuilders {
             }
 
             checkInheritAllowed(first, inheritAllowed);
-            if (values.size() == 1 &&
-                    first.getCssValueType() == CSS_INHERIT) {
+            if (values.size() == 1 && first.getCssValueType() == CSS_INHERIT) {
                 return singletonList(
                         new PropertyDeclaration(cssName, first, important, origin));
             }
@@ -780,8 +778,7 @@ public class PrimitivePropertyBuilders {
                 return singletonList(new PropertyDeclaration(
                         CSSName.BACKGROUND_POSITION, new PropertyValue(values), important, origin));
             } else if (firstIdent != null && secondIdent != null) {
-                if (firstIdent == TOP || firstIdent == BOTTOM ||
-                        secondIdent == LEFT || secondIdent == RIGHT) {
+                if (firstIdent == TOP || firstIdent == BOTTOM || secondIdent == LEFT || secondIdent == RIGHT) {
                     IdentValue temp = firstIdent;
                     firstIdent = secondIdent;
                     secondIdent = temp;
@@ -814,8 +811,7 @@ public class PrimitivePropertyBuilders {
         }
 
         private void checkIdentPosition(CSSName cssName, IdentValue firstIdent, IdentValue secondIdent) {
-            if (firstIdent == TOP || firstIdent == BOTTOM ||
-                    secondIdent == LEFT || secondIdent == RIGHT) {
+            if (firstIdent == TOP || firstIdent == BOTTOM || secondIdent == LEFT || secondIdent == RIGHT) {
                 throw new CSSParseException("Invalid combination of keywords in " + cssName, -1);
             }
         }

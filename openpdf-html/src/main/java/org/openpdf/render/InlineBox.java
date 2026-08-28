@@ -378,8 +378,8 @@ public class InlineBox implements Styleable {
 
     @CheckReturnValue
     private int getInlineMBP(LayoutContext c, int cbWidth) {
-        return getStyle().getMarginBorderPadding(c, cbWidth, Edge.LEFT) +
-            getStyle().getMarginBorderPadding(c, cbWidth, Edge.RIGHT);
+        return getStyle().getMarginBorderPadding(c, cbWidth, Edge.LEFT)
+                + getStyle().getMarginBorderPadding(c, cbWidth, Edge.RIGHT);
     }
 
     public void calcMinMaxWidth(LayoutContext c, int cbWidth, boolean trimLeadingSpace) {

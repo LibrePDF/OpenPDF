@@ -179,7 +179,6 @@ public abstract class CMap {
     public String toString() {
         String indent = "        ";
 
-        return indent + " format: " + getFormat() + " length: " +
-                getLength() + " language: " + getLanguage() + "\n";
+        return indent + " format: " + getFormat() + " length: " + getLength() + " language: " + getLanguage() + "\n";
     }
 }

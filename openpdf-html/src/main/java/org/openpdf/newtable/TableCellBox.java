@@ -95,8 +95,7 @@ public class TableCellBox extends BlockBox {
     public BorderPropertySet getBorder(CssContext cssCtx) {
         if (getTable().getStyle().isCollapseBorders()) {
             // Should always be non-null, but might not be if layout code crashed
-            return _collapsedLayoutBorder == null ?
-                    BorderPropertySet.EMPTY_BORDER : _collapsedLayoutBorder;
+            return _collapsedLayoutBorder == null ? BorderPropertySet.EMPTY_BORDER : _collapsedLayoutBorder;
         } else {
             return super.getBorder(cssCtx);
         }
@@ -233,8 +232,8 @@ public class TableCellBox extends BlockBox {
 
         int bottomEdge = getAbsY() + getChildrenHeight();
 
-        return page != null && (bottomEdge >= page.getBottom() - c.getExtraSpaceBottom() ||
-                    bottomEdge + posDeltaY >= page.getBottom() - c.getExtraSpaceBottom());
+        return page != null && (bottomEdge >= page.getBottom() - c.getExtraSpaceBottom()
+                || bottomEdge + posDeltaY >= page.getBottom() - c.getExtraSpaceBottom());
     }
 
     public IdentValue getVerticalAlign() {
@@ -343,8 +342,7 @@ public class TableCellBox extends BlockBox {
         if (limit == null) {
             return null;
         } else {
-            if (limit.getTop() == ContentLimit.UNDEFINED ||
-                    limit.getBottom() == ContentLimit.UNDEFINED) {
+            if (limit.getTop() == ContentLimit.UNDEFINED || limit.getBottom() == ContentLimit.UNDEFINED) {
                 return result;
             }
 
@@ -455,8 +453,8 @@ public class TableCellBox extends BlockBox {
 
         // The borders have equal width. Sort by border style.
         if (border1.style() != border2.style()) {
-            return BORDER_PRIORITIES[border1.style().FS_ID] >
-                BORDER_PRIORITIES[border2.style().FS_ID] ? border1 : border2;
+            return BORDER_PRIORITIES[border1.style().FS_ID]
+                    > BORDER_PRIORITIES[border2.style().FS_ID] ? border1 : border2;
         }
 
         // The border have the same width and style. Rely on precedence (cell
@@ -872,7 +870,6 @@ public class TableCellBox extends BlockBox {
         if (contentLimitContainer == null) {
           return false;
         }
-        return c.isPrint() && getTable().getStyle().isPaginateTable() &&
-            contentLimitContainer.isContainsMultiplePages();
+        return c.isPrint() && getTable().getStyle().isPaginateTable() && contentLimitContainer.isContainsMultiplePages();
     }
 }

@@ -45,8 +45,8 @@ public class PdfSubByteSampleModel extends SampleModel {
 
     public PdfSubByteSampleModel(int w, int h, int numComponents, int bitsPerComponent) {
         super(DataBuffer.TYPE_BYTE, w, h, numComponents);
-        assert bitsPerComponent < 8 : "This is designed just for use with per-component sizes of less than 8 bits; " +
-                "you should probably use PixelInterleavedSampleModel";
+        assert bitsPerComponent < 8 : "This is designed just for use with per-component sizes of less than 8 bits; "
+                + "you should probably use PixelInterleavedSampleModel";
         assert bitsPerComponent == 1 || bitsPerComponent == 2 || bitsPerComponent == 4 :
                 "we don't want to grab components across byte boundaries";
         transferBytesPerPixel = (numComponents * bitsPerComponent + 7) / 8;

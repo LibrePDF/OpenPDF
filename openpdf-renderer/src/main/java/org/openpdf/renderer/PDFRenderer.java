@@ -306,9 +306,9 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
         Rectangle r = g.getTransform().createTransformedShape(new Rectangle(0, 0, 1, 1)).getBounds();
         boolean isBlured = false;
         
-        if (Configuration.getInstance().isUseBlurResizingForImages() && 
-                bi.getType() != BufferedImage.TYPE_CUSTOM && 
-                bi.getWidth() >= 1.75 * r.getWidth() && bi.getHeight() >= 1.75 * r.getHeight()) {
+        if (Configuration.getInstance().isUseBlurResizingForImages()
+                && bi.getType() != BufferedImage.TYPE_CUSTOM
+                && bi.getWidth() >= 1.75 * r.getWidth() && bi.getHeight() >= 1.75 * r.getHeight()) {
             try {
                 return smartDrawImage(image, bi, r, at);
             } catch (Exception e) {
@@ -367,9 +367,9 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
     private Rectangle2D smartDrawImage(PDFImage image, BufferedImage bi, Rectangle r, AffineTransform at) {
         boolean isBlured = false;
         
-        if (Configuration.getInstance().isUseBlurResizingForImages() && 
-                bi.getType() != BufferedImage.TYPE_CUSTOM && 
-                bi.getWidth() >= 1.75 * r.getWidth() && bi.getHeight() >= 1.75 * r.getHeight()) {
+        if (Configuration.getInstance().isUseBlurResizingForImages()
+                && bi.getType() != BufferedImage.TYPE_CUSTOM
+                && bi.getWidth() >= 1.75 * r.getWidth() && bi.getHeight() >= 1.75 * r.getHeight()) {
 
             BufferedImageOp op;
             // indexed colored images need to be converted for the convolveOp
@@ -831,8 +831,7 @@ public class PDFRenderer extends BaseWatchable implements Runnable {
         int flags = 0;
 
         // don't do anything if nothing is there or no one is listening
-        if ((region == null && !rendererFinished()) || this.observers == null ||
-                this.observers.size() == 0) {
+        if ((region == null && !rendererFinished()) || this.observers == null || this.observers.size() == 0) {
             return;
         }
 
