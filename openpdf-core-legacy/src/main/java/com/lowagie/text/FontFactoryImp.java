@@ -55,6 +55,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -517,7 +518,7 @@ public class FontFactoryImp implements FontProvider {
                 tmp = new ArrayList<>();
                 tmp.add(fullName);
                 fontFamilies.put(familyName, tmp);
-            } else {
+            } else if (!tmp.contains(fullName)) {
                 int fullNameLength = fullName.length();
                 boolean inserted = false;
                 for (int j = 0; j < tmp.size(); ++j) {
@@ -727,6 +728,27 @@ public class FontFactoryImp implements FontProvider {
 
     public Set<String> getRegisteredFamilies() {
         return Utilities.getKeySet(fontFamilies);
+    }
+
+    /**
+     * Gets the font names registered for a given font family. Package-private: intended for
+     * testing the deduplication done by {@link #registerFamily}, not part of the public API.
+     *
+     * @param family the font family (case-insensitive)
+     * @return an unmodifiable copy of the registered font names for the family, or an empty list if
+     * the family is not registered
+     */
+    List<String> getRegisteredFamily(String family) {
+        lock.readLock().lock();
+        try {
+            List<String> members = fontFamilies.get(family.toLowerCase(Locale.ROOT));
+            if (members == null) {
+                return Collections.emptyList();
+            }
+            return Collections.unmodifiableList(new ArrayList<>(members));
+        } finally {
+            lock.readLock().unlock();
+        }
     }
 
     /**
