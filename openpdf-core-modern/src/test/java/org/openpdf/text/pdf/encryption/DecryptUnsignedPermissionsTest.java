@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.openpdf.text.pdf.PdfReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -26,29 +24,13 @@ import org.junit.jupiter.api.Test;
  */
 class DecryptUnsignedPermissionsTest {
 
-    static Field ownerPasswordUsedField;
-
-    static boolean isOwnerPasswordUsed(PdfReader pdfReader) {
-        try {
-            return ownerPasswordUsedField.getBoolean(pdfReader);
-        } catch (IllegalArgumentException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @BeforeAll
-    static void setUpBeforeClass() throws Exception {
-        ownerPasswordUsedField = PdfReader.class.getDeclaredField("ownerPasswordUsed");
-        ownerPasswordUsedField.setAccessible(true);
-    }
-
     @Test
     void opensWithEmptyPasswordDespiteUnsignedPermissionsValue() throws IOException {
         try (InputStream resource = getClass()
                 .getResourceAsStream("/permissions/empty-user-password-unsigned-p-value.pdf")) {
             PdfReader pdfReader = new PdfReader(resource);
             assertTrue(pdfReader.isEncrypted(), "PdfReader fails to report test file to be encrypted.");
-            assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
+            assertFalse(pdfReader.isOwnerPasswordUsed(), "PdfReader fails to report limited permissions.");
             assertEquals(1, pdfReader.getNumberOfPages(),
                     "PdfReader fails to report the correct number of pages");
             pdfReader.close();
