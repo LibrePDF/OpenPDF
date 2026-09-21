@@ -21,14 +21,17 @@ import org.openpdf.text.utils.LongMappedByteBuffer;
 
 /**
  * On Java 22+, memory-mapped files must be unmapped as soon as they are closed, without waiting for the garbage
- * collector (issues #1112, #1517). Runs with failsafe against the multi-release jar.
+ * collector (issues #1112, #1517). This is an integration test: it is excluded from the default surefire run (which
+ * uses {@code target/classes}, where the JVM ignores {@code META-INF/versions}) and instead runs with failsafe
+ * against the packaged multi-release jar, so it actually exercises the Java 22+ variant of
+ * {@link LongMappedByteBuffer}.
  * <p>
  * On Windows, a mapped file cannot be deleted, so deleting the file verifies the release there. On Linux, a mapped
  * file can always be deleted, so the test checks /proc/self/maps instead.
  * <p>
  * There is intentionally no {@code System.gc()} in this test.
  */
-class MappedFileReleaseIT {
+class MappedFileReleaseTest {
 
     @TempDir
     Path tempDir;

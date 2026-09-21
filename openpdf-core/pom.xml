@@ -100,6 +100,20 @@
           <unpackBundle>true</unpackBundle>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!--
+            MappedFileReleaseTest only makes sense against the packaged multi-release jar (see the
+            multi-release-java22 profile below): surefire runs against target/classes, where the JVM ignores
+            META-INF/versions, so it would exercise the Java 21 code path and fail on Windows without System.gc().
+          -->
+          <excludes>
+            <exclude>**/MappedFileReleaseTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -155,7 +169,7 @@
                   <classesDirectory>${project.build.directory}/${project.build.finalName}.jar</classesDirectory>
                   <includes>
                     <include>**/LongMappedByteBufferTest.java</include>
-                    <include>**/MappedFileReleaseIT.java</include>
+                    <include>**/MappedFileReleaseTest.java</include>
                   </includes>
                 </configuration>
               </execution>
