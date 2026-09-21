@@ -97,11 +97,19 @@ public class MappedRandomAccessFile implements AutoCloseable {
     private void init(FileChannel channel, FileChannel.MapMode mapMode)
             throws IOException {
 
-
         this.channel = channel;
-        this.mappedByteBuffer = new LongMappedByteBuffer(channel, mapMode);
-
-        mappedByteBuffer.load();
+        try {
+            this.mappedByteBuffer = new LongMappedByteBuffer(channel, mapMode);
+            mappedByteBuffer.load();
+        } catch (IOException | RuntimeException | Error e) {
+            // don't leak the file handle (and the mapping) if the file cannot be mapped
+            try {
+                close();
+            } catch (IOException suppressed) {
+                e.addSuppressed(suppressed);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -194,17 +202,26 @@ public class MappedRandomAccessFile implements AutoCloseable {
     }
 
     /**
-     * Cleans the mapped bytebuffer and closes the channel
+     * Cleans the mapped bytebuffer and closes the channel.
+     * <p>
+     * On Java 22 and later, the mapping is released immediately, so the file can be deleted or moved right after this
+     * call, also on Windows. On Java 21, the mapping is released when the buffer is garbage collected.
      *
      * @throws IOException on error
      * @see java.io.RandomAccessFile#close()
      */
     public void close() throws IOException {
-        mappedByteBuffer = null;
-        if (channel != null) {
-            channel.close();
+        try {
+            if (mappedByteBuffer != null) {
+                mappedByteBuffer.close();
+            }
+        } finally {
+            mappedByteBuffer = null;
+            if (channel != null) {
+                channel.close();
+            }
+            channel = null;
         }
-        channel = null;
     }
 
 }
