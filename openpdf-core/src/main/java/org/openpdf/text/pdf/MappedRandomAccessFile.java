@@ -101,7 +101,7 @@ public class MappedRandomAccessFile implements AutoCloseable {
         try {
             this.mappedByteBuffer = new LongMappedByteBuffer(channel, mapMode);
             mappedByteBuffer.load();
-        } catch (IOException | RuntimeException | Error e) {
+        } catch (IOException | RuntimeException e) {
             // don't leak the file handle (and the mapping) if the file cannot be mapped
             try {
                 close();
