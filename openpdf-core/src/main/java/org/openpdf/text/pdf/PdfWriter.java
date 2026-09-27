@@ -1492,6 +1492,16 @@ public class PdfWriter extends DocWriter implements
     }
 
     /**
+     * Tells if the document written by this writer will declare at least the given PDF version.
+     *
+     * @param version the required version, for example {@link #VERSION_2_0}
+     * @return {@code true} if the output version is at least {@code version}
+     */
+    boolean isPdfVersionAtLeast(String version) {
+        return pdf_version.isAtLeast(version);
+    }
+
+    /**
      * @see org.openpdf.text.pdf.interfaces.PdfVersion#setPdfVersion(String)
      */
     public void setPdfVersion(String version) {

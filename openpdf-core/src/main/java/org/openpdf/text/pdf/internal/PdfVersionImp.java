@@ -119,6 +119,41 @@ public class PdfVersionImp implements PdfVersion {
         }
     }
 
+    /**
+     * Tells if the output of the writer will declare at least the given PDF version. In append mode the header is
+     * not rewritten, so only the version written to the catalog is considered.
+     *
+     * @param version the required version, for example {@code "2.0"}
+     * @return {@code true} if the header or the catalog version is at least {@code version}
+     * @since 3.0.6
+     */
+    public boolean isAtLeast(String version) {
+        if (!appendmode && isVersionAtLeast(header_version, version)) {
+            return true;
+        }
+        return catalog_version != null
+                && isVersionAtLeast(PdfName.decodeName(catalog_version.toString()), version);
+    }
+
+    /**
+     * Compares two PDF version strings without throwing on malformed input.
+     *
+     * @param actual   the version to test, may be {@code null}
+     * @param required the required version
+     * @return {@code true} if {@code actual} is a valid version not lower than {@code required}
+     * @since 3.0.6
+     */
+    public boolean isVersionAtLeast(String actual, String required) {
+        if (actual == null || actual.isEmpty()) {
+            return false;
+        }
+        try {
+            return comparePdfVersions(actual, required) >= 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     public int comparePdfVersions(String v1, String v2) {
         String[] p1 = v1.split("\\.");
         String[] p2 = v2.split("\\.");
@@ -139,6 +174,16 @@ public class PdfVersionImp implements PdfVersion {
         if (catalog_version == null || catalog_version.compareTo(version) < 0) {
             this.catalog_version = version;
         }
+    }
+
+    /**
+     * Returns the version that will be written to the catalog.
+     *
+     * @return the catalog version, or {@code null} if it was not raised
+     * @since 3.0.6
+     */
+    public PdfName getCatalogVersion() {
+        return catalog_version;
     }
 
     /**

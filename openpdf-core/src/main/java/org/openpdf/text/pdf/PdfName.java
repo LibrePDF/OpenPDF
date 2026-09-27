@@ -813,6 +813,24 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      */
     public static final PdfName DIFFERENCES = new PdfName("Differences");
     /**
+     * A name used in signature reference dictionaries.
+     *
+     * @since 3.0.6
+     */
+    public static final PdfName DIGESTLOCATION = new PdfName("DigestLocation");
+    /**
+     * A name used in signature reference dictionaries.
+     *
+     * @since 3.0.6
+     */
+    public static final PdfName DIGESTMETHOD = new PdfName("DigestMethod");
+    /**
+     * A name used in signature reference dictionaries.
+     *
+     * @since 3.0.6
+     */
+    public static final PdfName DIGESTVALUE = new PdfName("DigestValue");
+    /**
      * A name
      */
     public static final PdfName DISSOLVE = new PdfName("Dissolve");
@@ -840,6 +858,12 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
      * A name
      */
     public static final PdfName DOCMDP = new PdfName("DocMDP");
+    /**
+     * A name used as the type of document timestamp signature dictionaries.
+     *
+     * @since 3.0.6
+     */
+    public static final PdfName DOCTIMESTAMP = new PdfName("DocTimeStamp");
     /**
      * A name
      */

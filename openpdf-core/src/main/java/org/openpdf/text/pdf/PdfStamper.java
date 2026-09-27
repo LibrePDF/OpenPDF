@@ -637,10 +637,37 @@ public class PdfStamper
      * @since 2.1.4
      */
     public PdfFormField addSignature(String name, int page, float llx, float lly, float urx, float ury) {
+        return addSignature(name, page, llx, lly, urx, ury, null);
+    }
+
+    /**
+     * Adds an empty signature field that locks the given form fields once it is signed. The lock is written as the
+     * {@code /Lock} entry of the field; the matching FieldMDP transform is added when the field is signed with
+     * {@link PdfSignatureAppearance#setVisibleSignature(String)}.
+     *
+     * <p>A lock with a {@code /P} permission requires PDF 2.0 output: raise the version with
+     * {@code getWriter().setPdfVersion(PdfWriter.PDF_VERSION_2_0)} before calling this method.
+     *
+     * @param name the name of the signature
+     * @param page the page number
+     * @param llx  lower left x coordinate of the signature's position
+     * @param lly  lower left y coordinate of the signature's position
+     * @param urx  upper right x coordinate of the signature's position
+     * @param ury  upper right y coordinate of the signature's position
+     * @param lock the fields locked by the signature, or {@code null} for no lock
+     * @return a signature form field
+     * @throws IllegalStateException if the lock has a {@code /P} permission and the output is not PDF 2.0
+     * @since 3.0.6
+     */
+    public PdfFormField addSignature(String name, int page, float llx, float lly, float urx, float ury,
+            SignatureFieldLock lock) {
         PdfAcroForm acroForm = stamper.getAcroForm();
         PdfFormField signature = PdfFormField.createSignature(stamper);
         acroForm.setSignatureParams(signature, name, llx, lly, urx, ury);
         acroForm.drawSignatureAppearences(signature, llx, lly, urx, ury);
+        if (lock != null) {
+            acroForm.setSignatureLock(signature, lock);
+        }
         addAnnotation(signature, page);
         return signature;
     }

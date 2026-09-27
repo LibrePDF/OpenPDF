@@ -2230,6 +2230,11 @@ public class AcroFields {
             } else {
 
                 for (int i = 0; i < ref.size(); i++) {
+                    SignatureType found = this.sigTypes.get(entry.getKey());
+                    if (found != null && (found.isCertificationType() || found == SignatureType.USAGE_RIGHTS)) {
+                        // a FieldMDP entry next to a DocMDP or UR entry must not turn the signature into an approval
+                        break;
+                    }
                     PdfDictionary sigRefDict = ref.getAsDict(i);
 
                     if (sigRefDict == null) {
@@ -2278,6 +2283,102 @@ public class AcroFields {
             }
         }
         return this.sigTypes;
+    }
+
+    /**
+     * Gets the field names that are signed, ordered by revision: the first signature of the document comes first.
+     *
+     * @return the signed field names in revision order
+     * @since 3.0.6
+     */
+    public List<String> getSignedFieldNamesInRevisionOrder() {
+        List<String> names = getSignedFieldNames();
+        names.sort(Comparator.comparingInt(name -> sigNames.get(name)[1]));
+        return names;
+    }
+
+    /**
+     * Gets the {@code /ByteRange} of a signature.
+     *
+     * @param name the signature field name
+     * @return the byte range values, or {@code null} if the field is not signed
+     * @since 3.0.6
+     */
+    public long[] getSignatureByteRange(String name) {
+        PdfDictionary v = getSignatureDictionary(name);
+        if (v == null) {
+            return null;
+        }
+        PdfArray byteRange = v.getAsArray(PdfName.BYTERANGE);
+        if (byteRange == null) {
+            return null;
+        }
+        long[] values = new long[byteRange.size()];
+        for (int k = 0; k < values.length; ++k) {
+            PdfNumber number = byteRange.getAsNumber(k);
+            values[k] = number == null ? -1 : (long) number.doubleValue();
+        }
+        return values;
+    }
+
+    /**
+     * Gets the lock of a signature field, read from its {@code /Lock} entry. The field does not need to be signed.
+     *
+     * @param name the signature field name
+     * @return the lock, or {@code null} if the field has no valid lock
+     * @since 3.0.6
+     */
+    public SignatureFieldLock getSignatureFieldLock(String name) {
+        Item item = getFieldItem(name);
+        if (item == null) {
+            return null;
+        }
+        PdfObject lock = PdfReader.getPdfObject(item.getMerged(0).get(PdfName.LOCK));
+        if (lock == null || !lock.isDictionary()) {
+            return null;
+        }
+        return SignatureFieldLock.parse((PdfDictionary) lock).lock();
+    }
+
+    /**
+     * Gets the lock declared by the FieldMDP transform of a signature.
+     *
+     * @param name the signature field name
+     * @return the lock, or {@code null} if the signature has no valid FieldMDP transform
+     * @since 3.0.6
+     */
+    public SignatureFieldLock getSignatureFieldMdp(String name) {
+        PdfDictionary params = findTransformParams(getSignatureDictionary(name), PdfName.FIELDMDP);
+        return params == null ? null : SignatureFieldLock.parse(params).lock();
+    }
+
+    /**
+     * Finds the signature reference dictionary with the given transform method in a signature dictionary.
+     *
+     * @param signatureDictionary the signature dictionary, may be {@code null}
+     * @param transformMethod     the transform method, for example {@link PdfName#DOCMDP}
+     * @return the first matching reference dictionary, or {@code null}
+     */
+    static PdfDictionary findSignatureReference(PdfDictionary signatureDictionary, PdfName transformMethod) {
+        if (signatureDictionary == null) {
+            return null;
+        }
+        PdfArray references = signatureDictionary.getAsArray(PdfName.REFERENCE);
+        if (references == null) {
+            return null;
+        }
+        for (int k = 0; k < references.size(); ++k) {
+            PdfDictionary reference = references.getAsDict(k);
+            if (reference != null && transformMethod.equals(reference.getAsName(PdfName.TRANSFORMMETHOD))) {
+                return reference;
+            }
+        }
+        return null;
+    }
+
+    static PdfDictionary findTransformParams(PdfDictionary signatureDictionary, PdfName transformMethod) {
+        PdfDictionary reference = findSignatureReference(signatureDictionary, transformMethod);
+        return reference == null ? null : reference.getAsDict(PdfName.TRANSFORMPARAMS);
     }
 
     /**

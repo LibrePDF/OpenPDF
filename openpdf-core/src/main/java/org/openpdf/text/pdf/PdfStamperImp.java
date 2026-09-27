@@ -172,6 +172,26 @@ class PdfStamperImp extends PdfWriter {
         initialXrefSize = reader.getXrefSize();
     }
 
+    /**
+     * Tells if the stamped document will declare at least the given PDF version. The version of the original document
+     * (header and catalog) counts as well, since the stamper keeps it unless it is raised.
+     *
+     * @param version the required version
+     * @return {@code true} if the output version is at least {@code version}
+     */
+    @Override
+    boolean isPdfVersionAtLeast(String version) {
+        if (super.isPdfVersionAtLeast(version)) {
+            return true;
+        }
+        if (append && pdf_version.isVersionAtLeast(reader.getPdfVersion(), version)) {
+            return true;
+        }
+        PdfName catalogVersion = reader.getCatalog().getAsName(PdfName.VERSION);
+        return catalogVersion != null
+                && pdf_version.isVersionAtLeast(PdfName.decodeName(catalogVersion.toString()), version);
+    }
+
     static void findAllObjects(PdfReader reader, PdfObject obj, IntHashtable hits) {
         if (obj == null) {
             return;
@@ -242,6 +262,15 @@ class PdfStamperImp extends PdfWriter {
             if (sigFlags != 0) {
                 acroForm.put(PdfName.SIGFLAGS, new PdfNumber(sigFlags));
                 markUsed(acroForm);
+                markUsed(catalog);
+            }
+        }
+        // the header is not rewritten, so a version raised with setPdfVersion goes to the catalog
+        PdfName catalogVersion = pdf_version.getCatalogVersion();
+        if (catalogVersion != null) {
+            PdfName currentVersion = catalog.getAsName(PdfName.VERSION);
+            if (currentVersion == null || currentVersion.compareTo(catalogVersion) < 0) {
+                catalog.put(PdfName.VERSION, catalogVersion);
                 markUsed(catalog);
             }
         }

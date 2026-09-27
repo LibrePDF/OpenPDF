@@ -3763,6 +3763,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      * <CODE>AcroFields</CODE>.
      * </p>
      *
+     * <p>
+     * The DocMDP transform is looked up by its transform method, so its position in the {@code /Reference} array
+     * does not matter. A DocMDP transform without a {@code /P} value means
+     * {@code CERTIFIED_FORM_FILLING}, as defined by the PDF specification.
+     * </p>
+     *
      * @return gets the certification level for this document
      */
     public int getCertificationLevel() {
@@ -3771,24 +3777,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             return PdfSignatureAppearance.NOT_CERTIFIED;
         }
         dic = dic.getAsDict(PdfName.DOCMDP);
-        if (dic == null) {
+        PdfDictionary reference = AcroFields.findSignatureReference(dic, PdfName.DOCMDP);
+        if (reference == null) {
             return PdfSignatureAppearance.NOT_CERTIFIED;
         }
-        PdfArray arr = dic.getAsArray(PdfName.REFERENCE);
-        if (arr == null || arr.size() == 0) {
-            return PdfSignatureAppearance.NOT_CERTIFIED;
-        }
-        dic = arr.getAsDict(0);
-        if (dic == null) {
-            return PdfSignatureAppearance.NOT_CERTIFIED;
-        }
-        dic = dic.getAsDict(PdfName.TRANSFORMPARAMS);
-        if (dic == null) {
-            return PdfSignatureAppearance.NOT_CERTIFIED;
-        }
-        PdfNumber p = dic.getAsNumber(PdfName.P);
+        dic = reference.getAsDict(PdfName.TRANSFORMPARAMS);
+        PdfNumber p = dic == null ? null : dic.getAsNumber(PdfName.P);
         if (p == null) {
-            return PdfSignatureAppearance.NOT_CERTIFIED;
+            return PdfSignatureAppearance.CERTIFIED_FORM_FILLING;
         }
         return p.intValue();
     }

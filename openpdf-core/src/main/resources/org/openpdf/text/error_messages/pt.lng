@@ -1,9 +1,21 @@
 # Portuguese - Portugal
 1.at.file.pointer.2={1} na posição de ficheiro {2}
+certification.must.be.the.first.signature=Uma assinatura de certificação tem de ser a primeira assinatura do documento.
+duplicate.lock.field.name.1=Nome de campo duplicado no bloqueio do campo de assinatura: {1}
 error.reading.string=Erro na leitura de string.
 fdf.header.not.found=Início de FDF não encontrado.
 greaterthan.not.expected='>' inesperado
+invalid.lock.field.name.1=Nome de campo totalmente qualificado inválido no bloqueio do campo de assinatura: {1}
+lock.action.1.requires.field.names=A ação de bloqueio {1} requer pelo menos um nome de campo.
+lock.action.all.does.not.accept.field.names=A ação de bloqueio All não aceita nomes de campos.
+lock.permission.requires.pdf.2.0=Um bloqueio de campo de assinatura com uma permissão /P requer saída PDF 2.0.
 pdf.header.not.found=Início de PDF não encontrado.
 pdf.startxref.not.found=startxref de PDF não encontrado.
+the.field.1.is.locked.by.signature.2=O campo {1} está bloqueado pela assinatura {2}.
+the.lock.of.existing.field.1.cannot.be.replaced=O campo de assinatura {1} já existe; o seu bloqueio não pode ser substituído.
+the.lock.of.field.1.is.malformed.2=O dicionário /Lock do campo {1} está mal formado: {2}
+the.lock.of.field.1.references.missing.field.2=O bloqueio do campo de assinatura {1} refere o campo {2}, que não existe.
+the.lock.permission.1.widens.permission.2=A permissão de bloqueio {1} é mais ampla do que a permissão {2} já em vigor.
+the.signature.field.1.is.already.signed=O campo de assinatura {1} já está assinado.
 unable.to.add.self.to.table.contents=Não é possível adicionar a si mesmo ao conteúdo da tabela.
 xref.infinite.loop=Um loop infinito foi detectado na tabela xref.
