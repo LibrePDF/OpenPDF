@@ -44,8 +44,6 @@ package org.openpdf.text.pdf.parser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Stack;
-import org.openpdf.text.pdf.PdfString;
 
 /**
  * @author dgd
@@ -68,6 +66,12 @@ public class PdfContentTextExtractor extends PdfContentStreamHandler {
         registerContentOperator(this.new Do());
     }
 
+    void pushContext(String newContextName) {
+        contextNames.push(newContextName);
+        textFragmentStreams.push(textFragments);
+        textFragments = new ArrayList<>();
+    }
+
     void popContext() {
         String contextName = contextNames.pop();
         List<TextAssemblyBuffer> newBuffer = textFragmentStreams.pop();
@@ -84,35 +88,6 @@ public class PdfContentTextExtractor extends PdfContentStreamHandler {
                 .ifPresent(text -> newBuffer.add(contextResult));
 
         textFragments = newBuffer;
-    }
-
-    void pushContext(String newContextName) {
-        contextNames.push(newContextName);
-        textFragmentStreams.push(textFragments);
-        textFragments = new ArrayList<>();
-    }
-
-    public void reset() {
-        if (gsStack == null || gsStack.isEmpty()) {
-            gsStack = new Stack<>();
-        }
-        gsStack.add(new GraphicsState());
-        textMatrix = null;
-        textLineMatrix = null;
-    }
-
-    /**
-     * Displays text.
-     *
-     * @param string the text to display
-     */
-    void displayPdfString(PdfString string) {
-        ParsedText renderInfo = ParsedText.create(string, graphicsState(), textMatrix);
-        if (contextNames.peek() != null) {
-            textFragments.add(renderInfo);
-        }
-        textMatrix = new Matrix(renderInfo.getUnscaledTextWidth(graphicsState()), 0)
-                .multiply(textMatrix);
     }
 
     /**

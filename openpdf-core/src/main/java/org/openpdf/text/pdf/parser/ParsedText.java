@@ -68,44 +68,60 @@ public class ParsedText extends ParsedTextImpl {
     private PdfString pdfText = null;
 
     static protected ParsedText create(PdfString text, GraphicsState graphicsState, Matrix textMatrix) {
-        // Calculate width using the string representation (font codes), not decoded Unicode
-        float totalWidth = getStringWidth(text.toString(), graphicsState);
-        return new ParsedText(text, totalWidth, graphicsState, textMatrix);
+        PdfString codes = toCodePointString(text, graphicsState.getFont());
+        float totalWidth = getStringWidth(codes.getOriginalChars(), graphicsState);
+        return new ParsedText(codes, totalWidth, graphicsState, textMatrix);
     }
-    
+
     /**
-     * Gets the width of a String in text space units
+     * Retags a string taken from a content stream so that {@link PdfString#getOriginalChars()} yields one char per
+     * character code. A two byte encoding packs each code into two chars of the raw string, so the codes cannot be
+     * read off it directly.
      *
-     * @param string        the string that needs measuring
-     * @param graphicsState graphic state including current transformation to page coordinates from text measurement
-     * @return the width of a String in text space units
+     * @param text the string as it appeared in the content stream
+     * @param font the font in effect where the string was drawn
+     * @return a string whose original chars are the character codes of the text
      */
-    private static float getStringWidth(String string, GraphicsState graphicsState) {
-        char[] chars = string.toCharArray();
+    private static PdfString toCodePointString(PdfString text, CMapAwareDocumentFont font) {
+        if (!BaseFont.IDENTITY_H.equals(font.getEncoding())) {
+            return text;
+        }
+        if (!font.hasUnicodeCMAP()) {
+            return new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
+        }
+        return new PdfString(text.toString(), font.hasTwoByteUnicodeCMAP() ? "IDENTITY_H2" : "IDENTITY_H1");
+    }
+
+    /**
+     * Gets the width of a run of character codes in text space units
+     *
+     * @param codes         the character codes that need measuring
+     * @param graphicsState graphic state including current transformation to page coordinates from text measurement
+     * @return the width of the codes in text space units
+     */
+    private static float getStringWidth(char[] codes, GraphicsState graphicsState) {
         float totalWidth = 0;
-        for (char c : chars) {
-            float w = graphicsState.getFont().getWidth(c) / 1000.0f;
-            float wordSpacing = Character.isSpaceChar(c) ? graphicsState.getWordSpacing() : 0f;
-            totalWidth += (w * graphicsState.getFontSize() + graphicsState.getCharacterSpacing() + wordSpacing)
-                    * graphicsState.getHorizontalScaling();
+        for (char code : codes) {
+            totalWidth += advanceForCode(code, graphicsState);
         }
         return totalWidth;
     }
 
     /**
-     * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
-     * reflects all transformations of the baseline. This is in text space units.
+     * Measures how far the pen moves when the glyph for a single character code is drawn. Widths are looked up by code
+     * rather than by Unicode character, because that is how a PDF stores them.
      *
-     * @param text          string
-     * @param graphicsState graphical state
-     * @param textMatrix    transform from text space to graphics (drawing space)
+     * @param code          a character code in the encoding of the current font
+     * @param graphicsState graphic state including current transformation to page coordinates from text measurement
+     * @return the advance of the code in text space units
      */
-    ParsedText(PdfString text, GraphicsState graphicsState, Matrix textMatrix) {
-        this(text, getStringWidth(text.toString(), graphicsState), new GraphicsState(graphicsState), 
-                textMatrix.multiply(graphicsState.getCtm()),
-                getUnscaledFontSpaceWidth(graphicsState));
+    static float advanceForCode(char code, GraphicsState graphicsState) {
+        float w = graphicsState.getFont().getWidthOfCode(code) / 1000.0f;
+        return Character.isSpaceChar(code)
+                ? graphicsState.calculateCharacterWidthWithSpace(w)
+                : graphicsState.calculateCharacterWidthWithoutSpace(w);
     }
-    
+
     /**
      * This constructor should only be called when the origin for text display is at (0,0) and the graphical state
      * reflects all transformations of the baseline. This is in text space units.
@@ -141,19 +157,7 @@ public class ParsedText extends ParsedTextImpl {
                 convertHeightToUser(graphicsState.getFontAscentDescriptor(), textMatrix),
                 convertHeightToUser(graphicsState.getFontDescentDescriptor(), textMatrix),
                 convertWidthToUser(unscaledSpaceWidth, textMatrix));
-        if (BaseFont.IDENTITY_H.equals(graphicsState.getFont().getEncoding())) {
-            if (graphicsState.getFont().hasUnicodeCMAP()) {
-                if (graphicsState.getFont().hasTwoByteUnicodeCMAP()) {
-                    pdfText = new PdfString(text.toString(), "IDENTITY_H2");
-                } else {
-                    pdfText = new PdfString(text.toString(), "IDENTITY_H1");
-                }
-            } else {
-                pdfText = new PdfString(new String(text.getBytes(), StandardCharsets.UTF_16));
-            }
-        } else {
-            pdfText = text;
-        }
+        pdfText = text;
         textToUserSpaceTransformMatrix = textMatrix;
         this.graphicsState = graphicsState;
     }
@@ -179,11 +183,12 @@ public class ParsedText extends ParsedTextImpl {
      * @return the width of a single space character in text space units
      */
     private static float getUnscaledFontSpaceWidth(GraphicsState graphicsState) {
-        char charToUse = ' ';
-        if (graphicsState.getFont().getWidth(charToUse) == 0) {
-            charToUse = '\u00A0';
+        // Keyed by Unicode rather than by code, because we are after the font's space glyph and have no code for it.
+        int width = graphicsState.getFont().getWidth(' ');
+        if (width == 0) {
+            width = graphicsState.getFont().getWidth('\u00A0');
         }
-        return getStringWidth(String.valueOf(charToUse), graphicsState);
+        return graphicsState.calculateCharacterWidthWithSpace(width / 1000.0f);
     }
 
     /**
@@ -251,7 +256,6 @@ public class ParsedText extends ParsedTextImpl {
      */
     public List<Word> getAsPartialWords() {
         List<Word> result = new ArrayList<>();
-        CMapAwareDocumentFont font = graphicsState.getFont();
         char[] chars = pdfText.getOriginalChars();
         boolean[] hasSpace = new boolean[chars.length];
         float totalWidth = 0;
@@ -263,7 +267,7 @@ public class ParsedText extends ParsedTextImpl {
         /* go through string splitting at spaces, and calculating widths */
         for (int i = 0; i < chars.length; i++) {
             char c = chars[i];
-            float w = font.getWidth(c) / 1000.0f;
+            float advance = advanceForCode(c, graphicsState);
             if (hasSpace[i]) {
                 if (wordAccum.length() > 0) {
                     result.add(createWord(wordAccum, wordStartOffset, totalWidth, getBaseline(),
@@ -273,7 +277,7 @@ public class ParsedText extends ParsedTextImpl {
                 if (!Character.isWhitespace(c)) {
                     wordStartOffset = totalWidth;
                 }
-                totalWidth += graphicsState.calculateCharacterWidthWithSpace(w);
+                totalWidth += advance;
                 if (Character.isWhitespace(c)) {
                     wordStartOffset = totalWidth;
                 }
@@ -281,7 +285,7 @@ public class ParsedText extends ParsedTextImpl {
                 currentBreakBefore = true; // next word will be marked as result of a space-character break
             } else {
                 wordAccum.append(c);
-                totalWidth += graphicsState.calculateCharacterWidthWithoutSpace(w);
+                totalWidth += advance;
             }
         }
         if (wordAccum.length() > 0) {
@@ -379,6 +383,14 @@ public class ParsedText extends ParsedTextImpl {
     }
 
     /**
+     * @return the character codes of this text, one per element, with the codes of a two byte encoding already
+     * assembled from their byte pairs
+     */
+    public char[] getCodePoints() {
+        return pdfText == null ? new char[0] : pdfText.getOriginalChars();
+    }
+
+    /**
      * @return a string whose characters represent code points in a possibly two-byte font
      */
     public String getFontCodes() {
@@ -392,7 +404,7 @@ public class ParsedText extends ParsedTextImpl {
      * @return the unscaled (i.e. in Text space) width of our text
      */
     public float getUnscaledTextWidth(GraphicsState gs) {
-        return getStringWidth(getFontCodes(), gs);
+        return getStringWidth(pdfText == null ? new char[0] : pdfText.getOriginalChars(), gs);
     }
 
     /**
@@ -427,6 +439,10 @@ public class ParsedText extends ParsedTextImpl {
     @Override
     public boolean breakBefore() {
         return false;
+    }
+
+    protected GraphicsState getGraphicState() {
+        return this.graphicsState;
     }
 
 }
