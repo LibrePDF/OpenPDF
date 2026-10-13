@@ -566,7 +566,7 @@ class Type1Font extends BaseFont {
             } else {
                 rf = new RandomAccessFileOrArray(pfb);
             }
-            int fileLength = rf.length();
+            int fileLength = (int) rf.length();
             byte[] st = new byte[fileLength - 18];
             int[] lengths = new int[3];
             int bytePtr = 0;

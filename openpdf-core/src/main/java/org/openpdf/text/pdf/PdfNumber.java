@@ -143,6 +143,15 @@ public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
     }
 
     /**
+     * Returns the primitive <CODE>long</CODE> value of this object.
+     *
+     * @return The value as <CODE>long</CODE>
+     */
+    public long longValue() {
+        return (long) value;
+    }
+
+    /**
      * Returns the primitive <CODE>double</CODE> value of this object.
      *
      * @return The value as <CODE>double</CODE>
