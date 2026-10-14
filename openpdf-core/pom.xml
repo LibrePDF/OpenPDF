@@ -99,6 +99,83 @@
           <unpackBundle>true</unpackBundle>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!--
+            MappedFileReleaseTest only makes sense against the packaged multi-release jar (see the
+            multi-release-java22 profile below): surefire runs against target/classes, where the JVM ignores
+            META-INF/versions, so it would exercise the Java 21 code path and fail on Windows without System.gc().
+          -->
+          <excludes>
+            <exclude>**/MappedFileReleaseTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!--
+      Multi-release jar: the classes in src/main/java22 are compiled into META-INF/versions/22 and replace their
+      Java 21 counterparts when OpenPDF runs on Java 22 or later. They use the Foreign Function & Memory API
+      (JEP 454, final in Java 22) to unmap memory-mapped files deterministically.
+      The profile is activated automatically when building with JDK 22 or later. Releases must be built with
+      JDK 22 or later, otherwise the jar contains the Java 21 classes only.
+    -->
+    <profile>
+      <id>multi-release-java22</id>
+      <activation>
+        <jdk>[22,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>compile-java22</id>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <release>22</release>
+                  <compileSourceRoots>
+                    <compileSourceRoot>${project.basedir}/src/main/java22</compileSourceRoot>
+                  </compileSourceRoots>
+                  <multiReleaseOutput>true</multiReleaseOutput>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <!--
+              Surefire tests target/classes, where the JVM ignores META-INF/versions. Failsafe runs against the
+              packaged jar, so these tests exercise the Java 22 classes.
+            -->
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>multi-release-java22-tests</id>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+                <configuration>
+                  <classesDirectory>${project.build.directory}/${project.build.finalName}.jar</classesDirectory>
+                  <includes>
+                    <include>**/LongMappedByteBufferTest.java</include>
+                    <include>**/MappedFileReleaseTest.java</include>
+                  </includes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
