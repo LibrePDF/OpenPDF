@@ -1568,14 +1568,21 @@ public class ColumnText {
                     PdfPTable nt = PdfPTable.shallowCopy(table);
                     List<PdfPRow> sub = nt.getRows();
 
-                    // first we add the real header rows (if necessary)
-                    if (!skipHeader && realHeaderRows > 0) {
-                        sub.addAll(table.getRows(0, realHeaderRows));
+                    if (!skipHeader && realHeaderRows > 0 && footerRows == 0 && listIdx == headerRows) {
+                        // the content directly follows the header rows, so we add them as one selection;
+                        // otherwise a cell in the header rows with a rowspan reaching into the content
+                        // would be split as if there was a page break after the header rows
+                        sub.addAll(table.getRows(0, k));
                     } else {
-                        nt.setHeaderRows(footerRows);
+                        // first we add the real header rows (if necessary)
+                        if (!skipHeader && realHeaderRows > 0) {
+                            sub.addAll(table.getRows(0, realHeaderRows));
+                        } else {
+                            nt.setHeaderRows(footerRows);
+                        }
+                        // then we add the real content
+                        sub.addAll(table.getRows(listIdx, k));
                     }
-                    // then we add the real content
-                    sub.addAll(table.getRows(listIdx, k));
                     // if k < table.size(), we must indicate that the new table is complete;
                     // otherwise no footers will be added (because iText thinks the table continues on the same page)
                     boolean showFooter = !table.isSkipLastFooter();
