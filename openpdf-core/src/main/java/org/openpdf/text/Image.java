@@ -872,8 +872,10 @@ public abstract class Image extends Rectangle {
                     int width = bi.getWidth();
                     int height = bi.getHeight();
                     byte[] pixelData = generateIndexedColorPixelData(width, bitsPerPixel, height, bi.getRaster());
-                    // Create indexed image with palette
-                    Image img = Image.getInstance(width, height, 1, bitsPerPixel, pixelData);
+                    // Create the image directly as raw data. Image.getInstance(width, height, 1, 1, data) must
+                    // not be used here: it CCITT-G4 encodes 1-bit data as black/white, which discards the
+                    // palette and inverts images whose palette is {black, white} (see issue #1534).
+                    Image img = new ImgRaw(width, height, 1, bitsPerPixel, pixelData);
 
                     // Set up indexed colorspace: [/Indexed /DeviceRGB maxIndex palette]
                     PdfArray indexed = new PdfArray();
