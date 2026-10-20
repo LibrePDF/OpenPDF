@@ -1794,6 +1794,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     protected void readPages() throws IOException {
         catalog = trailer.getAsDict(PdfName.ROOT);
+        if (catalog == null) {
+            throw new InvalidPdfException(MessageLocalization.getComposedMessage("the.document.has.no.catalog.object"));
+        }
         rootPages = catalog.getAsDict(PdfName.PAGES);
         pageRefs = new PageRefs(this);
     }

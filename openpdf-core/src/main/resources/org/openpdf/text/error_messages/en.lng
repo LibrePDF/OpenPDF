@@ -293,6 +293,7 @@ the.cmap.1.does.not.exist.as.a.resource=The cmap {1} does not exist as a resourc
 the.cmap.1.was.not.found=The Cmap {1} was not found.
 the.compression.1.is.not.supported=The compression {1} is not supported.
 the.document.has.been.closed.you.can.t.add.any.elements=The document has been closed. You can't add any Elements.
+the.document.has.no.catalog.object=The document has no catalog object.
 the.document.has.no.pages=The document has no pages.
 the.document.is.not.open.yet.you.can.only.add.meta.information=The document is not open yet; you can only add Meta information.
 the.document.is.not.open=The document is not open.

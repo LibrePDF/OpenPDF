@@ -293,6 +293,7 @@ the.cmap.1.does.not.exist.as.a.resource=De cmap {1} bestaat niet als bron.
 the.cmap.1.was.not.found=De Cmap {1} werd niet gevonden.
 the.compression.1.is.not.supported=Compressie {1} wordt niet ondersteund.
 the.document.has.been.closed.you.can.t.add.any.elements=Het document is afgesloten; je kan geen Element objecten meer toevoegen.
+the.document.has.no.catalog.object=Het document heeft geen catalogusobject.
 the.document.has.no.pages=Het document heeft geen pagina's.
 the.document.is.not.open.yet.you.can.only.add.meta.information=Het document is nog niet open; je kan enkel metagegevens toevoegen.
 the.document.is.not.open=Het document is niet open.
