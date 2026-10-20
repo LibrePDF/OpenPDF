@@ -96,13 +96,21 @@ class PdfReaderPrevCycleTest {
     }
 
     private static String xrefTable(Trailer trailer, int prev) {
-        return String.format("xref\n0 1\n0000000000 65535 f \ntrailer\n<< /Size %d /Root %s /Prev %010d >>\n",
-                trailer.size, trailer.root, prev);
+        return lines("xref", "0 1", "0000000000 65535 f ", "trailer",
+                String.format("<< /Size %d /Root %s /Prev %010d >>", trailer.size, trailer.root, prev));
     }
 
     private static String xrefStream(Trailer trailer, int number, int prev) {
-        return String.format("%d 0 obj\n<< /Type /XRef /Size %d /Root %s /W [1 1 1] /Index [0 0] /Length 0"
-                + " /Prev %010d >>\nstream\n\nendstream\nendobj\n", number, trailer.size + 3, trailer.root, prev);
+        String dictionary = String.format("<< /Type /XRef /Size %d /Root %s /W [1 1 1] /Index [0 0] /Length 0"
+                + " /Prev %010d >>", trailer.size + 3, trailer.root, prev);
+        return lines(number + " 0 obj", dictionary, "stream", "", "endstream", "endobj");
+    }
+
+    /**
+     * Joins lines with {@code \n}, the end of line of the PDF written in the test, whatever the platform.
+     */
+    private static String lines(String... lines) {
+        return String.join("\n", lines) + "\n";
     }
 
     private static byte[] append(byte[] original, CharSequence update) throws IOException {

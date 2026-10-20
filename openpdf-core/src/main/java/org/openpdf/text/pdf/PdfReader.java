@@ -146,6 +146,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     private int objGen;
     private int fileLength;
     private boolean hybridXref;
+    // the offsets of the cross-reference streams read in the current /Prev chain, so that a cycle ends the reading
+    private Set<Integer> xrefStreamsRead = new HashSet<>();
     private int lastXrefPartial = -1;
     private boolean partial;
     private PRIndirectReference cryptoRef;
@@ -2101,6 +2103,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         lastXref = startxref;
         eofPos = tokens.getFilePointer();
         try {
+            xrefStreamsRead = new HashSet<>();
             if (readXRefStream(startxref)) {
                 newXrefType = true;
                 return;
@@ -2201,6 +2204,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (xrs != null && xrs.isNumber()) {
             int loc = ((PdfNumber) xrs).intValue();
             try {
+                xrefStreamsRead = new HashSet<>();
                 readXRefStream(loc);
                 newXrefType = true;
                 hybridXref = true;
@@ -2213,18 +2217,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     protected boolean readXRefStream(int ptr) throws IOException {
-        return readXRefStream(ptr, new HashSet<>());
-    }
-
-    /**
-     * Reads the cross-reference stream at {@code ptr} and the ones before it.
-     *
-     * @param visited the offsets of the streams already read, so that a /Prev cycle ends the reading
-     */
-    private boolean readXRefStream(int ptr, Set<Integer> visited) throws IOException {
-        if (!visited.add(ptr)) {
-            throw new InvalidPdfException(MessageLocalization.getComposedMessage("xref.infinite.loop"));
-        }
+        xrefStreamsRead.add(ptr);
         tokens.seek(ptr);
         int thisStream;
         if (!tokens.nextToken()) {
@@ -2346,7 +2339,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (prev == -1) {
             return true;
         }
-        return readXRefStream(prev, visited);
+        if (xrefStreamsRead.contains(prev)) {
+            throw new InvalidPdfException(MessageLocalization.getComposedMessage("xref.infinite.loop"));
+        }
+        return readXRefStream(prev);
     }
 
     protected void rebuildXref() throws IOException {
