@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -145,6 +146,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     private int objGen;
     private int fileLength;
     private boolean hybridXref;
+    // the offsets of the cross-reference streams read in the current /Prev chain, so that a cycle ends the reading
+    private Set<Integer> xrefStreamsRead = new HashSet<>();
     private int lastXrefPartial = -1;
     private boolean partial;
     private PRIndirectReference cryptoRef;
@@ -2100,6 +2103,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         lastXref = startxref;
         eofPos = tokens.getFilePointer();
         try {
+            xrefStreamsRead = new HashSet<>();
             if (readXRefStream(startxref)) {
                 newXrefType = true;
                 return;
@@ -2110,12 +2114,15 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         tokens.seek(startxref);
         trailer = readXrefSection();
         PdfDictionary trailer2 = trailer;
+        // the offsets of the sections read, so that a /Prev cycle between any of them ends the loop
+        Set<Integer> visited = new HashSet<>();
+        visited.add(startxref);
         while (true) {
             PdfNumber prev = (PdfNumber) trailer2.get(PdfName.PREV);
             if (prev == null) {
                 break;
             }
-            if (prev.intValue() == startxref) {
+            if (!visited.add(prev.intValue())) {
                 throw new InvalidPdfException(
                         MessageLocalization
                                 .getComposedMessage("xref.infinite.loop"));
@@ -2197,6 +2204,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (xrs != null && xrs.isNumber()) {
             int loc = ((PdfNumber) xrs).intValue();
             try {
+                xrefStreamsRead = new HashSet<>();
                 readXRefStream(loc);
                 newXrefType = true;
                 hybridXref = true;
@@ -2209,6 +2217,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     protected boolean readXRefStream(int ptr) throws IOException {
+        xrefStreamsRead.add(ptr);
         tokens.seek(ptr);
         int thisStream;
         if (!tokens.nextToken()) {
@@ -2329,6 +2338,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
         if (prev == -1) {
             return true;
+        }
+        if (xrefStreamsRead.contains(prev)) {
+            throw new InvalidPdfException(MessageLocalization.getComposedMessage("xref.infinite.loop"));
         }
         return readXRefStream(prev);
     }
