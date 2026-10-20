@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -2110,12 +2111,15 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         tokens.seek(startxref);
         trailer = readXrefSection();
         PdfDictionary trailer2 = trailer;
+        // the offsets of the sections read, so that a /Prev cycle between any of them ends the loop
+        Set<Integer> visited = new HashSet<>();
+        visited.add(startxref);
         while (true) {
             PdfNumber prev = (PdfNumber) trailer2.get(PdfName.PREV);
             if (prev == null) {
                 break;
             }
-            if (prev.intValue() == startxref) {
+            if (!visited.add(prev.intValue())) {
                 throw new InvalidPdfException(
                         MessageLocalization
                                 .getComposedMessage("xref.infinite.loop"));
@@ -2209,6 +2213,18 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     protected boolean readXRefStream(int ptr) throws IOException {
+        return readXRefStream(ptr, new HashSet<>());
+    }
+
+    /**
+     * Reads the cross-reference stream at {@code ptr} and the ones before it.
+     *
+     * @param visited the offsets of the streams already read, so that a /Prev cycle ends the reading
+     */
+    private boolean readXRefStream(int ptr, Set<Integer> visited) throws IOException {
+        if (!visited.add(ptr)) {
+            throw new InvalidPdfException(MessageLocalization.getComposedMessage("xref.infinite.loop"));
+        }
         tokens.seek(ptr);
         int thisStream;
         if (!tokens.nextToken()) {
@@ -2330,7 +2346,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (prev == -1) {
             return true;
         }
-        return readXRefStream(prev);
+        return readXRefStream(prev, visited);
     }
 
     protected void rebuildXref() throws IOException {
