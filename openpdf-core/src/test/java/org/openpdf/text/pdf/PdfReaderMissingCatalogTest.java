@@ -24,8 +24,10 @@ class PdfReaderMissingCatalogTest {
             startxref = reader.getLastXref();
         }
         // an incremental update whose trailer points /Root at an object that is not in the file
-        String update = String.format("xref\n0 1\n0000000000 65535 f \ntrailer\n<< /Size %d /Root %d 0 R /Prev %d >>\n"
-                + "startxref\n%d\n%%%%EOF\n", size + 1, size, startxref, original.length);
+        String trailer = String.format("<< /Size %d /Root %d 0 R /Prev %d >>", size + 1, size, startxref);
+        // lines end with \n, whatever the platform
+        String update = String.join("\n", "xref", "0 1", "0000000000 65535 f ", "trailer", trailer,
+                "startxref", String.valueOf(original.length), "%%EOF", "");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         out.write(original);
         out.write(update.getBytes(ISO_8859_1));
