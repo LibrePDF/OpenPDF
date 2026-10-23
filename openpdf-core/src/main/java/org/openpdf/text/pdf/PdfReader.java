@@ -4205,14 +4205,20 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     PdfDictionary dic = (PdfDictionary) getPdfObject(ref);
                     int last = reader.lastXrefPartial;
                     PdfObject count = getPdfObjectRelease(dic.get(PdfName.COUNT));
+                    PdfArray childKids = (PdfArray) getPdfObjectRelease(dic.get(PdfName.KIDS));
                     reader.lastXrefPartial = last;
                     int acn = 1;
-                    if (count != null && count.type() == PdfObject.NUMBER) {
+                    if (childKids != null && count != null && count.type() == PdfObject.NUMBER) {
                         acn = ((PdfNumber) count).intValue();
                     }
                     if (n < base + acn) {
-                        if (count == null) {
+                        if (childKids == null) {
                             dic.mergeDifferent(acc);
+                            if (dic.get(PdfName.MEDIABOX) == null) {
+                                PdfArray arr = new PdfArray(new float[]{0, 0,
+                                        PageSize.LETTER.getRight(), PageSize.LETTER.getTop()});
+                                dic.put(PdfName.MEDIABOX, arr);
+                            }
                             return ref;
                         }
                         reader.releaseLastXrefPartial();
