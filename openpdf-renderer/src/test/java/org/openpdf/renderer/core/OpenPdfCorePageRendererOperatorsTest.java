@@ -298,6 +298,73 @@ class OpenPdfCorePageRendererOperatorsTest {
         }
     }
 
+    /**
+     * Builds a single-page PDF with a Square annotation whose {@code /AP /N} appearance is an
+     * orange-filled template at Rect {@code [40, 120, 140, 180]}, optionally Hidden-flagged.
+     * Shared by {@link #rendersAnnotationNormalAppearanceStream()} and
+     * {@link #skipsHiddenAnnotationAppearance()}.
+     */
+    private static byte[] buildAnnotatedPdf(boolean hidden) throws Exception {
+        return buildPdf(cb -> {
+            org.openpdf.text.pdf.PdfTemplate appearance = cb.createTemplate(100f, 60f);
+            appearance.setRGBColorFillF(1f, 0.5f, 0f); // orange
+            appearance.rectangle(0f, 0f, 100f, 60f);
+            appearance.fill();
+
+            PdfWriter writer = cb.getPdfWriter();
+            org.openpdf.text.pdf.PdfAnnotation annotation =
+                    new org.openpdf.text.pdf.PdfAnnotation(writer, new Rectangle(40f, 120f, 140f, 180f));
+            annotation.put(org.openpdf.text.pdf.PdfName.SUBTYPE, org.openpdf.text.pdf.PdfName.SQUARE);
+            annotation.setAppearance(org.openpdf.text.pdf.PdfAnnotation.APPEARANCE_NORMAL, appearance);
+            if (hidden) {
+                annotation.setFlags(org.openpdf.text.pdf.PdfAnnotation.FLAGS_HIDDEN);
+            }
+            writer.addAnnotation(annotation);
+        });
+    }
+
+    /**
+     * PDF §12.5.5: an annotation's visible content is its {@code /AP /N} appearance stream,
+     * positioned in the page by mapping the stream's {@code /BBox} (through its {@code /Matrix})
+     * onto the annotation's {@code /Rect}. Before this support, {@code OpenPdfCorePageRenderer}
+     * only walked the page content stream and never looked at {@code /Annots} at all, so stamps,
+     * highlights, and form-field appearances were invisible no matter what.
+     */
+    @Test
+    void rendersAnnotationNormalAppearanceStream() throws Exception {
+        byte[] pdf = buildAnnotatedPdf(false);
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "annotation-appearance.png");
+            int orangeish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green > 80 && green < 200 && blue < 80);
+            assertThat(orangeish)
+                    .as("an annotation's /AP /N appearance stream must be painted at its /Rect")
+                    .isGreaterThan(100);
+        }
+    }
+
+    /**
+     * PDF §12.5.3: the Hidden flag (bit 2 of {@code /F}) means the annotation shall not be
+     * rendered at all, in any context. This is the same annotation/appearance as above, but
+     * flagged Hidden -- the orange fill must not appear anywhere on the page.
+     */
+    @Test
+    void skipsHiddenAnnotationAppearance() throws Exception {
+        byte[] pdf = buildAnnotatedPdf(true);
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "annotation-hidden.png");
+            int orangeish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green > 80 && green < 200 && blue < 80);
+            assertThat(orangeish)
+                    .as("a Hidden-flagged annotation must not be painted")
+                    .isZero();
+        }
+    }
+
     @Test
     void inlineImageRendersAtCtmLocation() throws Exception {
         // Build a content stream by hand: a 2x2 DeviceGray inline image whose pixels are
