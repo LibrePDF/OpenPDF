@@ -90,7 +90,9 @@ import org.openpdf.text.pdf.PdfString;
  *       (JPEG via {@code DCTDecode}, JPEG2000 via {@code JPXDecode} when
  *       supported by {@code ImageIO}, uncompressed / Flate-decoded 8-bit
  *       DeviceGray / DeviceRGB / DeviceCMYK images, and 8-bit Indexed
- *       images expanded through the palette into their base color space).</li>
+ *       images expanded through the palette into their base color space).
+ *       An image's {@code /SMask} (soft mask), if present, is decoded as an
+ *       8-bit DeviceGray alpha channel and composited onto it.</li>
  * </ul>
  *
  * <p>Inline images ({@code BI}/{@code ID}/{@code EI}) are promoted out of the
@@ -1256,6 +1258,14 @@ final class OpenPdfCorePageRenderer {
         if (width <= 0 || height <= 0) {
             return null;
         }
+        BufferedImage base = decodeBaseImage(stream, width, height);
+        if (base == null) {
+            return null;
+        }
+        return applySoftMask(base, stream);
+    }
+
+    private BufferedImage decodeBaseImage(PRStream stream, int width, int height) {
         PdfObject filterObj = stream.get(PdfName.FILTER);
         if (hasFilter(filterObj, PdfName.DCTDECODE) || hasFilter(filterObj, PdfName.JPXDECODE)) {
             return decodeViaImageIO(stream);
@@ -1265,6 +1275,108 @@ final class OpenPdfCorePageRenderer {
             return decodeIndexedImage(stream, width, height, indexedCs);
         }
         return decodeRawRaster(stream, width, height);
+    }
+
+    /**
+     * If {@code imageStream} declares a {@code /SMask} (PDF §11.6.5.3 soft mask &mdash; the
+     * mechanism behind transparent PNGs / logos embedded in a PDF), decodes it as an 8-bit
+     * DeviceGray alpha channel and composites it onto {@code base}. Falls back to returning
+     * {@code base} unchanged when there is no soft mask, or it can't be decoded.
+     */
+    private BufferedImage applySoftMask(BufferedImage base, PRStream imageStream) {
+        PdfObject smaskObj = imageStream.get(PdfName.SMASK);
+        PdfObject direct = smaskObj instanceof PRIndirectReference ref
+                ? PdfReader.getPdfObject(ref) : smaskObj;
+        if (!(direct instanceof PRStream smaskStream)) {
+            return base;
+        }
+        try {
+            return compositeSoftMask(base, smaskStream);
+        } catch (IOException | RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping SMask due to: {0}", e);
+            return base;
+        }
+    }
+
+    /**
+     * Combines {@code base} with the alpha channel decoded from {@code smaskStream}, producing a
+     * new {@link BufferedImage#TYPE_INT_ARGB} image. The soft mask's own {@code /Width}/{@code
+     * /Height} need not match the base image (PDF §11.6.5.3); a mismatch is handled with nearest-
+     * neighbor resampling to the base image's dimensions.
+     */
+    private BufferedImage compositeSoftMask(BufferedImage base, PRStream smaskStream) throws IOException {
+        PdfNumber maskWidthN = smaskStream.getAsNumber(PdfName.WIDTH);
+        PdfNumber maskHeightN = smaskStream.getAsNumber(PdfName.HEIGHT);
+        if (maskWidthN == null || maskHeightN == null) {
+            return base;
+        }
+        int maskWidth = maskWidthN.intValue();
+        int maskHeight = maskHeightN.intValue();
+        if (maskWidth <= 0 || maskHeight <= 0) {
+            return base;
+        }
+        byte[] maskGray = readSoftMaskGray(smaskStream, maskWidth, maskHeight);
+        if (maskGray == null) {
+            return base;
+        }
+        int width = base.getWidth();
+        int height = base.getHeight();
+        BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < height; y++) {
+            int my = maskHeight == height ? y : y * maskHeight / height;
+            for (int x = 0; x < width; x++) {
+                int mx = maskWidth == width ? x : x * maskWidth / width;
+                int alpha = maskGray[my * maskWidth + mx] & 0xFF;
+                out.setRGB(x, y, (alpha << 24) | (base.getRGB(x, y) & 0x00FFFFFF));
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Decodes a soft-mask stream's pixel data into a flat 8-bit gray byte array (one byte per
+     * pixel, row-major). Soft masks are DeviceGray by definition (PDF §11.6.5.3); this supports
+     * the same JPEG / Flate / uncompressed encodings as the base image raster path. Bit depths
+     * other than 8 are rare for soft masks and not yet supported.
+     */
+    private byte[] readSoftMaskGray(PRStream smaskStream, int width, int height) throws IOException {
+        PdfObject filterObj = smaskStream.get(PdfName.FILTER);
+        if (hasFilter(filterObj, PdfName.DCTDECODE) || hasFilter(filterObj, PdfName.JPXDECODE)) {
+            BufferedImage decoded = decodeViaImageIO(smaskStream);
+            return decoded == null ? null : grayBytesFrom(decoded, width, height);
+        }
+        PdfNumber bpcN = smaskStream.getAsNumber(PdfName.BITSPERCOMPONENT);
+        int bpc = bpcN == null ? 8 : bpcN.intValue();
+        if (bpc != 8) {
+            return null;
+        }
+        byte[] decoded = PdfReader.getStreamBytes(smaskStream);
+        int expected = width * height;
+        if (decoded.length < expected) {
+            return null;
+        }
+        return decoded.length == expected ? decoded : Arrays.copyOf(decoded, expected);
+    }
+
+    /**
+     * Resamples {@code img} to {@code width x height} (nearest-neighbor) and reduces it to a flat
+     * 8-bit gray byte array, used when a soft mask is JPEG/JPX-encoded and its decoded size
+     * doesn't already match the request.
+     */
+    private static byte[] grayBytesFrom(BufferedImage img, int width, int height) {
+        byte[] out = new byte[width * height];
+        for (int y = 0; y < height; y++) {
+            int sy = img.getHeight() == height ? y : y * img.getHeight() / height;
+            for (int x = 0; x < width; x++) {
+                int sx = img.getWidth() == width ? x : x * img.getWidth() / width;
+                int rgb = img.getRGB(sx, sy);
+                int r = (rgb >> 16) & 0xFF;
+                int g = (rgb >> 8) & 0xFF;
+                int b = rgb & 0xFF;
+                out[y * width + x] = (byte) ((r + g + b) / 3);
+            }
+        }
+        return out;
     }
 
     /**
