@@ -194,8 +194,8 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
 
     @Override
     public void setOpacity(float opacity) {
-        _graphics.setComposite(opacity == 1 ?
-            AlphaComposite.SrcOver :
+        _graphics.setComposite(opacity == 1
+            ? AlphaComposite.SrcOver :
             AlphaComposite.SrcOver.derive(opacity)
         );
     }
@@ -318,8 +318,8 @@ public class Java2DOutputDevice extends AbstractOutputDevice implements OutputDe
         float[] fractions = new float[gradient.getStopPoints().size()];
         Color[] colors = new Color[gradient.getStopPoints().size()];
 
-        float range = gradient.getStopPoints().get(gradient.getStopPoints().size() - 1).getDotsValue() -
-                gradient.getStopPoints().get(0).getDotsValue();
+        float range = gradient.getStopPoints().get(gradient.getStopPoints().size() - 1).getDotsValue()
+                - gradient.getStopPoints().get(0).getDotsValue();
 
         int i = 0;
         for (StopValue pt : gradient.getStopPoints()) {

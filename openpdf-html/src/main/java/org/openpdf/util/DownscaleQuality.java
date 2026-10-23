@@ -58,8 +58,8 @@ public class DownscaleQuality {
      */
     private static DownscaleQuality addConstant(String type) {
         if (constList.containsKey(type)) {
-            throw new RuntimeException("Type strings for DownscaleQuality should be unique; " + type +
-            " is declared twice");
+            throw new RuntimeException("Type strings for DownscaleQuality should be unique; " + type
+            + " is declared twice");
         }
         DownscaleQuality q = new DownscaleQuality(type);
         constList.put(type, q);

@@ -299,9 +299,7 @@ public class CMapParser {
                 buffer.append((char) nextByte);
                 nextByte = is.read();
 
-                while (!isWhitespaceOrEOF(nextByte) &&
-                        (Character.isDigit((char) nextByte) ||
-                                nextByte == '.')) {
+                while (!isWhitespaceOrEOF(nextByte) && (Character.isDigit((char) nextByte) || nextByte == '.')) {
                     buffer.append((char) nextByte);
                     nextByte = is.read();
                 }

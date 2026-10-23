@@ -122,8 +122,7 @@ public class ReversePages
 
             // we create a reader for a certain document
             PdfReader reader = new PdfReader(src.getAbsolutePath());
-            System.out.println("The original file had " + reader.getNumberOfPages() +
-                    " pages.");
+            System.out.println("The original file had " + reader.getNumberOfPages() + " pages.");
             int pages = reader.getNumberOfPages();
             ArrayList<Integer> li = new ArrayList<>();
             for (int i = pages; i > 0; i--) {

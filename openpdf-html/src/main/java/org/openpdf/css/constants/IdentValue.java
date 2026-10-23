@@ -325,8 +325,8 @@ public class IdentValue implements FSDerivedValue {
     @Override
     public boolean hasAbsoluteUnit() {
         // log and return false
-        throw new XRRuntimeException("Ident value is never an absolute unit; wrong class used for derived value; this " +
-                "ident value is a " + this.asString());
+        throw new XRRuntimeException("Ident value is never an absolute unit; wrong class used for derived value; this "
+                + "ident value is a " + this.asString());
     }
 
     @Override

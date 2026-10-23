@@ -327,8 +327,7 @@ public class BlockBoxing {
             moved = true;
         }
         if (c.isPrint()) {
-            boolean pageClear = child.isNeedPageClear() ||
-                                    child.getStyle().isForcePageBreakBefore();
+            boolean pageClear = child.isNeedPageClear() || child.getStyle().isForcePageBreakBefore();
             boolean needNewPageContext = child.checkPageContext(c);
 
             if (needNewPageContext && trimmedPageCount != NO_PAGE_TRIM) {
@@ -373,9 +372,9 @@ public class BlockBoxing {
             IdentValue currentBefore =
                     current.getStyle().getIdent(CSSName.PAGE_BREAK_BEFORE);
 
-            if ((previousAfter == IdentValue.AVOID && currentBefore == IdentValue.AUTO) ||
-                    (previousAfter == IdentValue.AUTO && currentBefore == IdentValue.AVOID) ||
-                    (previousAfter == IdentValue.AVOID && currentBefore == IdentValue.AVOID)) {
+            if ((previousAfter == IdentValue.AVOID && currentBefore == IdentValue.AUTO)
+                    || (previousAfter == IdentValue.AUTO && currentBefore == IdentValue.AVOID)
+                    || (previousAfter == IdentValue.AVOID && currentBefore == IdentValue.AVOID)) {
                 if (! previousData.isInRun()) {
                     previousData.setStartsRun();
                 }

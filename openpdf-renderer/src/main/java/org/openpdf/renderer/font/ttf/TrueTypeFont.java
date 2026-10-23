@@ -285,8 +285,7 @@ public class TrueTypeFont {
                 byte b1 = (data.remaining() > 0) ? data.get() : 0;
                 byte b2 = (data.remaining() > 0) ? data.get() : 0;
 
-                sum += ((0xff & b0) << 24) | ((0xff & b1) << 16) |
-                        ((0xff & b2) << 8);
+                sum += ((0xff & b0) << 24) | ((0xff & b1) << 16) | ((0xff & b2) << 8);
             }
         }
 
@@ -309,8 +308,8 @@ public class TrueTypeFont {
             int length = data.getInt();
 
             // read the data
-            PDFDebugger.debug("TTFFont.parseDirectories: checksum: " +
-                    checksum + ", offset: " + offset + ", length: " + length, 100);
+            PDFDebugger.debug("TTFFont.parseDirectories: checksum: "
+                    + checksum + ", offset: " + offset + ", length: " + length, 100);
             data.mark();
             data.position(offset);
 

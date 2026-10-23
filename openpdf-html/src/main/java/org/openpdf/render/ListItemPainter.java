@@ -62,11 +62,8 @@ public class ListItemPainter {
         FSImage img = marker.getImage();
         int x = getReferenceX(c, box);
         // FIXME: findbugs possible loss of precision, cf. int / (float)2
-        x += -marker.getLayoutWidth() +
-                (marker.getLayoutWidth() / 2 - img.getWidth() / 2);
-        c.getOutputDevice().drawImage(img,
-                x,
-                getListItemCenterBaseline(c, box) - img.getHeight() / 2);
+        x += -marker.getLayoutWidth() + (marker.getLayoutWidth() / 2 - img.getWidth() / 2);
+        c.getOutputDevice().drawImage(img, x, getListItemCenterBaseline(c, box) - img.getHeight() / 2);
     }
 
     private static int getReferenceX(RenderingContext c, BlockBox box) {

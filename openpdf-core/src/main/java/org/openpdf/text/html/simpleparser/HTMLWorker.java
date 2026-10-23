@@ -281,8 +281,9 @@ public class HTMLWorker implements SimpleXMLDocHandler, DocListener {
                 }
                 if (addLeadingBreak) { // Not a new paragraph
                     int numChunks = currentParagraph.getChunks().size();
-                    if (numChunks == 0 ||
-                            ((Chunk) (currentParagraph.getChunks().get(numChunks - 1))).getContent().endsWith("\n")) {
+                    if (numChunks == 0
+                            || ((Chunk) (currentParagraph.getChunks().get(numChunks - 1))).getContent()
+                            .endsWith("\n")) {
                         addLeadingBreak = false;
                     }
                 }

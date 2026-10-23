@@ -457,8 +457,8 @@ public class Configuration {
         try {
             return parseByte(val);
         } catch (NumberFormatException ignore) {
-            XRLog.exception("Property '" + key + "' was requested as a byte, but " +
-                    "value of '" + val + "' is not a byte. Check configuration.");
+            XRLog.exception("Property '" + key + "' was requested as a byte, but "
+                    + "value of '" + val + "' is not a byte. Check configuration.");
             return defaultVal;
         }
     }
@@ -482,8 +482,8 @@ public class Configuration {
         try {
             return Short.parseShort(val);
         } catch (NumberFormatException ignore) {
-            XRLog.exception("Property '" + key + "' was requested as a short, but " +
-                    "value of '" + val + "' is not a short. Check configuration.");
+            XRLog.exception("Property '" + key + "' was requested as a short, but "
+                    + "value of '" + val + "' is not a short. Check configuration.");
             return defaultVal;
         }
     }
@@ -507,8 +507,8 @@ public class Configuration {
         try {
             return parseInt(val);
         } catch (NumberFormatException ignore) {
-            XRLog.exception("Property '" + key + "' was requested as an integer, but " +
-                    "value of '" + val + "' is not an integer. Check configuration.");
+            XRLog.exception("Property '" + key + "' was requested as an integer, but "
+                    + "value of '" + val + "' is not an integer. Check configuration.");
             return defaultVal;
         }
     }
@@ -531,8 +531,8 @@ public class Configuration {
         }
 
         if (val.length() > 1) {
-            XRLog.exception("Property '" + key + "' was requested as a character. The value of '" +
-                    val + "' is too long to be a char. Returning only the first character.");
+            XRLog.exception("Property '" + key + "' was requested as a character. The value of '"
+                    + val + "' is too long to be a char. Returning only the first character.");
         }
 
         return val.charAt(0);
@@ -557,8 +557,8 @@ public class Configuration {
         try {
             return parseLong(val);
         } catch (NumberFormatException ignore) {
-            XRLog.exception("Property '" + key + "' was requested as a long, but " +
-                    "value of '" + val + "' is not a long. Check configuration.");
+            XRLog.exception("Property '" + key + "' was requested as a long, but "
+                    + "value of '" + val + "' is not a long. Check configuration.");
             return defaultVal;
         }
     }
@@ -582,8 +582,8 @@ public class Configuration {
         try {
             return parseFloat(val);
         } catch (NumberFormatException ignore) {
-            XRLog.exception("Property '" + key + "' was requested as a float, but " +
-                    "value of '" + val + "' is not a float. Check configuration.");
+            XRLog.exception("Property '" + key + "' was requested as a float, but "
+                    + "value of '" + val + "' is not a float. Check configuration.");
             return defaultVal;
         }
     }
@@ -607,8 +607,8 @@ public class Configuration {
         try {
             return parseDouble(val);
         } catch (NumberFormatException ignore) {
-            XRLog.exception("Property '" + key + "' was requested as a double, but " +
-                    "value of '" + val + "' is not a double. Check configuration.");
+            XRLog.exception("Property '" + key + "' was requested as a double, but "
+                    + "value of '" + val + "' is not a double. Check configuration.");
             return defaultVal;
         }
     }
@@ -665,8 +665,8 @@ public class Configuration {
         }
 
         if (!"true|false".contains(val)) {
-            XRLog.exception("Property '" + key + "' was requested as a boolean, but " +
-                    "value of '" + val + "' is not a boolean. Check configuration.");
+            XRLog.exception("Property '" + key + "' was requested as a boolean, but "
+                    + "value of '" + val + "' is not a boolean. Check configuration.");
             return defaultVal;
         } else {
             return parseBoolean(val);
@@ -717,15 +717,16 @@ public class Configuration {
             className = val.substring(0, idx);
             constant = val.substring(idx + 1);
         } catch (IndexOutOfBoundsException ignore) {
-            conf.warning("Property key " + key + " for object value constant is not properly formatted; " +
-                    "should be FQN<dot>constant, is " + val);
+            conf.warning("Property key " + key + " for object value constant is not properly formatted; "
+                    + "should be FQN<dot>constant, is " + val);
             return defaultValue;
         }
         Class<?> klass;
         try {
             klass = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            conf.warning("Property for object value constant " + key + " is not a FQN: " + className + ", caused by: " + e);
+            conf.warning("Property for object value constant " + key + " is not a FQN: " + className
+                    + ", caused by: " + e);
             return defaultValue;
         }
 
@@ -735,12 +736,13 @@ public class Configuration {
             try {
                 constantValue = fld.get(klass);
             } catch (IllegalAccessException e) {
-                conf.warning("Property for object value constant " + key + ", field is not public: " + className +
-                        "." + constant + ", caused by: " + e);
+                conf.warning("Property for object value constant " + key + ", field is not public: " + className
+                        + "." + constant + ", caused by: " + e);
                 return defaultValue;
             }
         } catch (NoSuchFieldException e) {
-            conf.warning("Property for object value constant " + key + " is not a FQN: " + className + ", caused by: " + e);
+            conf.warning("Property for object value constant " + key + " is not a FQN: " + className
+                    + ", caused by: " + e);
             return defaultValue;
         }
         return constantValue;

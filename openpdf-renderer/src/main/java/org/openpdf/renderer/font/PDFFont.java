@@ -224,8 +224,7 @@ public abstract class PDFFont {
             // not yet implemented, fake it with a built-in font
             font = new BuiltinFont(baseFont, obj, descriptor);
         } else {
-            throw new PDFParseException("Don't know how to handle a '" +
-                    subType + "' font");
+            throw new PDFParseException("Don't know how to handle a '" + subType + "' font");
         }
 
         font.setSubtype(subType);

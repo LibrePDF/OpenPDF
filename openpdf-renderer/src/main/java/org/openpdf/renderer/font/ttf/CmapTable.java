@@ -130,9 +130,9 @@ public class CmapTable extends TrueTypeTable {
                     addCMap(platformID, platformSpecificID, cMap);
                 }
             } catch (Exception ex) {
-                PDFDebugger.debug("Error reading map.  PlatformID=" +
-                                    platformID + ", PlatformSpecificID=" + 
-                                    platformSpecificID);
+                PDFDebugger.debug("Error reading map.  PlatformID="
+                                    + platformID + ", PlatformSpecificID="
+                                    + platformSpecificID);
                 PDFDebugger.debug("Reason: " + ex);
             }
         }
@@ -230,8 +230,8 @@ public class CmapTable extends TrueTypeTable {
         for (Iterator i = this.subtables.keySet().iterator(); i.hasNext();) {
             CmapSubtable key = (CmapSubtable) i.next();
             
-            buf.append(indent + "Map: platformID: " + key.platformID +
-                       " PlatformSpecificID: " + key.platformSpecificID + "\n");
+            buf.append(indent + "Map: platformID: " + key.platformID
+                       + " PlatformSpecificID: " + key.platformSpecificID + "\n");
             
             CMap map = this.subtables.get(key);
             

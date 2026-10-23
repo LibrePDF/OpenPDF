@@ -374,8 +374,7 @@ public class Paragraph extends Phrase {
      * @return the total leading (fixed and multiplied)
      */
     public float getTotalLeading() {
-        float m = font == null ?
-                Font.DEFAULTSIZE * multipliedLeading : font.getCalculatedLeading(multipliedLeading);
+        float m = font == null ? Font.DEFAULTSIZE * multipliedLeading : font.getCalculatedLeading(multipliedLeading);
         if (m > 0 && !hasLeading()) {
             return m;
         }

@@ -223,19 +223,16 @@ public class VerticalAlignContext {
 
         private boolean canBeMoved(Box box) {
             IdentValue vAlign = box.getStyle().getIdent(CSSName.VERTICAL_ALIGN);
-            return box == _root ||
-                ! (vAlign == IdentValue.TOP || vAlign == IdentValue.BOTTOM);
+            return box == _root || !(vAlign == IdentValue.TOP || vAlign == IdentValue.BOTTOM);
         }
 
         public void align() {
             IdentValue vAlign = _root.getStyle().getIdent(CSSName.VERTICAL_ALIGN);
             final int delta;
             if (vAlign == IdentValue.TOP) {
-                delta = _verticalAlignContext.getRoot().getInlineTop() -
-                    _verticalAlignContext.getInlineTop();
+                delta = _verticalAlignContext.getRoot().getInlineTop() - _verticalAlignContext.getInlineTop();
             } else if (vAlign == IdentValue.BOTTOM) {
-                delta = _verticalAlignContext.getRoot().getInlineBottom() -
-                    _verticalAlignContext.getInlineBottom();
+                delta = _verticalAlignContext.getRoot().getInlineBottom() - _verticalAlignContext.getInlineBottom();
             } else {
                 throw new RuntimeException("internal error");
             }

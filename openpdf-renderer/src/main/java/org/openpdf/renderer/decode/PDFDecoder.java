@@ -205,8 +205,7 @@ public class PDFDecoder {
             // determine whether default encryption applies or if there's a
             // specific Crypt filter; it must be the first filter according to
             // the errata for PDF1.7
-            boolean specificCryptFilter = spec.ary.length != 0 &&
-                    spec.ary[0].getStringValue().equals("Crypt");
+            boolean specificCryptFilter = spec.ary.length != 0 && spec.ary[0].getStringValue().equals("Crypt");
             if (!specificCryptFilter) {
                 // No Crypt filter, so we just need to refer to
                 // the default decrypter

@@ -43,10 +43,10 @@ public class DocumentSplitterTest {
 
     @Test
     public void splitDocumentWithHead() throws Exception {
-        reader.parse(new InputSource(new StringReader("<html>" +
-                "<head><title>The head</title></head>" +
-                "<body><h1>I have head</h1></body>" +
-                "</html>")));
+        reader.parse(new InputSource(new StringReader("<html>"
+                + "<head><title>The head</title></head>"
+                + "<body><h1>I have head</h1></body>"
+                + "</html>")));
         assertThat(splitter.getDocuments()).hasSize(1);
         Document doc = splitter.getDocuments().get(0);
         assertThat(doc.getElementsByTagName("h1").getLength()).isEqualTo(1);
@@ -58,11 +58,11 @@ public class DocumentSplitterTest {
 
     @Test
     public void splitDocumentWithMultipleBodies() throws Exception {
-        reader.parse(new InputSource(new StringReader("<html>" +
-                "<head><title>The head</title></head>" +
-                "<body><h1>I have head</h1></body>" +
-                "<body><h2>Second head</h2></body>" +
-                "</html>")));
+        reader.parse(new InputSource(new StringReader("<html>"
+                + "<head><title>The head</title></head>"
+                + "<body><h1>I have head</h1></body>"
+                + "<body><h2>Second head</h2></body>"
+                + "</html>")));
 
         assertThat(splitter.getDocuments()).hasSize(2);
         Document doc1 = splitter.getDocuments().get(0);

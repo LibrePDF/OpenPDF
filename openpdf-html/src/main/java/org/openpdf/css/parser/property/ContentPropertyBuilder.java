@@ -76,8 +76,8 @@ public class ContentPropertyBuilder extends AbstractPropertyBuilder {
                 resultValues.add(value);
             } else if (type == CSSPrimitiveValue.CSS_IDENT) {
                 IdentValue ident = checkIdent(value);
-                if (ident == IdentValue.OPEN_QUOTE || ident == IdentValue.CLOSE_QUOTE ||
-                        ident == IdentValue.NO_CLOSE_QUOTE || ident == IdentValue.NO_OPEN_QUOTE) {
+                if (ident == IdentValue.OPEN_QUOTE || ident == IdentValue.CLOSE_QUOTE
+                        || ident == IdentValue.NO_CLOSE_QUOTE || ident == IdentValue.NO_OPEN_QUOTE) {
                     resultValues.add(value);
                 } else {
                     throw new CSSParseException(
@@ -98,8 +98,8 @@ public class ContentPropertyBuilder extends AbstractPropertyBuilder {
     }
 
     private boolean isFunctionAllowed(FSFunction function) {
-        return function.is("attr") || function.is("counter") || function.is("counters") ||
-                function.is("element") || function.getName().startsWith("-fs") || function.is("target-counter") ||
-                function.is("leader");
+        return function.is("attr") || function.is("counter") || function.is("counters")
+                || function.is("element") || function.getName().startsWith("-fs")
+                || function.is("target-counter") || function.is("leader");
     }
 }

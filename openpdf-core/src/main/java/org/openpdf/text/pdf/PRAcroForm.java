@@ -197,9 +197,9 @@ public class PRAcroForm extends PdfDictionary {
         }
 
         for (PdfName key : child.getKeys()) {
-            if (key.equals(PdfName.DR) || key.equals(PdfName.DA) ||
-                    key.equals(PdfName.Q) || key.equals(PdfName.FF) ||
-                    key.equals(PdfName.DV) || key.equals(PdfName.V)
+            if (key.equals(PdfName.DR) || key.equals(PdfName.DA)
+                    || key.equals(PdfName.Q) || key.equals(PdfName.FF)
+                    || key.equals(PdfName.DV) || key.equals(PdfName.V)
                     || key.equals(PdfName.FT)
                     || key.equals(PdfName.F)) {
                 targ.put(key, child.get(key));

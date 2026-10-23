@@ -376,8 +376,7 @@ public class PatternType1 extends PDFPattern {
                     int[] pixel = emptyPixel;
                 
                     // check if we are inside the image
-                    if (xloc < this.data.getWidth() &&
-                        yloc < this.data.getHeight()) {
+                    if (xloc < this.data.getWidth() && yloc < this.data.getHeight()) {
                         pixel = this.data.getPixel(xloc, yloc, usePixel); 
                     } 
                             

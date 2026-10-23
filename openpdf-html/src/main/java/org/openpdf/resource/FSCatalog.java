@@ -171,8 +171,8 @@ public class FSCatalog {
          */
         @Override
         public void startElement(String namespaceURI, String localName, String qName, Attributes attributes) {
-            if (localName.equalsIgnoreCase("public") ||
-                    (localName.isEmpty() && qName.equalsIgnoreCase("public"))) {
+            if (localName.equalsIgnoreCase("public")
+                    || (localName.isEmpty() && qName.equalsIgnoreCase("public"))) {
                 entityMap.put(attributes.getValue("publicId"), attributes.getValue("uri"));
             }
         }
@@ -186,17 +186,17 @@ public class FSCatalog {
         try {
             xmlReader.setFeature("http://xml.org/sax/features/validation", false);
 
-            XRLog.xmlEntities(Level.FINE, "SAX Parser feature: " +
-                    "http://xml.org/sax/features/validation".substring("http://xml.org/sax/features/validation".lastIndexOf('/')) +
-                    " set to " +
-                    xmlReader.getFeature("http://xml.org/sax/features/validation"));
+            XRLog.xmlEntities(Level.FINE, "SAX Parser feature: "
+                    + "http://xml.org/sax/features/validation".substring("http://xml.org/sax/features/validation".lastIndexOf('/'))
+                    + " set to " + xmlReader.getFeature("http://xml.org/sax/features/validation"));
         } catch (SAXNotSupportedException ex) {
             XRLog.xmlEntities(Level.WARNING,
                     "SAX feature not supported on this XMLReader: " + "http://xml.org/sax/features/validation");
         } catch (SAXNotRecognizedException ex) {
             XRLog.xmlEntities(Level.WARNING,
-                    "SAX feature not recognized on this XMLReader: " +
-                            "http://xml.org/sax/features/validation" + ". Feature may be properly named, but not recognized by this parser.");
+                    "SAX feature not recognized on this XMLReader: "
+                            + "http://xml.org/sax/features/validation" + ". Feature may be properly named, but not "
+                            + "recognized by this parser.");
         }
     }
 }
