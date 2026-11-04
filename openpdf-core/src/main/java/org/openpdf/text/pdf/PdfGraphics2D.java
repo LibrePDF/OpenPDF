@@ -518,11 +518,11 @@ public class PdfGraphics2D extends Graphics2D {
                 String fontFaceName = font.getFontName();
                 String fontLogicalName = font.getName();
                 if ((font.isBold() || (weight >= TextAttribute.WEIGHT_SEMIBOLD))
-                        && (fontFaceName.equals(fontLogicalName) ||
+                        && (fontFaceName.equals(fontLogicalName)
                         // bold logical font face name has suffix ".bold" / ".bolditalic"
-                        (LOGICAL_FONT_NAMES.contains(fontLogicalName) &&
-                                (fontFaceName.equals(fontLogicalName + BOLD_FONT_FACE_NAME_SUFFIX) ||
-                                        fontFaceName.equals(fontLogicalName + BOLD_ITALIC_FONT_FACE_NAME_SUFFIX))))) {
+                        || (LOGICAL_FONT_NAMES.contains(fontLogicalName)
+                                && (fontFaceName.equals(fontLogicalName + BOLD_FONT_FACE_NAME_SUFFIX)
+                                        || fontFaceName.equals(fontLogicalName + BOLD_ITALIC_FONT_FACE_NAME_SUFFIX))))) {
                     // Simulate a bold font.
                     float strokeWidth = font.getSize2D() * (weight - TextAttribute.WEIGHT_REGULAR) / 30f;
                     if (strokeWidth != 1) {
@@ -1854,9 +1854,9 @@ public class PdfGraphics2D extends Graphics2D {
                 GET_FONT_NAME_METHOD = null;
             }
 
-            SUPPORTED = FONT_UTILITIES_CLASS != null && COMPOSITE_FONT_CLASS != null &&
-                    FONT2D_CLASS != null && GET_FONT2D_METHOD != null && GET_NUM_SLOTS_METHOD != null &&
-                    GET_SLOT_FONT_METHOD != null && CAN_DYSPLAY_METHOD != null && GET_FONT_NAME_METHOD != null;
+            SUPPORTED = FONT_UTILITIES_CLASS != null && COMPOSITE_FONT_CLASS != null
+                    && FONT2D_CLASS != null && GET_FONT2D_METHOD != null && GET_NUM_SLOTS_METHOD != null
+                    && GET_SLOT_FONT_METHOD != null && CAN_DYSPLAY_METHOD != null && GET_FONT_NAME_METHOD != null;
         }
 
         private final transient StringBuilder sb = new StringBuilder();

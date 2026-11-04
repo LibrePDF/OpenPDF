@@ -90,8 +90,7 @@ public class LengthValue extends DerivedValue {
 
     @Override
     public boolean isDependentOnFontSize() {
-        return _lengthPrimitiveType == CSSPrimitiveValue.CSS_EXS ||
-                    _lengthPrimitiveType == CSSPrimitiveValue.CSS_EMS;
+        return _lengthPrimitiveType == CSSPrimitiveValue.CSS_EXS || _lengthPrimitiveType == CSSPrimitiveValue.CSS_EMS;
     }
 
     public static float calcFloatProportionalValue(CalculatedStyle style,
@@ -178,20 +177,20 @@ public class LengthValue extends DerivedValue {
             default:
                 // nothing to do, we only convert those listed above
                 XRLog.cascade(Level.SEVERE,
-                        "Asked to convert " + cssName + " from relative to absolute, " +
-                        " don't recognize the datatype " +
-                        "'" + ValueConstants.stringForSACPrimitiveType(primitiveType) + "' "
+                        "Asked to convert " + cssName + " from relative to absolute, "
+                        + " don't recognize the datatype "
+                        + "'" + ValueConstants.stringForSACPrimitiveType(primitiveType) + "' "
                         + primitiveType + "(" + stringValue + ")");
         }
 
         if (XRLog.isLoggingEnabled()) {
             if (cssName == CSSName.FONT_SIZE) {
-                XRLog.cascade(Level.FINEST, cssName + ", relative= " +
-                        relVal + " (" + stringValue + "), absolute= "
+                XRLog.cascade(Level.FINEST, cssName + ", relative= "
+                        + relVal + " (" + stringValue + "), absolute= "
                         + absVal);
             } else {
-                XRLog.cascade(Level.FINEST, cssName + ", relative= " +
-                        relVal + " (" + stringValue + "), absolute= "
+                XRLog.cascade(Level.FINEST, cssName + ", relative= "
+                        + relVal + " (" + stringValue + "), absolute= "
                         + absVal + " using base=" + baseValue);
             }
         }

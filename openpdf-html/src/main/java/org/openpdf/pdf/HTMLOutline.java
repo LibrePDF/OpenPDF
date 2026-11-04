@@ -197,9 +197,7 @@ class HTMLOutline {
 
     private static String getOutlineLevel(Element element) {
         String bookmark = element.getAttribute("data-pdf-bookmark").trim();
-        return bookmark.isEmpty() ?
-                getOutlineLevelFromTagName(element.getTagName()) :
-                bookmark;
+        return bookmark.isEmpty() ? getOutlineLevelFromTagName(element.getTagName()) : bookmark;
     }
 
     static String getOutlineLevelFromTagName(String tagName) {

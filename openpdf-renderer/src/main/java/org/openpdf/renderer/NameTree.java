@@ -78,9 +78,7 @@ public class NameTree {
                     String upperLimit = limitsObj.getAt(1).getStringValue();
 
                     // are we in range?
-                    if ((key.compareTo(lowerLimit) >= 0) &&
-                            (key.compareTo(upperLimit) <= 0)) {
-
+                    if ((key.compareTo(lowerLimit) >= 0) && (key.compareTo(upperLimit) <= 0)) {
                         // we are, so find in this child
                         return find(kids[i], key);
                     }

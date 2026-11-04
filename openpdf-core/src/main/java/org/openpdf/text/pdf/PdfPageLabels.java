@@ -333,12 +333,12 @@ public class PdfPageLabels {
 
         @Override
         public String toString() {
-            return "PdfPageLabelFormat{" +
-                    "physicalPage=" + physicalPage +
-                    ", numberStyle=" + numberStyle +
-                    ", prefix='" + prefix + '\'' +
-                    ", logicalPage=" + logicalPage +
-                    '}';
+            return "PdfPageLabelFormat{"
+                    + "physicalPage=" + physicalPage
+                    + ", numberStyle=" + numberStyle
+                    + ", prefix='" + prefix + '\''
+                    + ", logicalPage=" + logicalPage
+                    + '}';
         }
     }
 }

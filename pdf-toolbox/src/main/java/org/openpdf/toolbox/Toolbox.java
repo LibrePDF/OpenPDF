@@ -178,8 +178,8 @@ public class Toolbox extends JFrame implements ActionListener {
                 System.arraycopy(args, 1, nargs, 0, args.length - 1);
                 tool.setMainArguments(nargs);
                 tool.execute();
-            } catch (PropertyVetoException | InstantiationException | IllegalAccessException |
-                     ClassNotFoundException ex) {
+            } catch (PropertyVetoException | InstantiationException | IllegalAccessException
+                     | ClassNotFoundException ex) {
             }
         }
     }
@@ -212,9 +212,7 @@ public class Toolbox extends JFrame implements ActionListener {
         try {
             p.load(Toolbox.class.getClassLoader().getResourceAsStream(
                     "tools.txt"));
-            String usertoolstxt = System.getProperty("user.home") +
-                    System.getProperty("file.separator") +
-                    "tools.txt";
+            String usertoolstxt = System.getProperty("user.home") + System.getProperty("file.separator") + "tools.txt";
             File uttf = new File(usertoolstxt);
             if (uttf.isFile() && uttf.exists()) {
                 p.load(new FileInputStream(usertoolstxt));
@@ -359,8 +357,7 @@ public class Toolbox extends JFrame implements ActionListener {
             for (JInternalFrame jInternalFrame : framearray) {
                 if (!jInternalFrame.isIcon()) {
                     try {
-                        int frameDistance = jInternalFrame.getHeight() -
-                                jInternalFrame.getContentPane().getHeight();
+                        int frameDistance = jInternalFrame.getHeight() - jInternalFrame.getContentPane().getHeight();
                         jInternalFrame.setMaximum(false);
                         int fwidth = jInternalFrame.getWidth();
                         int fheight = jInternalFrame.getHeight();

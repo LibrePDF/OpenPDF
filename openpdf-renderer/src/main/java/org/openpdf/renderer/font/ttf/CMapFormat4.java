@@ -448,8 +448,8 @@ public class CMapFormat4 extends CMap {
         
             // if regions overlap at all, declare the segments equal,
             // to avoid overlap in the segment list
-            if (((s.endCode >= this.startCode) && (s.endCode <= this.endCode)) ||
-                ((s.startCode >= this.startCode) && (s.startCode <= this.endCode))) {
+            if (((s.endCode >= this.startCode) && (s.endCode <= this.endCode))
+                || ((s.startCode >= this.startCode) && (s.startCode <= this.endCode))) {
                 return 0;
             }
             if (this.endCode > s.endCode) {

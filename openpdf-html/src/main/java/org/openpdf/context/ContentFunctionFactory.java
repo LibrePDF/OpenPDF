@@ -102,8 +102,7 @@ public class ContentFunctionFactory {
                 List<PropertyValue> parameters = function.getParameters();
                 if (parameters.size() == 1 || parameters.size() == 2) {
                     PropertyValue param = parameters.get(0);
-                    if (param.getPrimitiveType() != CSS_IDENT ||
-                            !Objects.equals(param.getStringValue(), counterName)) {
+                    if (param.getPrimitiveType() != CSS_IDENT || !Objects.equals(param.getStringValue(), counterName)) {
                         return false;
                     }
 
@@ -187,16 +186,15 @@ public class ContentFunctionFactory {
                 List<PropertyValue> parameters = function.getParameters();
                 if (parameters.size() == 2 || parameters.size() == 3) {
                     FSFunction f = parameters.get(0).getFunction();
-                    if (f == null ||
-                            f.getParameters().size() != 1 ||
-                            f.getParameters().get(0).getPrimitiveType() != CSS_IDENT ||
-                            ! "href".equals(f.getParameters().get(0).getStringValue())) {
+                    if (f == null
+                            || f.getParameters().size() != 1
+                            || f.getParameters().get(0).getPrimitiveType() != CSS_IDENT
+                            || !"href".equals(f.getParameters().get(0).getStringValue())) {
                         return false;
                     }
 
                     PropertyValue param = parameters.get(1);
-                    return param.getPrimitiveType() == CSS_IDENT &&
-                            Objects.equals(param.getStringValue(), "page");
+                    return param.getPrimitiveType() == CSS_IDENT && Objects.equals(param.getStringValue(), "page");
                 }
             }
 
@@ -296,11 +294,11 @@ public class ContentFunctionFactory {
                 List<PropertyValue> parameters = function.getParameters();
                 if (parameters.size() == 1) {
                     PropertyValue param = parameters.get(0);
-                    return param.getPrimitiveType() == CSS_STRING ||
-                            (param.getPrimitiveType() == CSS_IDENT &&
-                                    ("dotted".equals(param.getStringValue()) ||
-                                            "solid".equals(param.getStringValue()) ||
-                                            "space".equals(param.getStringValue())));
+                    return param.getPrimitiveType() == CSS_STRING
+                            || (param.getPrimitiveType() == CSS_IDENT
+                                    && ("dotted".equals(param.getStringValue())
+                                            || "solid".equals(param.getStringValue())
+                                            || "space".equals(param.getStringValue())));
                 }
             }
 

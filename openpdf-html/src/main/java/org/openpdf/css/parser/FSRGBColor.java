@@ -149,9 +149,9 @@ public class FSRGBColor implements FSColor {
         float redc = (cmax - r) / (cmax - cmin);
         float greenc = (cmax - g) / (cmax - cmin);
         float bluec = (cmax - b) / (cmax - cmin);
-        final float hue1 = (r == cmax) ?
-            bluec - greenc : (g == cmax) ?
-            2.0f + redc - bluec :
+        final float hue1 = (r == cmax)
+            ? bluec - greenc : (g == cmax)
+            ? 2.0f + redc - bluec :
             4.0f + greenc - redc;
 
         float hue2 = hue1 / 6.0f;

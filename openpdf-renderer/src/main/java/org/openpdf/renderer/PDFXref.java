@@ -142,9 +142,7 @@ public class PDFXref {
     
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof PDFXref) &&
-                ((PDFXref) obj).id == id &&
-                ((PDFXref) obj).generation == generation;
+        return (obj instanceof PDFXref) && ((PDFXref) obj).id == id && ((PDFXref) obj).generation == generation;
     }
 
     @Override

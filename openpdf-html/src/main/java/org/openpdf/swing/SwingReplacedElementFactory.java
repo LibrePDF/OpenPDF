@@ -254,8 +254,8 @@ public class SwingReplacedElementFactory implements ReplacedElementFactory {
 
         do {
             node = node.getParentNode();
-        } while (node.getNodeType() == Node.ELEMENT_NODE &&
-                !context.getNamespaceHandler().isFormElement((Element) node));
+        } while (node.getNodeType() == Node.ELEMENT_NODE
+                && !context.getNamespaceHandler().isFormElement((Element) node));
 
         if (node.getNodeType() != Node.ELEMENT_NODE) {
             return null;

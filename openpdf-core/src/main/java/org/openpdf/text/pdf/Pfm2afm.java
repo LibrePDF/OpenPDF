@@ -684,8 +684,8 @@ public final class Pfm2afm {
          *  table of font widths, not if they are all the same.
          */
         out.print("\nIsFixedPitch ");
-        if ((kind & 1) == 0 ||                  /* Flag for mono */
-                avgwidth == maxwidth) {  /* Avg width = max width */
+        if ((kind & 1) == 0                   /* Flag for mono */
+                || avgwidth == maxwidth) {  /* Avg width = max width */
             out.print("true");
             isMono = true;
         } else {

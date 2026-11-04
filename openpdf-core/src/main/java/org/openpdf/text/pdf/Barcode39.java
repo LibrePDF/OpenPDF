@@ -136,14 +136,14 @@ public class Barcode39 extends Barcode {
     /**
      * The character combinations to make the code 39 extended.
      */
-    private static final String EXTENDED = "%U" +
-            "$A$B$C$D$E$F$G$H$I$J$K$L$M$N$O$P$Q$R$S$T$U$V$W$X$Y$Z" +
-            "%A%B%C%D%E  /A/B/C/D/E/F/G/H/I/J/K/L - ./O" +
-            " 0 1 2 3 4 5 6 7 8 9/Z%F%G%H%I%J%V" +
-            " A B C D E F G H I J K L M N O P Q R S T U V W X Y Z" +
-            "%K%L%M%N%O%W" +
-            "+A+B+C+D+E+F+G+H+I+J+K+L+M+N+O+P+Q+R+S+T+U+V+W+X+Y+Z" +
-            "%P%Q%R%S%T";
+    private static final String EXTENDED = "%U"
+            + "$A$B$C$D$E$F$G$H$I$J$K$L$M$N$O$P$Q$R$S$T$U$V$W$X$Y$Z"
+            + "%A%B%C%D%E  /A/B/C/D/E/F/G/H/I/J/K/L - ./O"
+            + " 0 1 2 3 4 5 6 7 8 9/Z%F%G%H%I%J%V"
+            + " A B C D E F G H I J K L M N O P Q R S T U V W X Y Z"
+            + "%K%L%M%N%O%W"
+            + "+A+B+C+D+E+F+G+H+I+J+K+L+M+N+O+P+Q+R+S+T+U+V+W+X+Y+Z"
+            + "%P%Q%R%S%T";
 
     /**
      * Creates a new Barcode39.

@@ -68,8 +68,7 @@ public class IntegerArgument extends AbstractArgument {
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
-        CustomDialog cd = new CustomDialog("Enter a value for " + name +
-                ":",
+        CustomDialog cd = new CustomDialog("Enter a value for " + name + ":",
                 CustomDialog.instantiateIntegerDocument());
         setValue(cd.showInputDialog(this.getValue() == null ? "0" : this.getValue().toString()));
     }

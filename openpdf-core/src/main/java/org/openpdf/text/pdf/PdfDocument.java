@@ -1272,8 +1272,7 @@ public class PdfDocument extends Document {
      */
     protected void ensureNewLine() {
         try {
-            if ((lastElementType == Element.PHRASE) ||
-                    (lastElementType == Element.CHUNK)) {
+            if ((lastElementType == Element.PHRASE) || (lastElementType == Element.CHUNK)) {
                 newLine();
                 flushLines();
             }

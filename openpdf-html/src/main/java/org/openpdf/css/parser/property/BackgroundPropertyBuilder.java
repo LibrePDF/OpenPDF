@@ -49,8 +49,7 @@ public class BackgroundPropertyBuilder extends AbstractPropertyBuilder {
             return false;
         } else {
             IdentValue ident = IdentValue.valueOf(value.getStringValue());
-            return ident != null &&
-                PrimitivePropertyBuilders.BACKGROUND_POSITIONS.get(ident.FS_ID);
+            return ident != null && PrimitivePropertyBuilders.BACKGROUND_POSITIONS.get(ident.FS_ID);
         }
     }
 

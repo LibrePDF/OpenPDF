@@ -47,8 +47,8 @@ class ButtonField extends AbstractButtonField {
 
         button.addActionListener(e -> JOptionPane.showMessageDialog(
                 null,
-                "<input type=\"button\" .../> doesn't make much " +
-                "sense without <script>! (Volunteers wanted)",
+                "<input type=\"button\" .../> doesn't make much "
+                + "sense without <script>! (Volunteers wanted)",
                 "We need <script> support!",
                 JOptionPane.INFORMATION_MESSAGE));
 

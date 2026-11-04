@@ -347,9 +347,8 @@ public class FSLinearGradient {
                 return;
             }
 
-            if (i + 1 < params.size() &&
-                    (BuilderUtil.isLength(params.get(i + 1)) ||
-                            params.get(i + 1).getPrimitiveType() == PropertyValue.CSS_PERCENTAGE)) {
+            if (i + 1 < params.size() && (BuilderUtil.isLength(params.get(i + 1))
+                    || params.get(i + 1).getPrimitiveType() == PropertyValue.CSS_PERCENTAGE)) {
                 final PropertyValue val2 = params.get(i + 1);
                 stopPoints.add(new StopValue(color, val2.getFloatValue(), val2.getPrimitiveType()));
                 i++;

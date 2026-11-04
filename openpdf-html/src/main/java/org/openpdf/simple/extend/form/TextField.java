@@ -65,8 +65,8 @@ class TextField extends InputField {
                             GeneralUtil.parseIntRelaxed(getAttribute("maxlength"))));
         }
 
-        if (hasAttribute("readonly") &&
-                getAttribute("readonly").equalsIgnoreCase("readonly")) {
+        if (hasAttribute("readonly")
+                && getAttribute("readonly").equalsIgnoreCase("readonly")) {
             textfield.setEditable(false);
         }
 

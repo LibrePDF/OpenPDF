@@ -584,8 +584,7 @@ public final class Layer {
     private void position(LayoutContext c) {
         if (getMaster().getStyle().isAbsolute() && ! c.isPrint()) {
             ((BlockBox) getMaster()).positionAbsolute(c, Position.BOTH);
-        } else if (getMaster().getStyle().isRelative() &&
-                (isInline() || ((BlockBox) getMaster()).isInline())) {
+        } else if (getMaster().getStyle().isRelative() && (isInline() || ((BlockBox) getMaster()).isInline())) {
             getMaster().positionRelative(c);
             if (! isInline()) {
                 getMaster().calcCanvasLocation();
@@ -691,8 +690,8 @@ public final class Layer {
             for (Layer layer : children) {
                 if (layer.isRequiresLayout()) {
                     layoutAbsoluteChild(c, layer);
-                    if (layer.getMaster().getStyle().isAvoidPageBreakInside() &&
-                            layer.getMaster().crossesPageBreak(c)) {
+                    if (layer.getMaster().getStyle().isAvoidPageBreakInside()
+                            && layer.getMaster().crossesPageBreak(c)) {
                         layer.getMaster().reset(c);
                         ((BlockBox) layer.getMaster()).setNeedPageClear(true);
                         layoutAbsoluteChild(c, layer);
@@ -754,8 +753,8 @@ public final class Layer {
         List<PageBox> pages = getPages();
         int pagesCount = pages.size();
         String pseudoPage = pseudoPage(pagesCount);
-        PageBox pageBox = pages.isEmpty() ?
-                createPageBox(c, pseudoPage, 0, pagesCount) :
+        PageBox pageBox = pages.isEmpty()
+                ? createPageBox(c, pseudoPage, 0, pagesCount) :
                 createPageBox(c, pseudoPage, pages.get(pagesCount - 1).getBottom(), pagesCount);
         pages.add(pageBox);
     }
