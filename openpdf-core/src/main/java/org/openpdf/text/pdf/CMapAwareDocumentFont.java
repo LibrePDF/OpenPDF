@@ -179,8 +179,37 @@ public class CMapAwareDocumentFont extends DocumentFont {
         if (char1 == ' ') {
             return spaceWidth;
         }
-
         return super.getWidth(char1);
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Overridden so that a font which does not declare a width for its space glyph still measures spaces as
+     * {@link #spaceWidth} rather than as zero, matching what {@link #getWidth(int)} does for the Unicode space.
+     */
+    @Override
+    public int getWidthOfCode(int code) {
+        int width = super.getWidthOfCode(code);
+        if (width == 0 && isSpaceCode(code)) {
+            return spaceWidth;
+        }
+        return width;
+    }
+
+    /**
+     * @param code a character code in this font's encoding
+     * @return true if the code decodes to a single space character
+     */
+    private boolean isSpaceCode(int code) {
+        if (code < 0 || code > Character.MAX_VALUE) {
+            return false;
+        }
+        if (!hasUnicodeCMAP() && code > 0xff) {
+            // decode(char) cannot resolve a multi byte code without a ToUnicode map.
+            return false;
+        }
+        return " ".equals(decode((char) code));
     }
 
     /**
