@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
-      <version>4.21.0</version>
+      <version>5.3.0</version>
     </dependency>
     <dependency>
       <groupId>com.github.librepdf</groupId>
@@ -46,7 +46,7 @@
     <dependency>
       <groupId>org.jspecify</groupId>
       <artifactId>jspecify</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
