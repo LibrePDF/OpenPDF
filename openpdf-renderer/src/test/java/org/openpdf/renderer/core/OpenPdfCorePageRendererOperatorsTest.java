@@ -520,6 +520,78 @@ class OpenPdfCorePageRendererOperatorsTest {
     }
 
     /**
+     * PDF §9.3.3: text rendering mode 3 ({@code Tr 3}) means the glyphs are neither
+     * filled nor stroked &mdash; the "invisible text" mode used by scanned-PDF /
+     * OCR text layers, where an invisible text layer sits on top of a page-image
+     * XObject so the text stays selectable/searchable without being visible. Before
+     * {@code Tr} support, the renderer always filled text regardless of render mode,
+     * which would incorrectly paint OCR text layers over their background image.
+     */
+    @Test
+    void invisibleTextRenderModeDoesNotPaintGlyphs() throws Exception {
+        byte[] pdf = buildPdf(cb -> {
+            org.openpdf.text.pdf.BaseFont bf = org.openpdf.text.pdf.BaseFont
+                    .createFont(org.openpdf.text.pdf.BaseFont.HELVETICA,
+                            org.openpdf.text.pdf.BaseFont.WINANSI,
+                            org.openpdf.text.pdf.BaseFont.NOT_EMBEDDED);
+            cb.beginText();
+            cb.setFontAndSize(bf, 48f);
+            cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_INVISIBLE);
+            cb.setTextMatrix(20f, 100f);
+            cb.showText("HIDDEN");
+            cb.endText();
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            List<String> ops = r.getContentOperators(1);
+            assertThat(ops).contains("Tr", "Tj");
+
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "invisible-text.png");
+
+            int darkPixels = countPixelsMatching(img, (red, green, blue) ->
+                    red < 80 && green < 80 && blue < 80);
+            assertThat(darkPixels)
+                    .as("Tr 3 (invisible) text must not paint any glyph pixels")
+                    .isZero();
+        }
+    }
+
+    /**
+     * PDF §9.3.3: text rendering mode 1 ({@code Tr 1}) strokes the glyph outlines
+     * instead of filling them. Verifies the renderer draws the stroke in the active
+     * stroke color rather than silently falling back to a filled glyph.
+     */
+    @Test
+    void strokeTextRenderModeUsesStrokeColor() throws Exception {
+        byte[] pdf = buildPdf(cb -> {
+            org.openpdf.text.pdf.BaseFont bf = org.openpdf.text.pdf.BaseFont
+                    .createFont(org.openpdf.text.pdf.BaseFont.HELVETICA,
+                            org.openpdf.text.pdf.BaseFont.WINANSI,
+                            org.openpdf.text.pdf.BaseFont.NOT_EMBEDDED);
+            cb.setRGBColorStrokeF(1f, 0f, 0f); // red stroke
+            cb.setLineWidth(1.5f);
+            cb.beginText();
+            cb.setFontAndSize(bf, 48f);
+            cb.setTextRenderingMode(PdfContentByte.TEXT_RENDER_MODE_STROKE);
+            cb.setTextMatrix(20f, 100f);
+            cb.showText("OUTLINE");
+            cb.endText();
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "stroke-text.png");
+
+            int redish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 150 && green < 100 && blue < 100);
+            assertThat(redish)
+                    .as("Tr 1 (stroke) text must paint glyph outlines in the stroke color")
+                    .isGreaterThan(10);
+        }
+    }
+
+    /**
      * PDF §8.4.3.2: a stroke width of 0 means "the thinnest line the device can
      * render", i.e. one device pixel. Naively passing the user-space width to
      * {@link java.awt.BasicStroke} would collapse to nothing once the page CTM
