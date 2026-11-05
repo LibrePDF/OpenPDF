@@ -4,12 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
+import org.openpdf.text.pdf.PdfArray;
 import org.openpdf.text.pdf.PdfName;
+import org.openpdf.text.pdf.PdfString;
 
 class ImageTest {
 
@@ -210,6 +216,76 @@ class ImageTest {
         assertThat(image.getImageMask()).isNotNull();
         assertThat(image.getImageMask().isMask()).isTrue();
         assertThat(image.isSmask()).isTrue();
+    }
+
+    @Test
+    void shouldPreservePaletteFor1BitIndexedImage() throws Exception {
+        // Palette with index 0 = white, index 1 = black, as produced when reading a
+        // bilevel TIFF with PhotometricInterpretation "WhiteIsZero" (issue #1534)
+        byte[] whiteBlack = {(byte) 255, 0};
+        IndexColorModel colorModel = new IndexColorModel(1, 2, whiteBlack, whiteBlack, whiteBlack);
+        BufferedImage bufferedImage = new BufferedImage(16, 16, BufferedImage.TYPE_BYTE_BINARY, colorModel);
+        Graphics2D g = bufferedImage.createGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, 16, 16);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, 8, 16);
+        g.dispose();
+
+        Image image = Image.getInstance(bufferedImage, null);
+
+        // Must stay a raw 1-bit indexed image; CCITT encoding would drop the palette and invert the colors
+        assertThat(image.getBpc()).isEqualTo(1);
+        assertThat(image.getColorspace()).isEqualTo(1);
+        assertImageMatches(bufferedImage, image);
+    }
+
+    @Test
+    void shouldRenderBlackAndWhitePngWithCorrectColors() throws Exception {
+        // Black text on white background, encoded to PNG bytes as in issue #1534
+        BufferedImage bufferedImage = new BufferedImage(16, 16, BufferedImage.TYPE_BYTE_BINARY);
+        Graphics2D g = bufferedImage.createGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, 16, 16);
+        g.setColor(Color.BLACK);
+        g.fillRect(0, 0, 8, 16);
+        g.dispose();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", baos);
+
+        Image image = Image.getInstance(baos.toByteArray());
+
+        assertThat(image.getBpc()).isEqualTo(1);
+        assertImageMatches(bufferedImage, image);
+    }
+
+    /**
+     * Resolves each pixel of a raw 1-bit indexed {@link Image} through its palette and compares it to the
+     * corresponding pixel of the original {@link BufferedImage}.
+     */
+    private static void assertImageMatches(BufferedImage expected, Image image) {
+        PdfArray colorspace = (PdfArray) image.getAdditional().get(PdfName.COLORSPACE);
+        assertThat(colorspace).isNotNull();
+        assertThat(colorspace.getPdfObject(0)).isEqualTo(PdfName.INDEXED);
+        byte[] palette = ((PdfString) colorspace.getPdfObject(3)).getBytes();
+
+        byte[] data = image.getRawData();
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+        int rowStride = (width + 7) / 8;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int index = (data[y * rowStride + x / 8] >> (7 - x % 8)) & 1;
+                int rgb = 0xff000000
+                        | ((palette[index * 3] & 0xff) << 16)
+                        | ((palette[index * 3 + 1] & 0xff) << 8)
+                        | (palette[index * 3 + 2] & 0xff);
+                assertThat(rgb)
+                        .as("pixel at (%d, %d)", x, y)
+                        .isEqualTo(expected.getRGB(x, y));
+            }
+        }
     }
 
 }
