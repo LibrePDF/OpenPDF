@@ -563,7 +563,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             return in;
         }
         int predictor = ((PdfNumber) obj).intValue();
-        if (predictor < 10) {
+        if (predictor != 2 && predictor < 10) {
             return in;
         }
         int width = 1;
@@ -581,10 +581,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (obj != null && obj.isNumber()) {
             bpc = ((PdfNumber) obj).intValue();
         }
-        DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(
-                in));
+        if (predictor == 2) {
+            return decodeTiffPredictor(in, width, colors, bpc);
+        }
+        DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(in));
         ByteArrayOutputStream fout = new ByteArrayOutputStream(in.length);
-        int bytesPerPixel = colors * bpc / 8;
+        int bytesPerPixel = (colors * bpc + 7) / 8;
         int bytesPerRow = (colors * width * bpc + 7) / 8;
         byte[] curr = new byte[bytesPerRow];
         byte[] prior = new byte[bytesPerRow];
@@ -618,10 +620,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     break;
                 case 3: // PNG_FILTER_AVERAGE
                     for (int i = 0; i < bytesPerPixel; i++) {
-                        curr[i] += (byte) (prior[i] / (byte) 2);
+                        curr[i] += (byte) ((prior[i] & 0xff) / 2);
                     }
                     for (int i = bytesPerPixel; i < bytesPerRow; i++) {
-                        curr[i] = (byte) ((curr[i] + (curr[i - bytesPerPixel] & 0xff) + (prior[i] & 0xff)) / 2);
+                        curr[i] += (byte) (((curr[i - bytesPerPixel] & 0xff) + (prior[i] & 0xff)) / 2);
                     }
                     break;
                 case 4: // PNG_FILTER_PAETH
@@ -667,6 +669,44 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             prior = curr;
             curr = tmp;
         }
+    }
+
+    private static byte[] decodeTiffPredictor(byte[] input, int columns, int colors, int bits) {
+        if (columns < 1 || colors < 1 || (bits != 1 && bits != 2 && bits != 4 && bits != 8 && bits != 16)) {
+            throw new IllegalArgumentException("Invalid TIFF predictor parameters");
+        }
+        int samples = Math.multiplyExact(columns, colors);
+        int rowBytes = Math.toIntExact((Math.multiplyExact((long) samples, bits) + 7) / 8);
+        if (input.length % rowBytes != 0) {
+            throw new IllegalArgumentException("Incomplete TIFF predictor row");
+        }
+        byte[] output = input.clone();
+        int mask = (1 << bits) - 1;
+        for (int row = 0; row < output.length; row += rowBytes) {
+            for (int sample = colors; sample < samples; sample++) {
+                int value = predictorSample(output, row, sample, bits)
+                        + predictorSample(output, row, sample - colors, bits);
+                long bit = (long) sample * bits;
+                int index = row + (int) (bit / 8);
+                if (bits == 16) {
+                    output[index] = (byte) (value >> 8);
+                    output[index + 1] = (byte) value;
+                } else {
+                    int shift = 8 - bits - (int) (bit % 8);
+                    output[index] = (byte) ((output[index] & ~(mask << shift)) | ((value & mask) << shift));
+                }
+            }
+        }
+        return output;
+    }
+
+    private static int predictorSample(byte[] data, int row, int sample, int bits) {
+        long bit = (long) sample * bits;
+        int index = row + (int) (bit / 8);
+        if (bits == 16) {
+            return ((data[index] & 0xff) << 8) | (data[index + 1] & 0xff);
+        }
+        return (data[index] >> (8 - bits - (int) (bit % 8))) & ((1 << bits) - 1);
     }
 
     /**
@@ -879,6 +919,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     break;
                 case "/BrotliDecode":
                     b = BrotliFilter.decode(b);
+                    if (j < dp.size()) {
+                        b = decodePredictor(b, dp.get(j));
+                    }
                     break;
                 default:
                     throw new UnsupportedPdfException(
