@@ -203,10 +203,6 @@ public abstract class PdfContentStreamHandler {
                 .ifPresent(contentOperator -> contentOperator.invoke(operands, this, resources));
     }
 
-    abstract void popContext();
-
-    abstract void pushContext(String newContextName);
-
     /**
      * Returns the current graphics state.
      *
@@ -216,7 +212,14 @@ public abstract class PdfContentStreamHandler {
         return gsStack.peek();
     }
 
-    public abstract void reset();
+    public void reset() {
+        if (gsStack == null || gsStack.isEmpty()) {
+            gsStack = new Stack<>();
+        }
+        gsStack.add(new GraphicsState());
+        textMatrix = null;
+        textLineMatrix = null;
+    }
 
     /**
      * Returns the current text matrix.
@@ -256,11 +259,28 @@ public abstract class PdfContentStreamHandler {
     }
 
     /**
+     * Custom context creation function.
+     */
+    abstract void pushContext(String newContextName);
+
+    /**
+     * Custom context assembler function when finalized parsing the current context.
+     */
+    abstract void popContext();
+
+    /**
      * Displays text.
      *
      * @param string the text to display
      */
-    abstract void displayPdfString(PdfString string);
+    void parsePdfString(PdfString string) {
+        ParsedText renderInfo = ParsedText.create(string, graphicsState(), textMatrix);
+        if (contextNames.peek() != null) {
+            textFragments.add(renderInfo);
+        }
+        textMatrix = new Matrix(renderInfo.getUnscaledTextWidth(graphicsState()), 0)
+                .multiply(textMatrix);
+    }
 
     /**
      * @return result text
@@ -285,7 +305,7 @@ public abstract class PdfContentStreamHandler {
             PdfArray array = (PdfArray) operands.get(0);
             for (PdfObject entryObj : array.getElements()) {
                 if (entryObj instanceof PdfString) {
-                    handler.displayPdfString((PdfString) entryObj);
+                    handler.parsePdfString((PdfString) entryObj);
                 } else {
                     float tj = ((PdfNumber) entryObj).floatValue();
                     handler.applyTextAdjust(tj);
@@ -487,7 +507,6 @@ public abstract class PdfContentStreamHandler {
                 PdfObject pdfObject = fontParameter.getPdfObject(0);
                 CMapAwareDocumentFont font = new CMapAwareDocumentFont((PRIndirectReference) pdfObject);
                 float size = fontParameter.getAsNumber(1).floatValue();
-
                 handler.graphicsState().setFont(font);
                 handler.graphicsState().setFontSize(size);
             }
@@ -633,7 +652,7 @@ public abstract class PdfContentStreamHandler {
         @Override
         public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
             PdfString string = (PdfString) operands.get(0);
-            handler.displayPdfString(string);
+            handler.parsePdfString(string);
         }
     }
 

@@ -49,6 +49,7 @@ package org.openpdf.text.pdf;
 import org.openpdf.text.DocumentException;
 import org.openpdf.text.ExceptionConverter;
 import java.util.HashMap;
+import java.util.Objects;
 
 
 /**
@@ -85,6 +86,16 @@ public class DocumentFont extends BaseFont {
             "UniCNS-UTF16-H", "UniGB-UTF16-H", "UniKS-UTF16-H", "UniJIS-UTF16-H"};
     // code, [glyph, width]
     private HashMap<Integer, int[]> metrics = new HashMap<>();
+    /**
+     * Glyph widths of a Type0 font keyed by the CID as it appears in a content stream, as read from the /W array. The
+     * {@link #metrics} map holds the same widths keyed by Unicode instead, which is only usable by a caller that has
+     * already decoded the text.
+     */
+    private IntHashtable cidWidths = new IntHashtable();
+    /**
+     * The /DW default glyph width of a Type0 font, used for every CID the /W array does not cover.
+     */
+    private int defaultCidWidth = 1000;
     private String fontName;
     private PRIndirectReference refFont;
     private PdfDictionary font;
@@ -110,6 +121,7 @@ public class DocumentFont extends BaseFont {
         this.refFont = refFont;
         fontType = FONT_TYPE_DOCUMENT;
         font = (PdfDictionary) PdfReader.getPdfObject(refFont);
+        Objects.requireNonNull(font, "The font reference does not resolve to a font dictionary");
         PdfName asName = font.getAsName(PdfName.BASEFONT);
         if (asName != null) {
             fontName = PdfName.decodeName(asName.toString());
@@ -160,17 +172,24 @@ public class DocumentFont extends BaseFont {
         try {
             PdfObject toUniObject = PdfReader.getPdfObjectRelease(font.get(PdfName.TOUNICODE));
             PdfArray df = (PdfArray) PdfReader.getPdfObjectRelease(font.get(PdfName.DESCENDANTFONTS));
-            PdfDictionary cidft = (PdfDictionary) PdfReader.getPdfObjectRelease(df.getPdfObject(0));
-            PdfNumber dwo = (PdfNumber) PdfReader.getPdfObjectRelease(cidft.get(PdfName.DW));
-            int dw = 1000;
-            if (dwo != null) {
-                dw = dwo.intValue();
+            if (df == null || df.isEmpty()) {
+                // A Type0 font is required to have a descendant font. Leave the metrics empty for a malformed one
+                // rather than failing the whole document.
+                return;
             }
-            IntHashtable widths = readWidths((PdfArray) PdfReader.getPdfObjectRelease(cidft.get(PdfName.W)));
+            PdfDictionary cidft = (PdfDictionary) PdfReader.getPdfObjectRelease(df.getPdfObject(0));
+            if (cidft == null) {
+                return;
+            }
+            PdfNumber dwo = (PdfNumber) PdfReader.getPdfObjectRelease(cidft.get(PdfName.DW));
+            if (dwo != null) {
+                defaultCidWidth = dwo.intValue();
+            }
+            cidWidths = readWidths((PdfArray) PdfReader.getPdfObjectRelease(cidft.get(PdfName.W)));
             PdfDictionary fontDesc = (PdfDictionary) PdfReader.getPdfObjectRelease(cidft.get(PdfName.FONTDESCRIPTOR));
             fillFontDesc(fontDesc);
             if (toUniObject != null) {
-                fillMetrics(PdfReader.getStreamBytes((PRStream) toUniObject), widths, dw);
+                fillMetrics(PdfReader.getStreamBytes((PRStream) toUniObject), cidWidths, defaultCidWidth);
             }
 
         } catch (Exception e) {
@@ -594,6 +613,29 @@ public class DocumentFont extends BaseFont {
             }
         } else {
             return super.getWidth(char1);
+        }
+    }
+
+    /**
+     * Gets the width of a character code as it appears in a content stream, in normalized 1000 units.
+     * <p>
+     * This is the counterpart of {@link #getWidth(int)}, which is keyed by Unicode character. A PDF stores glyph widths
+     * against character codes, so a caller that reads codes out of a content stream should measure them with this
+     * method: mapping a code to Unicode first and measuring that is lossy, because several codes may share one Unicode
+     * character, one code may decode to several characters, and a code need not decode to anything at all.
+     *
+     * @param code the character code to get the width of
+     * @return the width in normalized 1000 units, or 0 if the code is unknown to this font
+     */
+    public int getWidthOfCode(int code) {
+        if (cjkMirror != null) {
+            // A predefined CMap maps codes to CIDs through the encoding CMap, which is not available here, so fall
+            // back to treating the code as a Unicode character.
+            return cjkMirror.getWidth(code);
+        } else if (isType0) {
+            return cidWidths.containsKey(code) ? cidWidths.get(code) : defaultCidWidth;
+        } else {
+            return code >= 0 && code < widths.length ? widths[code] : 0;
         }
     }
 
