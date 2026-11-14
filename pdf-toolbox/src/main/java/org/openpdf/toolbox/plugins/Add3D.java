@@ -297,8 +297,7 @@ public class Add3D extends AbstractTool {
             // command line
             return;
         }
-        if (destfile.getValue() == null &&
-                arg.getName().equalsIgnoreCase("srcfile")) {
+        if (destfile.getValue() == null && arg.getName().equalsIgnoreCase("srcfile")) {
             String filename = arg.getValue().toString();
             String filenameout = filename.substring(0, filename.indexOf(".",
                     filename.length() - 4)) + "_out.pdf";

@@ -102,9 +102,8 @@ public class BoxBuilder {
 
         CalculatedStyle style = c.getSharedContext().getStyle(root);
 
-        BlockBox result = style.isTable() || style.isInlineTable() ?
-                new TableBox(root, style, false) :
-                new BlockBox(root, style, false);
+        BlockBox result = style.isTable() || style.isInlineTable()
+                ? new TableBox(root, style, false) : new BlockBox(root, style, false);
 
         c.resolveCounters(style);
 
@@ -245,8 +244,7 @@ public class BoxBuilder {
             return null;
         }
 
-        if (style.isIdent(CSSName.CONTENT, IdentValue.NONE) ||
-                style.isIdent(CSSName.CONTENT, IdentValue.NORMAL)) {
+        if (style.isIdent(CSSName.CONTENT, IdentValue.NONE) || style.isIdent(CSSName.CONTENT, IdentValue.NORMAL)) {
             hasContent = false;
         }
 
@@ -464,10 +462,10 @@ public class BoxBuilder {
     private static boolean containsOrphanedTableContent(List<Styleable> children) {
         for (Styleable child : children) {
             IdentValue display = child.getStyle().getIdent(CSSName.DISPLAY);
-            if (display == IdentValue.TABLE_HEADER_GROUP ||
-                    display == IdentValue.TABLE_ROW_GROUP ||
-                    display == IdentValue.TABLE_FOOTER_GROUP ||
-                    display == IdentValue.TABLE_ROW) {
+            if (display == IdentValue.TABLE_HEADER_GROUP
+                    || display == IdentValue.TABLE_ROW_GROUP
+                    || display == IdentValue.TABLE_FOOTER_GROUP
+                    || display == IdentValue.TABLE_ROW) {
                 return true;
             }
         }
@@ -630,25 +628,25 @@ public class BoxBuilder {
     }
 
     private static boolean isProperTableNesting(IdentValue parent, IdentValue child) {
-        return (parent == IdentValue.TABLE && (child == IdentValue.TABLE_HEADER_GROUP ||
-                child == IdentValue.TABLE_ROW_GROUP ||
-                child == IdentValue.TABLE_FOOTER_GROUP ||
-                child == IdentValue.TABLE_CAPTION))
-                || ((parent == IdentValue.TABLE_HEADER_GROUP ||
-                parent == IdentValue.TABLE_ROW_GROUP ||
-                parent == IdentValue.TABLE_FOOTER_GROUP) &&
-                child == IdentValue.TABLE_ROW)
+        return (parent == IdentValue.TABLE && (child == IdentValue.TABLE_HEADER_GROUP
+                || child == IdentValue.TABLE_ROW_GROUP
+                || child == IdentValue.TABLE_FOOTER_GROUP
+                || child == IdentValue.TABLE_CAPTION))
+                || ((parent == IdentValue.TABLE_HEADER_GROUP
+                || parent == IdentValue.TABLE_ROW_GROUP
+                || parent == IdentValue.TABLE_FOOTER_GROUP)
+                && child == IdentValue.TABLE_ROW)
                 || (parent == IdentValue.TABLE_ROW && child == IdentValue.TABLE_CELL)
-                || (parent == IdentValue.INLINE_TABLE && (child == IdentValue.TABLE_HEADER_GROUP ||
-                child == IdentValue.TABLE_ROW_GROUP ||
-                child == IdentValue.TABLE_FOOTER_GROUP));
+                || (parent == IdentValue.INLINE_TABLE && (child == IdentValue.TABLE_HEADER_GROUP
+                || child == IdentValue.TABLE_ROW_GROUP
+                || child == IdentValue.TABLE_FOOTER_GROUP));
 
     }
 
     private static boolean isNestingTableContent(IdentValue display) {
-        return display == IdentValue.TABLE || display == IdentValue.INLINE_TABLE ||
-                display == IdentValue.TABLE_HEADER_GROUP || display == IdentValue.TABLE_ROW_GROUP ||
-                display == IdentValue.TABLE_FOOTER_GROUP || display == IdentValue.TABLE_ROW;
+        return display == IdentValue.TABLE || display == IdentValue.INLINE_TABLE
+                || display == IdentValue.TABLE_HEADER_GROUP || display == IdentValue.TABLE_ROW_GROUP
+                || display == IdentValue.TABLE_FOOTER_GROUP || display == IdentValue.TABLE_ROW;
     }
 
     private static boolean isAttrFunction(FSFunction function) {
@@ -964,9 +962,8 @@ public class BoxBuilder {
     private static BlockBox createBlockBox(
             Element source, CalculatedStyle style, ChildBoxInfo info, boolean generated, boolean anonymous) {
         if (style.isFloated() && !(style.isAbsolute() || style.isFixed())) {
-            BlockBox result = style.isTable() || style.isInlineTable() ?
-                    new TableBox(source, style, anonymous) :
-                    new BlockBox(source, style, anonymous);
+            BlockBox result = style.isTable() || style.isInlineTable()
+                    ? new TableBox(source, style, anonymous) : new BlockBox(source, style, anonymous);
             result.setFloatedBoxData(new FloatedBoxData());
             return result;
         } else if (style.isSpecifiedAsBlock()) {
@@ -1026,8 +1023,8 @@ public class BoxBuilder {
     private static InlineBox createInlineBox(
             String text, Element parent, CalculatedStyle parentStyle, @Nullable Text node) {
 
-        InlineBox result = parentStyle.isInline() && !(parent.getParentNode() instanceof Document) ?
-                new InlineBox(text, node, null, null, parent, null, parentStyle) :
+        InlineBox result = parentStyle.isInline() && !(parent.getParentNode() instanceof Document)
+                ? new InlineBox(text, node, null, null, parent, null, parentStyle) :
                 new InlineBox(text, node, null, null, null, null, parentStyle.createAnonymousStyle(INLINE));
         result.applyTextTransform();
 
@@ -1063,8 +1060,8 @@ public class BoxBuilder {
 
                     if (style.isIdent(CSSName.DISPLAY, IdentValue.TABLE_COLUMN)
                             || style.isIdent(CSSName.DISPLAY, IdentValue.TABLE_COLUMN_GROUP)) {
-                        if ((blockParent != null) &&
-                                (blockParent.getStyle().isTable() || blockParent.getStyle().isInlineTable())) {
+                        if ((blockParent != null)
+                                && (blockParent.getStyle().isTable() || blockParent.getStyle().isInlineTable())) {
                             TableBox table = (TableBox) blockParent;
                             addColumnOrColumnGroup(c, table, element, style);
                         }
@@ -1217,8 +1214,7 @@ public class BoxBuilder {
         List<InlineBox> savedParents = null;
 
         for (Styleable child : children) {
-            if (child.getStyle().isLaidOutInInlineContext() &&
-                    !(layoutRunningBlocks && child.getStyle().isRunning())) {
+            if (child.getStyle().isLaidOutInInlineContext() && !(layoutRunningBlocks && child.getStyle().isRunning())) {
                 inline.add(child);
 
                 if (child.getStyle().isInline()) {

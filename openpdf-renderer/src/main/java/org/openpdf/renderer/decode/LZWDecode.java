@@ -116,8 +116,8 @@ public class LZWDecode {
             if (bitsfromhere > fillbits) { // don't take more than we need
                 bitsfromhere = fillbits;
             }
-            value |= ((nextbits >> (8 - this.bitpos - bitsfromhere)) &
-                    (0xff >> (8 - bitsfromhere))) << (fillbits - bitsfromhere);
+            value |= ((nextbits >> (8 - this.bitpos - bitsfromhere))
+                    & (0xff >> (8 - bitsfromhere))) << (fillbits - bitsfromhere);
             fillbits -= bitsfromhere;
             this.bitpos += bitsfromhere;
             if (this.bitpos >= 8) {

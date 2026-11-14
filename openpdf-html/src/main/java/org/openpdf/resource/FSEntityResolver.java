@@ -103,12 +103,12 @@ public class FSEntityResolver implements EntityResolver2 {
 
             if (is == null) {
                 XRLog.xmlEntities(Level.WARNING,
-                        "Can't find a local reference for Entity for public ID: " + publicID +
-                        " and expected to. The local URL should be: " + url + ". Not finding " +
-                        "this probably means a CLASSPATH configuration problem; this resource " +
-                        "should be included with the renderer and so not finding it means it is " +
-                        "not on the CLASSPATH, and should be. Will let parser use the default in " +
-                        "this case.");
+                        "Can't find a local reference for Entity for public ID: " + publicID
+                        + " and expected to. The local URL should be: " + url + ". Not finding "
+                        + "this probably means a CLASSPATH configuration problem; this resource "
+                        + "should be included with the renderer and so not finding it means it is "
+                        + "not on the CLASSPATH, and should be. Will let parser use the default in "
+                        + "this case.");
             }
             local = new InputSource(is);
             local.setSystemId(realUrl.toExternalForm());
@@ -141,8 +141,7 @@ public class FSEntityResolver implements EntityResolver2 {
         URL dtd = FSEntityResolver.class
                 .getResource("/resources/schema/html5/entities.dtd");
         if (dtd == null) {
-            throw new IllegalStateException("Could not find " +
-                    "/resources/schema/html5/entities.dtd on the classpath");
+            throw new IllegalStateException("Could not find /resources/schema/html5/entities.dtd on the classpath");
         }
         return new InputSource(dtd.toExternalForm());
     }

@@ -72,16 +72,13 @@ public class GlyfCompound extends Glyf {
             cur.glyphIndex = data.getShort() & 0xFFFF;
           
             // read either e/f or matching points, as shorts or bytes...
-            if (((cur.flags & ARG_1_AND_2_ARE_WORDS) != 0) &&
-                ((cur.flags & ARGS_ARE_XY_VALUES) != 0)) {
+            if (((cur.flags & ARG_1_AND_2_ARE_WORDS) != 0) && ((cur.flags & ARGS_ARE_XY_VALUES) != 0)) {
                 cur.e = data.getShort();
                 cur.f = data.getShort();
-            } else if (!((cur.flags & ARG_1_AND_2_ARE_WORDS) != 0) &&
-                        ((cur.flags & ARGS_ARE_XY_VALUES) != 0)) {
+            } else if (!((cur.flags & ARG_1_AND_2_ARE_WORDS) != 0) && ((cur.flags & ARGS_ARE_XY_VALUES) != 0)) {
                 cur.e = data.get();
                 cur.f = data.get();
-            } else if (((cur.flags & ARG_1_AND_2_ARE_WORDS) != 0) &&
-                       !((cur.flags & ARGS_ARE_XY_VALUES) != 0)) {
+            } else if (((cur.flags & ARG_1_AND_2_ARE_WORDS) != 0) && !((cur.flags & ARGS_ARE_XY_VALUES) != 0)) {
                 cur.compoundPoint = data.getShort();
                 cur.componentPoint = data.getShort();
             } else {

@@ -102,8 +102,8 @@ public final class InlineLayoutBox extends Box implements InlinePaintable {
 
         FSFontMetrics metrics = getStyle().getFSFontMetrics(c);
 
-        setHeight((int) Math.ceil(border.top() + padding.top() + metrics.getAscent() +
-                metrics.getDescent() + padding.bottom() + border.bottom()));
+        setHeight((int) Math.ceil(border.top() + padding.top() + metrics.getAscent()
+                + metrics.getDescent() + padding.bottom() + border.bottom()));
     }
 
     public int getBaseline() {
@@ -484,8 +484,7 @@ public final class InlineLayoutBox extends Box implements InlinePaintable {
                 ((InlineLayoutBox) elementBox).addToContentList(result);
             }
 
-            if (! (container instanceof AnonymousBlockBox) ||
-                    containsEnd(result)) {
+            if (! (container instanceof AnonymousBlockBox) || containsEnd(result)) {
                 break;
             }
 

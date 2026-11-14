@@ -274,8 +274,8 @@ public class GlyphLayoutManager {
      * @return Font.LAYOUT_LEFT_TO_RIGHT or Font.LAYOUT_RIGHT_TO_LEFT
      */
     protected int computeBidiFlags(String text) {
-        int bidiFlags = (defaultBidiDirection == Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT ?
-                Font.LAYOUT_LEFT_TO_RIGHT : Font.LAYOUT_RIGHT_TO_LEFT);
+        int bidiFlags = (defaultBidiDirection == Bidi.DIRECTION_DEFAULT_LEFT_TO_RIGHT
+                ? Font.LAYOUT_LEFT_TO_RIGHT : Font.LAYOUT_RIGHT_TO_LEFT);
         if (Bidi.requiresBidi(text.toCharArray(), 0, text.length())) {
             Bidi bidi = new Bidi(text, defaultBidiDirection);
 

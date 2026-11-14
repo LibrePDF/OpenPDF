@@ -36,8 +36,7 @@ import static java.util.Locale.US;
 public class GeneralUtil {
     @CheckReturnValue
     public static boolean ciEquals(final @Nullable String a, final @Nullable String b) {
-        return a == null && b == null ||
-            a != null && b != null && a.toLowerCase(US).equals(b.toLowerCase(US));
+        return a == null && b == null || a != null && b != null && a.toLowerCase(US).equals(b.toLowerCase(US));
     }
 
     @Nullable
@@ -46,9 +45,8 @@ public class GeneralUtil {
     public static InputStream openStreamFromClasspath(Object obj, String resource) {
         try {
             ClassLoader loader = obj.getClass().getClassLoader();
-            InputStream stream = loader == null ?
-                ClassLoader.getSystemResourceAsStream(resource) :
-                loader.getResourceAsStream(resource);
+            InputStream stream = loader == null
+                ? ClassLoader.getSystemResourceAsStream(resource) : loader.getResourceAsStream(resource);
 
             return stream != null ? stream : openResourceAsStream(resource);
         } catch (IOException ex) {

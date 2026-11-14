@@ -235,9 +235,8 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
             return null;
         }
 
-        return parent.getNodeType() == ELEMENT_NODE && parent.getNodeName().equals(tagName) ?
-            (Element) parent :
-            ancestor(parent, tagName, maxDepth - 1);
+        return parent.getNodeType() == ELEMENT_NODE && parent.getNodeName().equals(tagName)
+                ? (Element) parent : ancestor(parent, tagName, maxDepth - 1);
     }
 }
 

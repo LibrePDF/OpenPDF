@@ -46,8 +46,8 @@ public abstract class DerivedValue implements FSDerivedValue {
 
         if (cssText == null) {
             throw new XRRuntimeException(
-                    "CSSValue for '" + name + "' is null after " +
-                    "resolving CSS identifier for value '" + cssStringValue + "'");
+                    "CSSValue for '" + name + "' is null after "
+                            + "resolving CSS identifier for value '" + cssStringValue + "'");
         }
         this._asString = deriveStringValue(cssText, cssStringValue);
     }

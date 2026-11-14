@@ -396,8 +396,8 @@ class PdfStamperImp extends PdfWriter {
                 encryption = encryptionObject.getIndirectReference();
             }
             if (includeFileID) {
-                byte[] fileIDPartTwo = overrideFileId != null ?
-                        PdfEncryption.getFileIdChangingPart(overrideFileId) : PdfEncryption.createDocumentId();
+                byte[] fileIDPartTwo = overrideFileId != null
+                        ? PdfEncryption.getFileIdChangingPart(overrideFileId) : PdfEncryption.createDocumentId();
                 fileID = PdfEncryption.createInfoId(crypto.documentID, fileIDPartTwo);
             }
         } else if (includeFileID) {
@@ -1232,8 +1232,8 @@ class PdfStamperImp extends PdfWriter {
                     if (obj1 == null) {
                         continue;
                     }
-                    PdfDictionary appDic = (obj1 instanceof PdfIndirectReference) ?
-                            (PdfDictionary) PdfReader.getPdfObject(obj1) : (PdfDictionary) obj1;
+                    PdfDictionary appDic = (obj1 instanceof PdfIndirectReference)
+                            ? (PdfDictionary) PdfReader.getPdfObject(obj1) : (PdfDictionary) obj1;
                     PdfObject obj = appDic.get(PdfName.N);
                     PdfAppearance app = null;
                     PdfObject objReal = PdfReader.getPdfObject(obj);
@@ -1843,11 +1843,11 @@ class PdfStamperImp extends PdfWriter {
      * @throws PdfException on invalid action type
      */
     public void setAdditionalAction(PdfName actionType, PdfAction action) throws PdfException {
-        if (!(actionType.equals(DOCUMENT_CLOSE) ||
-                actionType.equals(WILL_SAVE) ||
-                actionType.equals(DID_SAVE) ||
-                actionType.equals(WILL_PRINT) ||
-                actionType.equals(DID_PRINT))) {
+        if (!(actionType.equals(DOCUMENT_CLOSE)
+                || actionType.equals(WILL_SAVE)
+                || actionType.equals(DID_SAVE)
+                || actionType.equals(WILL_PRINT)
+                || actionType.equals(DID_PRINT))) {
             throw new PdfException(
                     MessageLocalization.getComposedMessage("invalid.additional.action.type.1", actionType.toString()));
         }
