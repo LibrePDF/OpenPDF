@@ -102,7 +102,7 @@ class EnumerateTTC extends TrueTypeFont {
 
             int dirCount = rf.readInt();
             names = new String[dirCount];
-            int dirPos = rf.getFilePointer();
+            long dirPos = rf.getFilePointer();
             for (int dirIdx = 0; dirIdx < dirCount; ++dirIdx) {
                 tables.clear();
                 rf.seek(dirPos);
