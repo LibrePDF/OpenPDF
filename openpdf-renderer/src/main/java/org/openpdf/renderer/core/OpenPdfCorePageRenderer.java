@@ -17,6 +17,7 @@ import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -78,7 +79,8 @@ import org.openpdf.text.pdf.PdfString;
  *   <li>Clipping: {@code W}, {@code W*}</li>
  *   <li>Colors (DeviceGray / DeviceRGB / DeviceCMYK): {@code g}, {@code G},
  *       {@code rg}, {@code RG}, {@code k}, {@code K}, plus color-space-aware
- *       {@code cs}, {@code CS}, {@code sc}, {@code SC}, {@code scn}, {@code SCN}</li>
+ *       {@code cs}, {@code CS}, {@code sc}, {@code SC}, {@code scn}, {@code SCN}, which also
+ *       resolve a named {@code /ColorSpace} resource (ICCBased, CalGray, CalRGB, Lab)</li>
  *   <li>Text state: {@code BT}, {@code ET}, {@code Tf}, {@code Tc}, {@code Tw},
  *       {@code TL}, {@code Tz}, {@code Td}, {@code TD}, {@code Tm}, {@code T*},
  *       {@code Ts} (text rise)</li>
@@ -143,7 +145,7 @@ final class OpenPdfCorePageRenderer {
     private static final List<PdfName> EMBEDDED_FONT_KEYS = List.of(
             PdfName.FONTFILE2, PdfName.FONTFILE3, PdfName.FONTFILE);
 
-    // Color-space identifiers used by imageComponents().
+    // Color-space identifiers used by imageComponents() and colorSpaceFromName().
     private static final PdfName CS_ICC_BASED = new PdfName("ICCBased");
     private static final PdfName CS_CAL_GRAY = new PdfName("CalGray");
     private static final PdfName CS_CAL_RGB = new PdfName("CalRGB");
@@ -156,6 +158,15 @@ final class OpenPdfCorePageRenderer {
             PdfName.DEVICERGB, new PdfName("RGB"), CS_CAL_RGB);
     private static final Set<PdfName> DEVICE_CMYK_NAMES = Set.of(
             PdfName.DEVICECMYK, new PdfName("CMYK"));
+
+    // Sentinel for "no explicit Lab /WhitePoint" -- callers fall back to a default D50 white
+    // point. Using an empty array rather than null avoids null-array returns/fields.
+    private static final float[] NO_LAB_WHITE_POINT = new float[0];
+    // D50, the reference white point PDF's Lab color space conventionally assumes when a
+    // /Lab color space definition omits /WhitePoint (which is technically required, but not
+    // every PDF producer bothers to include it).
+    private static final float[] DEFAULT_LAB_WHITE_POINT = {0.9642f, 1.0f, 0.8249f};
+    private static final ColorSpace CIE_SRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
 
     /**
      * Synthetic XObject-name prefix used for inline images that have been promoted out
@@ -738,21 +749,30 @@ final class OpenPdfCorePageRenderer {
                         cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3)),
                         state.strokeAlpha);
                 break;
-            case "cs":
-                state.fillColorSpace = colorSpaceFromName(operands.get(0));
+            case "cs": {
+                ColorSpaceInfo info = colorSpaceFromName(operands.get(0));
+                state.fillColorSpace = info.kind();
+                state.fillLabWhitePoint = info.labWhitePoint();
                 state.fillColor = applyAlpha(defaultColorFor(state.fillColorSpace), state.fillAlpha);
                 break;
-            case "CS":
-                state.strokeColorSpace = colorSpaceFromName(operands.get(0));
+            }
+            case "CS": {
+                ColorSpaceInfo info = colorSpaceFromName(operands.get(0));
+                state.strokeColorSpace = info.kind();
+                state.strokeLabWhitePoint = info.labWhitePoint();
                 state.strokeColor = applyAlpha(defaultColorFor(state.strokeColorSpace), state.strokeAlpha);
                 break;
+            }
             case "sc":
             case "scn":
-                state.fillColor = applyAlpha(colorFromOperands(state.fillColorSpace, operands), state.fillAlpha);
+                state.fillColor = applyAlpha(
+                        colorFromOperands(state.fillColorSpace, state.fillLabWhitePoint, operands), state.fillAlpha);
                 break;
             case "SC":
             case "SCN":
-                state.strokeColor = applyAlpha(colorFromOperands(state.strokeColorSpace, operands), state.strokeAlpha);
+                state.strokeColor = applyAlpha(
+                        colorFromOperands(state.strokeColorSpace, state.strokeLabWhitePoint, operands),
+                        state.strokeAlpha);
                 break;
 
             // --- Path construction ---
@@ -1791,26 +1811,108 @@ final class OpenPdfCorePageRenderer {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), a);
     }
 
-    private static ColorSpaceKind colorSpaceFromName(PdfObject operand) {
+    /**
+     * Classifies a {@code cs}/{@code CS} color-space operand. Literal device names
+     * ({@code /DeviceGray}, {@code /DeviceRGB}, {@code /DeviceCMYK} and their abbreviations)
+     * resolve directly; anything else is looked up by name in the page's {@code /ColorSpace}
+     * resource dictionary (PDF §8.6.3) and classified from its definition &mdash; the common
+     * case being a named {@code ICCBased} color space (classified by its stream's {@code /N}
+     * component count), {@code CalGray}, {@code CalRGB} or {@code Lab}. Color spaces this
+     * renderer doesn't specifically understand (Separation, DeviceN, Indexed, Pattern, ...)
+     * come back as {@link ColorSpaceKind#UNKNOWN}, in which case {@link #colorFromOperands}
+     * falls back to inferring gray/RGB/CMYK from the {@code sc}/{@code scn} operand count.
+     */
+    private ColorSpaceInfo colorSpaceFromName(PdfObject operand) {
         if (!(operand instanceof PdfName name)) {
-            return ColorSpaceKind.UNKNOWN;
+            return ColorSpaceInfo.UNKNOWN;
         }
-        String n = name.toString();
+        ColorSpaceKind literal = literalDeviceColorSpace(name);
+        if (literal != ColorSpaceKind.UNKNOWN) {
+            return new ColorSpaceInfo(literal, NO_LAB_WHITE_POINT);
+        }
+        return classifyColorSpaceDefinition(resolveColorSpaceResource(name));
+    }
+
+    private static ColorSpaceKind literalDeviceColorSpace(PdfName name) {
+        if (DEVICE_GRAY_NAMES.contains(name)) {
+            return ColorSpaceKind.GRAY;
+        }
+        if (DEVICE_RGB_NAMES.contains(name)) {
+            return ColorSpaceKind.RGB;
+        }
+        if (DEVICE_CMYK_NAMES.contains(name)) {
+            return ColorSpaceKind.CMYK;
+        }
+        return ColorSpaceKind.UNKNOWN;
+    }
+
+    /**
+     * Resolves a {@code cs}/{@code CS} name operand through the page's {@code /ColorSpace}
+     * resource dictionary, following one level of indirection. Returns {@code null} if there
+     * are no resources, no {@code /ColorSpace} dictionary, or no entry under {@code name}.
+     */
+    private PdfObject resolveColorSpaceResource(PdfName name) {
+        if (resources == null) {
+            return null;
+        }
+        PdfDictionary csResources = resources.getAsDict(PdfName.COLORSPACE);
+        if (csResources == null) {
+            return null;
+        }
+        PdfObject obj = csResources.get(name);
+        return obj instanceof PRIndirectReference ref ? PdfReader.getPdfObject(ref) : obj;
+    }
+
+    private static ColorSpaceInfo classifyColorSpaceDefinition(PdfObject direct) {
+        if (direct instanceof PdfName name) {
+            return new ColorSpaceInfo(literalDeviceColorSpace(name), NO_LAB_WHITE_POINT);
+        }
+        if (!(direct instanceof PdfArray arr) || arr.size() < 1) {
+            return ColorSpaceInfo.UNKNOWN;
+        }
+        PdfObject head = arr.getDirectObject(0);
+        if (CS_ICC_BASED.equals(head)) {
+            return new ColorSpaceInfo(kindForComponentCount(iccBasedComponents(arr)), NO_LAB_WHITE_POINT);
+        }
+        if (CS_CAL_GRAY.equals(head)) {
+            return new ColorSpaceInfo(ColorSpaceKind.GRAY, NO_LAB_WHITE_POINT);
+        }
+        if (CS_CAL_RGB.equals(head)) {
+            return new ColorSpaceInfo(ColorSpaceKind.RGB, NO_LAB_WHITE_POINT);
+        }
+        if (CS_LAB.equals(head)) {
+            return new ColorSpaceInfo(ColorSpaceKind.LAB, labWhitePointFrom(arr));
+        }
+        return ColorSpaceInfo.UNKNOWN;
+    }
+
+    private static ColorSpaceKind kindForComponentCount(int n) {
         switch (n) {
-            case "/DeviceGray":
-            case "/G":
-            case "/CalGray":
+            case 1:
                 return ColorSpaceKind.GRAY;
-            case "/DeviceRGB":
-            case "/RGB":
-            case "/CalRGB":
+            case 3:
                 return ColorSpaceKind.RGB;
-            case "/DeviceCMYK":
-            case "/CMYK":
+            case 4:
                 return ColorSpaceKind.CMYK;
             default:
                 return ColorSpaceKind.UNKNOWN;
         }
+    }
+
+    /**
+     * Reads the {@code /WhitePoint} of a {@code [/Lab dict]} color-space array, or
+     * {@link #NO_LAB_WHITE_POINT} if absent/malformed (callers fall back to a default D50 white
+     * point).
+     */
+    private static float[] labWhitePointFrom(PdfArray labArray) {
+        if (labArray.size() < 2 || !(labArray.getDirectObject(1) instanceof PdfDictionary dict)) {
+            return NO_LAB_WHITE_POINT;
+        }
+        PdfArray wp = dict.getAsArray(PdfName.WHITEPOINT);
+        if (wp == null || wp.size() < 3) {
+            return NO_LAB_WHITE_POINT;
+        }
+        return new float[]{floatAt(wp, 0), floatAt(wp, 1), floatAt(wp, 2)};
     }
 
     private static Color defaultColorFor(ColorSpaceKind kind) {
@@ -1820,43 +1922,74 @@ final class OpenPdfCorePageRenderer {
     /**
      * Picks numeric operands matching the active color space; non-numeric operands (e.g. pattern names) yield default.
      */
-    private static Color colorFromOperands(ColorSpaceKind kind, List<PdfObject> operands) {
+    private static Color colorFromOperands(ColorSpaceKind kind, float[] labWhitePoint, List<PdfObject> operands) {
+        int numericCount = countNumericOperands(operands);
+        switch (kind) {
+            case GRAY:
+                return numericCount >= 1 ? gray(num(operands, 0)) : defaultColorFor(kind);
+            case RGB:
+                return numericCount >= 3
+                        ? rgb(num(operands, 0), num(operands, 1), num(operands, 2)) : defaultColorFor(kind);
+            case CMYK:
+                return numericCount >= 4
+                        ? cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3))
+                        : defaultColorFor(kind);
+            case LAB:
+                return numericCount >= 3
+                        ? labToRgb(labWhitePoint, num(operands, 0), num(operands, 1), num(operands, 2))
+                        : defaultColorFor(kind);
+            default:
+                // Color space is unknown / unsupported: infer from operand count instead.
+                return colorFromOperandCountOnly(numericCount, operands);
+        }
+    }
+
+    private static int countNumericOperands(List<PdfObject> operands) {
         int numericCount = 0;
         for (int i = 0; i < operands.size() - 1; i++) {
             if (operands.get(i) instanceof PdfNumber) {
                 numericCount++;
             }
         }
-        switch (kind) {
-            case GRAY:
-                if (numericCount >= 1) {
-                    return gray(num(operands, 0));
-                }
-                break;
-            case RGB:
-                if (numericCount >= 3) {
-                    return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
-                }
-                break;
-            case CMYK:
-                if (numericCount >= 4) {
-                    return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
-                }
-                break;
-            default:
-                // Fall through: infer from operand count when color space is unknown / unsupported.
-                if (numericCount >= 4) {
-                    return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
-                }
-                if (numericCount == 3) {
-                    return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
-                }
-                if (numericCount == 1) {
-                    return gray(num(operands, 0));
-                }
-                break;
+        return numericCount;
+    }
+
+    private static Color colorFromOperandCountOnly(int numericCount, List<PdfObject> operands) {
+        if (numericCount >= 4) {
+            return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
         }
-        return defaultColorFor(kind);
+        if (numericCount == 3) {
+            return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
+        }
+        if (numericCount == 1) {
+            return gray(num(operands, 0));
+        }
+        return defaultColorFor(ColorSpaceKind.UNKNOWN);
+    }
+
+    /**
+     * Converts a CIE L*a*b* color (PDF §8.6.5.4) to sRGB via CIEXYZ, using {@code whitePoint}
+     * (fewer than 3 elements, e.g. {@link #NO_LAB_WHITE_POINT}, defaults to D50). Lab components
+     * are not directly comparable to RGB/gray (L is 0-100, a and b are roughly -100..100), so
+     * treating them as raw RGB &mdash; the previous fallback behavior for an unrecognized color
+     * space &mdash; produced wrong colors; this does the standard inverse Lab transform instead.
+     */
+    private static Color labToRgb(float[] whitePoint, float lStar, float aStar, float bStar) {
+        float[] white = whitePoint.length >= 3 ? whitePoint : DEFAULT_LAB_WHITE_POINT;
+        float fy = (lStar + 16f) / 116f;
+        float fx = fy + aStar / 500f;
+        float fz = fy - bStar / 200f;
+        float[] xyz = {
+                white[0] * labInverseF(fx),
+                white[1] * labInverseF(fy),
+                white[2] * labInverseF(fz)
+        };
+        float[] srgb = CIE_SRGB.fromCIEXYZ(xyz);
+        return rgb(clamp01(srgb[0]), clamp01(srgb[1]), clamp01(srgb[2]));
+    }
+
+    private static float labInverseF(float t) {
+        return t >= 6f / 29f ? t * t * t : 3f * (6f / 29f) * (6f / 29f) * (t - 4f / 29f);
     }
 
     private static float clamp01(float v) {
@@ -1869,7 +2002,40 @@ final class OpenPdfCorePageRenderer {
         return v;
     }
 
-    private enum ColorSpaceKind { GRAY, RGB, CMYK, UNKNOWN }
+    private enum ColorSpaceKind { GRAY, RGB, CMYK, LAB, UNKNOWN }
+
+    /**
+     * Result of resolving a {@code cs}/{@code CS} operand: the classified {@link ColorSpaceKind}
+     * plus, for {@link ColorSpaceKind#LAB}, the color space's {@code /WhitePoint} (or an empty
+     * array to use the default) needed to later convert {@code sc}/{@code scn} operands.
+     */
+    private record ColorSpaceInfo(ColorSpaceKind kind, float[] labWhitePoint) {
+        static final ColorSpaceInfo UNKNOWN = new ColorSpaceInfo(ColorSpaceKind.UNKNOWN, NO_LAB_WHITE_POINT);
+
+        // Records generate equals()/hashCode()/toString() from component identity by default,
+        // which for an array component compares references rather than content; override
+        // explicitly so two infos with equal white points compare equal.
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof ColorSpaceInfo other)) {
+                return false;
+            }
+            return kind == other.kind && Arrays.equals(labWhitePoint, other.labWhitePoint);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * kind.hashCode() + Arrays.hashCode(labWhitePoint);
+        }
+
+        @Override
+        public String toString() {
+            return "ColorSpaceInfo[kind=" + kind + ", labWhitePoint=" + Arrays.toString(labWhitePoint) + "]";
+        }
+    }
 
     /**
      * Mutable per-graphics-state snapshot. Not thread-safe.
@@ -1880,6 +2046,11 @@ final class OpenPdfCorePageRenderer {
         Color strokeColor = Color.BLACK;
         ColorSpaceKind fillColorSpace = ColorSpaceKind.GRAY;
         ColorSpaceKind strokeColorSpace = ColorSpaceKind.GRAY;
+        // Set alongside fillColorSpace/strokeColorSpace whenever a `cs`/`CS` resolves to a Lab
+        // color space; NO_LAB_WHITE_POINT (default D50) otherwise. Only meaningful when the
+        // paired ColorSpaceKind is LAB.
+        float[] fillLabWhitePoint = NO_LAB_WHITE_POINT;
+        float[] strokeLabWhitePoint = NO_LAB_WHITE_POINT;
         float fillAlpha = 1.0f;
         float strokeAlpha = 1.0f;
 
@@ -1913,6 +2084,8 @@ final class OpenPdfCorePageRenderer {
             this.strokeColor = other.strokeColor;
             this.fillColorSpace = other.fillColorSpace;
             this.strokeColorSpace = other.strokeColorSpace;
+            this.fillLabWhitePoint = other.fillLabWhitePoint;
+            this.strokeLabWhitePoint = other.strokeLabWhitePoint;
             this.fillAlpha = other.fillAlpha;
             this.strokeAlpha = other.strokeAlpha;
             this.lineWidth = other.lineWidth;

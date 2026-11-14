@@ -24,6 +24,8 @@ import org.openpdf.text.Document;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.Rectangle;
 import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStamper;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
@@ -101,6 +103,101 @@ class OpenPdfCorePageRendererOperatorsTest {
             assertThat(cyanish)
                     .as("CMYK (1,0,0,0) fill must produce cyan-ish pixels")
                     .isGreaterThan(100);
+        }
+    }
+
+    /**
+     * Builds a base single-page PDF, then uses {@link PdfStamper} to inject a named
+     * {@code /ColorSpace} resource entry (something {@code PdfContentByte}'s high-level API has
+     * no method for) directly into the page's {@code /Resources} dictionary, and appends
+     * {@code contentOperators} as raw content referencing that resource by name. This exercises
+     * the {@code cs}/{@code CS} resource-dictionary resolution path in
+     * {@code OpenPdfCorePageRenderer}, as opposed to a literal device color space name.
+     */
+    private static byte[] buildPdfWithColorSpaceResource(String resourceName,
+            org.openpdf.text.pdf.PdfArray colorSpaceDefinition, String contentOperators) throws Exception {
+        // A Document/PdfWriter only registers a page once some content is actually written
+        // to it; a no-op q/Q pair is enough to give PdfStamper a real page to attach to.
+        byte[] basePdf = buildPdf(cb -> {
+            cb.saveState();
+            cb.restoreState();
+        });
+        PdfReader reader = new PdfReader(basePdf);
+        ByteArrayOutputStream stamped = new ByteArrayOutputStream();
+        try (PdfStamper stamper = new PdfStamper(reader, stamped)) {
+            org.openpdf.text.pdf.PdfDictionary pageDict = reader.getPageN(1);
+            org.openpdf.text.pdf.PdfDictionary pageResources = pageDict.getAsDict(org.openpdf.text.pdf.PdfName.RESOURCES);
+            if (pageResources == null) {
+                pageResources = new org.openpdf.text.pdf.PdfDictionary();
+                pageDict.put(org.openpdf.text.pdf.PdfName.RESOURCES, pageResources);
+            }
+            org.openpdf.text.pdf.PdfDictionary csResources =
+                    pageResources.getAsDict(org.openpdf.text.pdf.PdfName.COLORSPACE);
+            if (csResources == null) {
+                csResources = new org.openpdf.text.pdf.PdfDictionary();
+                pageResources.put(org.openpdf.text.pdf.PdfName.COLORSPACE, csResources);
+            }
+            csResources.put(new org.openpdf.text.pdf.PdfName(resourceName), colorSpaceDefinition);
+            stamper.getOverContent(1).setLiteral(contentOperators);
+        }
+        return stamped.toByteArray();
+    }
+
+    @Test
+    void rendersLabNamedColorSpaceFillAsConvertedRgb() throws Exception {
+        // [/Lab <</WhitePoint [0.9642 1.0 0.8249]>>] resolved by name via the page's
+        // /ColorSpace resources, then filled with an scn triplet that is the D50 Lab
+        // encoding of sRGB red. Before resolving named color spaces, an unrecognized "cs"
+        // name fell back to ColorSpaceKind.UNKNOWN, and colorFromOperands's heuristic
+        // treated the 3 Lab operands as if they were raw (r, g, b) -- but Lab's L is 0-100
+        // and a/b run roughly -100..100, so clamping them into [0,1] collapses virtually
+        // every Lab color to solid white/black instead of the intended color.
+        org.openpdf.text.pdf.PdfDictionary labDict = new org.openpdf.text.pdf.PdfDictionary();
+        labDict.put(new org.openpdf.text.pdf.PdfName("WhitePoint"),
+                new org.openpdf.text.pdf.PdfArray(new float[]{0.9642f, 1.0f, 0.8249f}));
+        org.openpdf.text.pdf.PdfArray labCs = new org.openpdf.text.pdf.PdfArray();
+        labCs.add(new org.openpdf.text.pdf.PdfName("Lab"));
+        labCs.add(labDict);
+
+        byte[] pdf = buildPdfWithColorSpaceResource("CSLab", labCs,
+                "/CSLab cs\n54.29 80.81 69.89 scn\n50 50 150 150 re f\n");
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "lab-colorspace-fill.png");
+            int redish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green < 60 && blue < 60);
+            assertThat(redish)
+                    .as("a Lab color space fill must convert to the correct RGB color, "
+                            + "not the near-white/black result of treating L*a*b* as raw RGB")
+                    .isGreaterThan(200);
+        }
+    }
+
+    @Test
+    void rendersIccBasedNamedColorSpaceFill() throws Exception {
+        // A named /ColorSpace resource resolving to [/ICCBased <</N 3>>] (an RGB ICC
+        // profile stream; the profile bytes themselves are irrelevant to the renderer,
+        // which only reads /N to determine the component count). Locks in that the
+        // resource-dictionary resolution path (shared with the Lab case above) correctly
+        // classifies a 3-component ICCBased space as RGB.
+        org.openpdf.text.pdf.PdfDictionary iccDict = new org.openpdf.text.pdf.PdfDictionary();
+        iccDict.put(new org.openpdf.text.pdf.PdfName("N"), new org.openpdf.text.pdf.PdfNumber(3));
+        org.openpdf.text.pdf.PdfArray iccCs = new org.openpdf.text.pdf.PdfArray();
+        iccCs.add(new org.openpdf.text.pdf.PdfName("ICCBased"));
+        iccCs.add(iccDict);
+
+        byte[] pdf = buildPdfWithColorSpaceResource("CS0", iccCs,
+                "/CS0 cs\n0 1 0 scn\n50 50 150 150 re f\n");
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "iccbased-colorspace-fill.png");
+            int greenish = countPixelsMatching(img, (red, green, blue) ->
+                    green > 200 && red < 60 && blue < 60);
+            assertThat(greenish)
+                    .as("a 3-component ICCBased color space fill must be classified as RGB")
+                    .isGreaterThan(200);
         }
     }
 
