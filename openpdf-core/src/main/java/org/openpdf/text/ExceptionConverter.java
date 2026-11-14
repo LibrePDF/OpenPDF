@@ -90,6 +90,7 @@ public class ExceptionConverter extends RuntimeException {
     public ExceptionConverter(Exception ex) {
         this.ex = ex;
         prefix = (ex instanceof RuntimeException) ? "" : "ExceptionConverter: ";
+        this.setStackTrace(ex.getStackTrace());
     }
 
     /**
@@ -175,8 +176,7 @@ public class ExceptionConverter extends RuntimeException {
     }
 
     /**
-     * requests to fill in the stack trace we will have to ignore. We can't throw an exception here, because this method
-     * is called by the constructor of Throwable
+     * We do not fill our own stack trace. Instead, we copy the stack trace in the constructor.
      *
      * @return a Throwable
      */
