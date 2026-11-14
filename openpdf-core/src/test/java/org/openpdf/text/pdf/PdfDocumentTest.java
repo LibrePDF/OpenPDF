@@ -4,19 +4,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+
 import org.openpdf.text.Document;
 import org.openpdf.text.Element;
 import org.openpdf.text.Font;
 import org.openpdf.text.HeaderFooter;
+import org.openpdf.text.ListItem;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.Paragraph;
+import org.openpdf.text.Phrase;
+
+import org.openpdf.text.pdf.parser.PdfTextExtractor;
+
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
-import org.openpdf.text.Phrase;
 
 class PdfDocumentTest {
 
@@ -98,4 +104,118 @@ class PdfDocumentTest {
         }
         document.close();
     }
+
+    @Test
+    void listItemWithKeepTogetherShouldMoveToNextPage() throws Exception {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        Document document = new Document(PageSize.A6, 36, 36, 36, 36);
+        PdfWriter.getInstance(document, output);
+
+        document.open();
+
+        // Fill most of the first page.
+        Paragraph filler = new Paragraph(
+                String.join("\n", java.util.Collections.nCopies(23, "Filler line")));
+        filler.setLeading(12f);
+        document.add(filler);
+
+        // Create a ListItem that cannot fit in the remaining space,
+        // but can fit completely on a fresh page.
+        String itemText = "KEEP_TOGETHER_START "
+                + String.join(" ", java.util.Collections.nCopies(40, "KeepTogetherToken"))
+                + " KEEP_TOGETHER_END";
+
+        ListItem listItem = new ListItem(itemText);
+        listItem.setLeading(12f);
+        listItem.setKeepTogether(true);
+
+        document.add(listItem);
+        document.close();
+
+        PdfReader reader = new PdfReader(output.toByteArray());
+
+        try {
+            PdfTextExtractor extractor = new PdfTextExtractor(reader);
+
+            String page1Text = extractor.getTextFromPage(1);
+            String page2Text = extractor.getTextFromPage(2);
+
+            // The PDF should contain exactly two pages.
+            assertEquals(2, reader.getNumberOfPages());
+
+            // The ListItem must not start on the first page.
+            assertTrue(
+                    !page1Text.contains("KEEP_TOGETHER_START"),
+                    "The ListItem should not start on the first page"
+            );
+
+            // The complete ListItem must appear on the second page.
+            assertTrue(
+                    page2Text.contains("KEEP_TOGETHER_START"),
+                    "The beginning of the ListItem should appear on the second page"
+            );
+
+            assertTrue(
+                    page2Text.contains("KEEP_TOGETHER_END"),
+                    "The end of the ListItem should appear on the second page"
+            );
+        } finally {
+            reader.close();
+        }
+    }
+
+
+    @Test
+    void listItemWithoutKeepTogetherShouldRetainExistingPageBreakingBehavior() throws Exception {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        Document document = new Document(PageSize.A6, 36, 36, 36, 36);
+        PdfWriter.getInstance(document, output);
+
+        document.open();
+
+        // Fill most of the first page.
+        Paragraph filler = new Paragraph(
+                String.join("\n", java.util.Collections.nCopies(23, "Filler line")));
+        filler.setLeading(12f);
+        document.add(filler);
+
+        // This ListItem deliberately does not enable KeepTogether.
+        String itemText = "NO_KEEP_TOGETHER_START "
+                + String.join(" ", java.util.Collections.nCopies(40, "NormalItemToken"))
+                + " NO_KEEP_TOGETHER_END";
+
+        ListItem listItem = new ListItem(itemText);
+        listItem.setLeading(12f);
+        listItem.setKeepTogether(false);
+
+        document.add(listItem);
+        document.close();
+
+        PdfReader reader = new PdfReader(output.toByteArray());
+
+        try {
+            PdfTextExtractor extractor = new PdfTextExtractor(reader);
+
+            String page1Text = extractor.getTextFromPage(1);
+            String page2Text = extractor.getTextFromPage(2);
+
+            // The item should begin on the first page when KeepTogether is disabled.
+            assertTrue(
+                    page1Text.contains("NO_KEEP_TOGETHER_START"),
+                    "The ListItem should start on the first page when KeepTogether is disabled"
+            );
+
+            // The item should continue onto the second page.
+            assertTrue(
+                    page2Text.contains("NO_KEEP_TOGETHER_END"),
+                    "The ListItem should continue onto the second page"
+            );
+        } finally {
+            reader.close();
+        }
+    }
+
+
 }
