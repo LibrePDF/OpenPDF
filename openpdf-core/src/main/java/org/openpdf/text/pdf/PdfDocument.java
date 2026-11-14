@@ -654,6 +654,15 @@ public class PdfDocument extends Document {
                     leading = listItem.getTotalLeading();
                     carriageReturn();
 
+                    // Keep the ListItem together on a single page when possible.
+                    if (listItem.getKeepTogether() && currentHeight > 0) {
+                        PdfPTable table = createInOneCell(listItem);
+
+                        if (!fitsPage(table, 0f)) {
+                            newPage();
+                        }
+                    }
+
                     // we prepare the current line to be able to show us the listsymbol
                     line.setListItem(listItem);
                     // we process the item
