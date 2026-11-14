@@ -37,19 +37,21 @@ public class FopGlyphProcessor {
         TrueTypeFontUnicode ttu = (TrueTypeFontUnicode) font;
         IntBuffer charBuffer = IntBuffer.allocate(text.length());
         IntBuffer glyphBuffer = IntBuffer.allocate(text.length());
-        int textLength = text.length();
-        for (char c : text.toCharArray()) {
-            int[] metrics = ttu.getMetricsTT(c);
+        int glyphCount = 0;
+        for (int offset = 0; offset < text.length();) {
+            int codePoint = text.codePointAt(offset);
+            offset += Character.charCount(codePoint);
+            int[] metrics = ttu.getMetricsTT(codePoint);
             // metrics will be null in case glyph not defined in TTF font, skip these characters.
             if (metrics == null) {
-                textLength--;
                 continue;
             }
-            charBuffer.put(c);
+            charBuffer.put(codePoint);
             glyphBuffer.put(metrics[0]);
+            glyphCount++;
         }
-        charBuffer.limit(textLength);
-        glyphBuffer.limit(textLength);
+        charBuffer.limit(glyphCount);
+        glyphBuffer.limit(glyphCount);
 
         GlyphSequence glyphSequence = new GlyphSequence(charBuffer, glyphBuffer, null);
         TTFFile ttf = TTFCache.getTTFFile(fileName, ttu);
