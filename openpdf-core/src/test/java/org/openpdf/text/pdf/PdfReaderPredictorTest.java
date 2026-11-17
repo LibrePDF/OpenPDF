@@ -3,7 +3,6 @@ package org.openpdf.text.pdf;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Random;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -21,8 +20,10 @@ class PdfReaderPredictorTest {
 
     private static byte[] image() {
         byte[] image = new byte[BYTES_PER_ROW * ROWS];
-        new Random(42).nextBytes(image);
-        // Values on both sides of 128, which a signed byte gets wrong.
+        // A fixed pattern that runs through byte values on both sides of 128, which a signed byte gets wrong.
+        for (int i = 0; i < image.length; i++) {
+            image[i] = (byte) (i * 37 + 11);
+        }
         image[0] = (byte) 200;
         image[1] = (byte) 150;
         image[2] = (byte) 255;
