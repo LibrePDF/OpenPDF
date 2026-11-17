@@ -302,6 +302,10 @@ public class PdfDocument extends Document {
      * This is the flag meaning whether document is creating footer.
      */
     private boolean isDoFooter = false;
+    /**
+     * Whether annotations placed on a later page were still waiting for it when the current page was started.
+     */
+    private boolean delayedAnnotationsPending;
 
     /**
      * Constructs a new PDF document.
@@ -813,11 +817,6 @@ public class PdfDocument extends Document {
             throw new ExceptionConverter(de);
         }
     }
-
-    /**
-     * Whether annotations placed on a later page were still waiting for it when the current page was started.
-     */
-    private boolean delayedAnnotationsPending;
 
     /**
      * Closes the document.
