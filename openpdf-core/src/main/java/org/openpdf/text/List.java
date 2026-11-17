@@ -127,6 +127,11 @@ public class List implements TextElementArray {
      */
     public static final boolean LOWERCASE = true;
 
+    /**
+     * Default post-symbol suffix used by symbol-based lists.
+     */
+    protected static final String SYMBOL_SPACE_SUFFIX = " ";
+
     // member variables
 
     /**
@@ -309,24 +314,62 @@ public class List implements TextElementArray {
     public boolean add(Element o) {
         if (o instanceof ListItem) {
             ListItem item = (ListItem) o;
+            Chunk symbolChunk;
             if (numbered || lettered) {
-                Chunk chunk = new Chunk(preSymbol, symbol.getFont());
-                int index = first + list.size();
-                if (lettered) {
-                    chunk.append(RomanAlphabetFactory.getString(index, lowercase));
-                } else {
-                    chunk.append(String.valueOf(index));
-                }
-                chunk.append(postSymbol);
-                item.setListSymbol(chunk);
+                symbolChunk = createSymbolChunk(getNextItemSymbolText());
             } else {
-                item.setListSymbol(symbol);
+                symbolChunk = symbol;
             }
-            item.setIndentationLeft(symbolIndent, autoindent);
-            item.setIndentationRight(0);
-            return list.add(item);
+            return configureAndAddItem(item, symbolChunk);
+        } else if (o instanceof List) {
+            return add((List) o);
         }
         return false;
+    }
+
+    /**
+     * Builds a symbol <CODE>Chunk</CODE> wrapped with {@link #preSymbol} and {@link #postSymbol}.
+     *
+     * @param symbolText the core symbol text for the current list item
+     * @return a configured <CODE>Chunk</CODE> representing the list item symbol
+     */
+    protected Chunk createSymbolChunk(String symbolText) {
+        Chunk chunk = new Chunk(preSymbol, symbol.getFont());
+        chunk.append(symbolText);
+        chunk.append(postSymbol);
+        return chunk;
+    }
+
+    /**
+     * Configures the list symbol and indentation on a <CODE>ListItem</CODE> and adds it to {@link #list}.
+     *
+     * @param item        the <CODE>ListItem</CODE> to configure and add
+     * @param symbolChunk the <CODE>Chunk</CODE> to use as the list symbol
+     * @return true if adding the item succeeded
+     */
+    protected boolean configureAndAddItem(ListItem item, Chunk symbolChunk) {
+        item.setListSymbol(symbolChunk);
+        item.setIndentationLeft(symbolIndent, autoindent);
+        item.setIndentationRight(0);
+        return list.add(item);
+    }
+
+    /**
+     * Updates the font of the list {@link #symbol} while preserving its current font size.
+     *
+     * @param fontName the font family name to apply
+     */
+    protected void setSymbolFont(String fontName) {
+        float fontSize = symbol.getFont().getSize();
+        symbol.setFont(FontFactory.getFont(fontName, fontSize, Font.NORMAL));
+    }
+
+    private String getNextItemSymbolText() {
+        int index = first + list.size();
+        if (lettered) {
+            return RomanAlphabetFactory.getString(index, lowercase);
+        }
+        return String.valueOf(index);
     }
 
     /**
@@ -480,10 +523,10 @@ public class List implements TextElementArray {
     // methods to retrieve information
 
     /**
-     * @param uppercase the uppercase to set
+     * @param lowercase the lowercase flag to set
      */
-    public void setLowercase(boolean uppercase) {
-        this.lowercase = uppercase;
+    public void setLowercase(boolean lowercase) {
+        this.lowercase = lowercase;
     }
 
     /**

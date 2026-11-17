@@ -197,10 +197,9 @@ public class Jpeg2000 extends Image {
                 if (JP2_IHDR != boxType) {
                     throw new IOException(MessageLocalization.getComposedMessage("expected.ihdr.marker"));
                 }
-                scaledHeight = cio_read(4);
-                setTop(scaledHeight);
-                scaledWidth = cio_read(4);
-                setRight(scaledWidth);
+                int height = cio_read(4);
+                int width = cio_read(4);
+                setDimensions(width, height);
                 bpc = -1;
             } else if (boxLength == 0xff4fff51) {
                 Utilities.skip(inp, 4);
@@ -211,10 +210,7 @@ public class Jpeg2000 extends Image {
                 Utilities.skip(inp, 16);
                 colorspace = cio_read(2);
                 bpc = 8;
-                scaledHeight = y1 - y0;
-                setTop(scaledHeight);
-                scaledWidth = x1 - x0;
-                setRight(scaledWidth);
+                setDimensions(x1 - x0, y1 - y0);
             } else {
                 throw new IOException(MessageLocalization.getComposedMessage("not.a.valid.jpeg2000.file"));
             }

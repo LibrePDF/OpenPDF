@@ -68,9 +68,8 @@ public class ZapfDingbatsList extends List {
     public ZapfDingbatsList(int zn) {
         super(true);
         this.zn = zn;
-        float fontsize = symbol.getFont().getSize();
-        symbol.setFont(FontFactory.getFont(FontFactory.ZAPFDINGBATS, fontsize, Font.NORMAL));
-        postSymbol = " ";
+        setSymbolFont(FontFactory.ZAPFDINGBATS);
+        postSymbol = SYMBOL_SPACE_SUFFIX;
     }
 
     /**
@@ -82,9 +81,8 @@ public class ZapfDingbatsList extends List {
     public ZapfDingbatsList(int zn, int symbolIndent) {
         super(true, symbolIndent);
         this.zn = zn;
-        float fontsize = symbol.getFont().getSize();
-        symbol.setFont(FontFactory.getFont(FontFactory.ZAPFDINGBATS, fontsize, Font.NORMAL));
-        postSymbol = " ";
+        setSymbolFont(FontFactory.ZAPFDINGBATS);
+        postSymbol = SYMBOL_SPACE_SUFFIX;
     }
 
     /**
@@ -115,31 +113,12 @@ public class ZapfDingbatsList extends List {
     public boolean add(Element o) {
         if (o instanceof ListItem) {
             ListItem item = (ListItem) o;
-            Chunk chunk = new Chunk(preSymbol, symbol.getFont());
-            chunk.append(String.valueOf((char) zn));
-            chunk.append(postSymbol);
-            item.setListSymbol(chunk);
-            item.setIndentationLeft(symbolIndent, autoindent);
-            item.setIndentationRight(0);
-            list.add(item);
+            Chunk chunk = createSymbolChunk(String.valueOf((char) zn));
+            return configureAndAddItem(item, chunk);
         } else if (o instanceof List) {
-            List nested = (List) o;
-            nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
-            first--;
-            return list.add(nested);
+            return add((List) o);
         }
         return false;
-    }
-
-    /**
-     * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
-     *
-     * @param s the string to add.
-     * @return true if adding the string succeeded
-     */
-    @Override
-    public boolean add(String s) {
-        return this.add(new ListItem(s));
     }
 
 }

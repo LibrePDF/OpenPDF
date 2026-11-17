@@ -234,7 +234,6 @@ public class Jpeg extends Image {
                         MessageLocalization.getComposedMessage("1.is.not.a.valid.jpeg.file", errorID));
             }
             boolean firstPass = true;
-            int len;
             while (true) {
                 int v = is.read();
                 if (v < 0) {
@@ -247,97 +246,21 @@ public class Jpeg extends Image {
                     } while (marker == 0xFF); // Skip extra FF bytes, per JPEG spec B.1.1.2
                     if (firstPass && marker == M_APP0) {
                         firstPass = false;
-                        len = getShort(is);
-                        if (len < 16) {
-                            Utilities.skip(is, len - 2);
-                            continue;
-                        }
-                        byte[] bcomp = new byte[JFIF_ID.length];
-                        int r = is.read(bcomp);
-                        if (r != bcomp.length) {
-                            throw new BadElementException(
-                                    MessageLocalization.getComposedMessage("1.corrupted.jfif.marker", errorID));
-                        }
-                        boolean found = true;
-                        for (int k = 0; k < bcomp.length; ++k) {
-                            if (bcomp[k] != JFIF_ID[k]) {
-                                found = false;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            Utilities.skip(is, len - 2 - bcomp.length);
-                            continue;
-                        }
-                        Utilities.skip(is, 2);
-                        int units = is.read();
-                        int dx = getShort(is);
-                        int dy = getShort(is);
-                        if (units == 1) {
-                            dpiX = dx;
-                            dpiY = dy;
-                        } else if (units == 2) {
-                            dpiX = (int) (dx * 2.54f + 0.5f);
-                            dpiY = (int) (dy * 2.54f + 0.5f);
-                        }
-                        Utilities.skip(is, len - 2 - bcomp.length - 7);
+                        processApp0Marker(is, errorID);
                         continue;
                     }
                     if (marker == M_APPE) {
-                        len = getShort(is) - 2;
-                        byte[] byteappe = new byte[len];
-                        for (int k = 0; k < len; ++k) {
-                            byteappe[k] = (byte) is.read();
-                        }
-                        if (byteappe.length >= 12) {
-                            String appe = new String(byteappe, 0, 5, StandardCharsets.ISO_8859_1);
-                            if (appe.equals("Adobe")) {
-                                invert = true;
-                            }
-                        }
+                        processAppeMarker(is);
                         continue;
                     }
                     if (marker == M_APP2) {
-                        len = getShort(is) - 2;
-                        byte[] byteapp2 = new byte[len];
-                        for (int k = 0; k < len; ++k) {
-                            byteapp2[k] = (byte) is.read();
-                        }
-                        if (byteapp2.length >= 14) {
-                            String app2 = new String(byteapp2, 0, 11, StandardCharsets.ISO_8859_1);
-                            if (app2.equals("ICC_PROFILE")) {
-                                int order = byteapp2[12] & 0xff;
-                                int count = byteapp2[13] & 0xff;
-                                // some jpeg producers don't know how to count to 1
-                                if (order < 1) {
-                                    order = 1;
-                                }
-                                if (count < 1) {
-                                    count = 1;
-                                }
-                                if (icc == null) {
-                                    icc = new byte[count][];
-                                }
-                                icc[order - 1] = byteapp2;
-                            }
-                        }
+                        processApp2Marker(is);
                         continue;
                     }
                     firstPass = false;
                     int markertype = marker(marker);
                     if (markertype == VALID_MARKER) {
-                        Utilities.skip(is, 2);
-                        if (is.read() != 0x08) {
-                            throw new BadElementException(
-                                    MessageLocalization.getComposedMessage("1.must.have.8.bits.per.component",
-                                            errorID));
-                        }
-                        scaledHeight = getShort(is);
-                        setTop(scaledHeight);
-                        scaledWidth = getShort(is);
-                        setRight(scaledWidth);
-                        colorspace = is.read();
-                        bpc = 8;
+                        processValidFrameMarker(is, errorID);
                         break;
                     } else if (markertype == UNSUPPORTED_MARKER) {
                         throw new BadElementException(
@@ -356,27 +279,122 @@ public class Jpeg extends Image {
         plainWidth = getWidth();
         plainHeight = getHeight();
         if (icc != null) {
-            int total = 0;
-            for (int k = 0; k < icc.length; ++k) {
-                if (icc[k] == null) {
-                    icc = null;
-                    return;
-                }
-                total += icc[k].length - 14;
-            }
-            byte[] ficc = new byte[total];
-            total = 0;
-            for (byte[] bytes : icc) {
-                System.arraycopy(bytes, 14, ficc, total, bytes.length - 14);
-                total += bytes.length - 14;
-            }
-            try {
-                ICC_Profile icc_prof = ICC_Profile.getInstance(ficc);
-                tagICC(icc_prof);
-            } catch (IllegalArgumentException e) {
-                // ignore ICC profile if it's invalid.
-            }
-            icc = null;
+            applyIccProfile();
         }
+    }
+
+    private void processApp0Marker(InputStream is, String errorID) throws IOException, BadElementException {
+        int len = getShort(is);
+        if (len < 16) {
+            Utilities.skip(is, len - 2);
+            return;
+        }
+        byte[] jfifHeaderBytes = new byte[JFIF_ID.length];
+        int bytesRead = is.read(jfifHeaderBytes);
+        if (bytesRead != jfifHeaderBytes.length) {
+            throw new BadElementException(
+                    MessageLocalization.getComposedMessage("1.corrupted.jfif.marker", errorID));
+        }
+        if (!matchesJfifIdentifier(jfifHeaderBytes)) {
+            Utilities.skip(is, len - 2 - jfifHeaderBytes.length);
+            return;
+        }
+        Utilities.skip(is, 2);
+        int units = is.read();
+        int dx = getShort(is);
+        int dy = getShort(is);
+        if (units == 1) {
+            dpiX = dx;
+            dpiY = dy;
+        } else if (units == 2) {
+            final float cmPerInch = 2.54f;
+            dpiX = (int) (dx * cmPerInch + 0.5f);
+            dpiY = (int) (dy * cmPerInch + 0.5f);
+        }
+        int remainingHeaderBytes = len - 2 - jfifHeaderBytes.length - 7;
+        Utilities.skip(is, remainingHeaderBytes);
+    }
+
+    private boolean matchesJfifIdentifier(byte[] headerBytes) {
+        for (int k = 0; k < headerBytes.length; ++k) {
+            if (headerBytes[k] != JFIF_ID[k]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void processAppeMarker(InputStream is) throws IOException {
+        int len = getShort(is) - 2;
+        byte[] appePayload = readMarkerPayload(is, len);
+        if (appePayload.length >= 12) {
+            String appeHeader = new String(appePayload, 0, 5, StandardCharsets.ISO_8859_1);
+            if (appeHeader.equals("Adobe")) {
+                invert = true;
+            }
+        }
+    }
+
+    private void processApp2Marker(InputStream is) throws IOException {
+        int len = getShort(is) - 2;
+        byte[] app2Payload = readMarkerPayload(is, len);
+        if (app2Payload.length >= 14) {
+            String app2Header = new String(app2Payload, 0, 11, StandardCharsets.ISO_8859_1);
+            if (app2Header.equals("ICC_PROFILE")) {
+                int order = Math.max(1, app2Payload[12] & 0xff);
+                int count = Math.max(1, app2Payload[13] & 0xff);
+                if (icc == null) {
+                    icc = new byte[count][];
+                }
+                icc[order - 1] = app2Payload;
+            }
+        }
+    }
+
+    private byte[] readMarkerPayload(InputStream is, int length) throws IOException {
+        byte[] payload = new byte[length];
+        for (int k = 0; k < length; ++k) {
+            payload[k] = (byte) is.read();
+        }
+        return payload;
+    }
+
+    private void processValidFrameMarker(InputStream is, String errorID) throws IOException, BadElementException {
+        Utilities.skip(is, 2);
+        if (is.read() != 0x08) {
+            throw new BadElementException(
+                    MessageLocalization.getComposedMessage("1.must.have.8.bits.per.component", errorID));
+        }
+        int height = getShort(is);
+        int width = getShort(is);
+        setDimensions(width, height);
+        colorspace = is.read();
+        bpc = 8;
+    }
+
+    private void applyIccProfile() {
+        final int iccHeaderLength = 14;
+        int totalBytes = 0;
+        for (byte[] chunk : icc) {
+            if (chunk == null) {
+                icc = null;
+                return;
+            }
+            totalBytes += chunk.length - iccHeaderLength;
+        }
+        byte[] fullIccProfile = new byte[totalBytes];
+        int offset = 0;
+        for (byte[] bytes : icc) {
+            int chunkDataLength = bytes.length - iccHeaderLength;
+            System.arraycopy(bytes, iccHeaderLength, fullIccProfile, offset, chunkDataLength);
+            offset += chunkDataLength;
+        }
+        try {
+            ICC_Profile iccProfile = ICC_Profile.getInstance(fullIccProfile);
+            tagICC(iccProfile);
+        } catch (IllegalArgumentException e) {
+            // ignore ICC profile if it's invalid.
+        }
+        icc = null;
     }
 }
