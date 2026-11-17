@@ -213,7 +213,7 @@ public class PdfCell extends Rectangle {
                 case Element.JBIG2:
                 case Element.IMGRAW:
                 case Element.IMGTEMPLATE:
-                    addImage((Image) element, left, right, 0.4f * leading, alignment); //
+                    addImage((Image) element, left, right, alignment); //
                     break;
                 // if the element is a list
                 case Element.LIST:
@@ -520,12 +520,11 @@ public class PdfCell extends Rectangle {
      * @param i           the image to add
      * @param left        the left border
      * @param right       the right border
-     * @param extraHeight extra height to add above image
      * @param alignment   horizontal alignment (constant from Element class)
      * @return the height of the image
      */
 
-    private float addImage(Image i, float left, float right, float extraHeight, int alignment) {
+    private float addImage(Image i, float left, float right, int alignment) {
         Image image = Image.getInstance(i);
         if (image.getScaledWidth() > right - left) {
             image.scaleToFit(right - left, Float.MAX_VALUE);
