@@ -312,8 +312,7 @@ public class List implements TextElementArray {
      * @return true if adding the element succeeded
      */
     public boolean add(Element o) {
-        if (o instanceof ListItem) {
-            ListItem item = (ListItem) o;
+        if (o instanceof ListItem item) {
             Chunk symbolChunk;
             if (numbered || lettered) {
                 symbolChunk = createSymbolChunk(getNextItemSymbolText());
@@ -321,8 +320,8 @@ public class List implements TextElementArray {
                 symbolChunk = symbol;
             }
             return configureAndAddItem(item, symbolChunk);
-        } else if (o instanceof List) {
-            return add((List) o);
+        } else if (o instanceof List nested) {
+            return add(nested);
         }
         return false;
     }

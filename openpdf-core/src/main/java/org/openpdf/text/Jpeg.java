@@ -354,7 +354,11 @@ public class Jpeg extends Image {
     private byte[] readMarkerPayload(InputStream is, int length) throws IOException {
         byte[] payload = new byte[length];
         for (int k = 0; k < length; ++k) {
-            payload[k] = (byte) is.read();
+            int value = is.read();
+            if (value < 0) {
+                throw new IOException(MessageLocalization.getComposedMessage("premature.eof.while.reading.jpg"));
+            }
+            payload[k] = (byte) value;
         }
         return payload;
     }

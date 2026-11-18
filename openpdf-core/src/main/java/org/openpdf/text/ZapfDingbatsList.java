@@ -111,12 +111,11 @@ public class ZapfDingbatsList extends List {
      */
     @Override
     public boolean add(Element o) {
-        if (o instanceof ListItem) {
-            ListItem item = (ListItem) o;
+        if (o instanceof ListItem item) {
             Chunk chunk = createSymbolChunk(String.valueOf((char) zn));
             return configureAndAddItem(item, chunk);
-        } else if (o instanceof List) {
-            return add((List) o);
+        } else if (o instanceof List nested) {
+            return add(nested);
         }
         return false;
     }

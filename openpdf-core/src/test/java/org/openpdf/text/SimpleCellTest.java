@@ -30,7 +30,8 @@ class SimpleCellTest {
         cell.addElement(new Paragraph("valid paragraph"));
 
         assertThat(cell.getContent()).hasSize(1);
-        assertThatThrownBy(() -> cell.addElement(new Table(2)))
+        Table invalidElement = new Table(2);
+        assertThatThrownBy(() -> cell.addElement(invalidElement))
                 .isInstanceOf(BadElementException.class);
     }
 }
