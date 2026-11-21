@@ -12,8 +12,11 @@ import org.openpdf.text.Font;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.Paragraph;
 import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.BaseFont;
 import org.openpdf.text.pdf.ColumnText;
 import org.openpdf.text.pdf.FontSelector;
+import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfName;
 import org.openpdf.text.pdf.PdfPTable;
 import org.openpdf.text.pdf.PdfReader;
 import org.openpdf.text.pdf.PdfWriter;
@@ -88,6 +91,53 @@ class PdfTextExtractorTest {
     @Test
     void testInvalidPageNumber() throws Exception {
         assertEquals("", getString("HelloWorldMeta.pdf", 0));
+    }
+
+    @Test
+    void testLineBreaksBetweenMarkedContent() throws Exception {
+        // Tagged PDFs (e.g. from LibreOffice) wrap each paragraph in BDC ... EMC
+        Document document = new Document();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
+        document.open();
+        PdfContentByte cb = writer.getDirectContent();
+        BaseFont font = BaseFont.createFont();
+        String[] lines = {"Line one", "Line two"};
+        for (int i = 0; i < lines.length; i++) {
+            cb.beginMarkedContentSequence(PdfName.P);
+            cb.beginText();
+            cb.setFontAndSize(font, 12);
+            cb.setTextMatrix(72, 700 - 20 * i);
+            cb.showText(lines[i]);
+            cb.endText();
+            cb.endMarkedContentSequence();
+        }
+        document.close();
+        PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
+        assertEquals(2, pdfTextExtractor.getTextFromPage(1).strip().lines().count());
+    }
+
+    @Test
+    void testSuperscriptInOwnMarkedContentStaysOnLine() throws Exception {
+        Document document = new Document();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
+        document.open();
+        PdfContentByte cb = writer.getDirectContent();
+        BaseFont font = BaseFont.createFont();
+        Object[][] spans = {{"E = mc", 12f, 72f, 700f}, {"2", 7f, 110f, 704f}, {" is famous", 12f, 115f, 700f}};
+        for (Object[] span : spans) {
+            cb.beginMarkedContentSequence(PdfName.SPAN);
+            cb.beginText();
+            cb.setFontAndSize(font, (float) span[1]);
+            cb.setTextMatrix((float) span[2], (float) span[3]);
+            cb.showText((String) span[0]);
+            cb.endText();
+            cb.endMarkedContentSequence();
+        }
+        document.close();
+        PdfTextExtractor pdfTextExtractor = new PdfTextExtractor(new PdfReader(byteArrayOutputStream.toByteArray()));
+        assertEquals(1, pdfTextExtractor.getTextFromPage(1).strip().lines().count());
     }
 
     @Test
