@@ -297,7 +297,7 @@ public class PdfEncryption {
     public void setCryptoMode(int mode, int kl) {
         cryptoMode = mode;
         encryptMetadata = (mode & PdfWriter.DO_NOT_ENCRYPT_METADATA) == 0;
-        embeddedFilesOnly = (mode & PdfWriter.EMBEDDED_FILES_ONLY) != 0;
+        embeddedFilesOnly = (mode & PdfWriter.EMBEDDED_FILES_ONLY) == PdfWriter.EMBEDDED_FILES_ONLY;
         mode &= PdfWriter.ENCRYPTION_MASK;
         switch (mode) {
             case PdfWriter.STANDARD_ENCRYPTION_40:
