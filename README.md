@@ -196,8 +196,17 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 
 ### Brotli4j
 
-Brotli4j is a required dependency for Brotli stream compression support.
-<https://github.com/hyperxpro/Brotli4j/>
+[Brotli4j](https://github.com/hyperxpro/Brotli4j/) is an optional dependency, only needed for
+Brotli stream compression support (`/BrotliDecode`). It is not pulled in transitively, so add it
+to your project if you want to read or write Brotli-compressed PDF streams:
+
+```xml
+<dependency>
+  <groupId>com.aayushatharva.brotli4j</groupId>
+  <artifactId>brotli4j</artifactId>
+  <version>${brotli4j.version}</version>
+</dependency>
+```
 
 ### Supporting complex glyph substitution/ Ligature substitution
 
@@ -217,9 +226,9 @@ OpenPDF can read and write PDF streams compressed with
 [Brotli](https://github.com/google/brotli) — exposed in the PDF as the
 `/BrotliDecode` filter, which is being standardised for PDF 2.0 (ISO 32000-2)
 through [ISO/TS 32001](https://www.iso.org/standard/45874.html). The codec is
-backed by [brotli4j](https://github.com/hyperxpro/Brotli4j) (a required
+backed by [brotli4j](https://github.com/hyperxpro/Brotli4j) (an optional
 dependency, with native binaries shipped for Linux / macOS / Windows on x86_64
-and aarch64).
+and aarch64) — see [Brotli4j](#brotli4j) above for the Maven coordinates.
 
 Enable Brotli for the page content streams produced by a writer:
 
@@ -247,13 +256,14 @@ PDF readers that do not yet implement ISO/TS 32001.
 
 ### Optional
 
-- [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
+* [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
   dependency)
-  - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
+  * Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
     on which algorithm you are using)
-  - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
-- Apache FOP (`org.apache.xmlgraphics:fop`)
-- Please refer to our [pom.xml](pom.xml) to see what version is needed.
+  * PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
+* Apache FOP (`org.apache.xmlgraphics:fop`)
+* Brotli4j (`com.aayushatharva.brotli4j:brotli4j`) for Brotli stream compression (`/BrotliDecode`)
+* Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits
 
