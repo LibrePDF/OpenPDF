@@ -151,6 +151,12 @@ public class PdfSmartCopy extends PdfCopy {
         private byte[] b;
         private int hash;
         private MessageDigest md5;
+        /**
+         * Digests of the indirect objects that were already serialized. Shared objects (e.g. Form XObjects used by
+         * several other Form XObjects) are only serialized once, otherwise the effort grows with the number of paths
+         * through the object graph instead of with the number of objects.
+         */
+        private Map<RefKey, byte[]> serialized;
 
         ByteStore(PRStream str) throws IOException {
             try {
@@ -158,11 +164,13 @@ public class PdfSmartCopy extends PdfCopy {
             } catch (Exception e) {
                 throw new ExceptionConverter(e);
             }
+            serialized = new HashMap<>();
             ByteBuffer bb = new ByteBuffer();
             int level = MAX_LEVELS;
             serObject(str, level, bb);
             this.b = bb.toByteArray();
             md5 = null;
+            serialized = null;
         }
 
         private void serObject(PdfObject obj, int level, ByteBuffer bb) throws IOException {
@@ -173,22 +181,45 @@ public class PdfSmartCopy extends PdfCopy {
                 bb.append("$Lnull");
                 return;
             }
+            RefKey key = null;
+            if (obj.isIndirect()) {
+                key = new RefKey((PdfIndirectReference) obj);
+                byte[] digest = serialized.get(key);
+                if (digest != null) {
+                    bb.append("$H").append(digest);
+                    return;
+                }
+            }
             obj = PdfReader.getPdfObject(obj);
-            if (obj.isStream()) {
-                bb.append("$B");
-                serDic((PdfDictionary) obj, level - 1, bb);
-                md5.reset();
-                bb.append(md5.digest(PdfReader.getStreamBytesRaw((PRStream) obj)));
-            } else if (obj.isDictionary()) {
-                serDic((PdfDictionary) obj, level - 1, bb);
-            } else if (obj.isArray()) {
-                serArray((PdfArray) obj, level - 1, bb);
+            if (obj.isStream() || obj.isDictionary() || obj.isArray()) {
+                // nested composite objects are represented by the digest of their serialization, so that an object
+                // has the same representation whether it was serialized before or not, and whether it is direct or
+                // indirect
+                ByteBuffer content = new ByteBuffer();
+                serComposite(obj, level, content);
+                byte[] digest = md5.digest(content.toByteArray());
+                if (key != null) {
+                    serialized.put(key, digest);
+                }
+                bb.append("$H").append(digest);
             } else if (obj.isString()) {
                 bb.append("$S").append(obj.toString());
             } else if (obj.isName()) {
                 bb.append("$N").append(obj.toString());
             } else {
                 bb.append("$L").append(obj.toString());
+            }
+        }
+
+        private void serComposite(PdfObject obj, int level, ByteBuffer bb) throws IOException {
+            if (obj.isStream()) {
+                bb.append("$B");
+                serDic((PdfDictionary) obj, level - 1, bb);
+                bb.append(md5.digest(PdfReader.getStreamBytesRaw((PRStream) obj)));
+            } else if (obj.isDictionary()) {
+                serDic((PdfDictionary) obj, level - 1, bb);
+            } else {
+                serArray((PdfArray) obj, level - 1, bb);
             }
         }
 
