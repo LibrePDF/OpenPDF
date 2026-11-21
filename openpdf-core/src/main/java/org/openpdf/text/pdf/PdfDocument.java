@@ -302,6 +302,10 @@ public class PdfDocument extends Document {
      * This is the flag meaning whether document is creating footer.
      */
     private boolean isDoFooter = false;
+    /**
+     * Whether annotations placed on a later page were still waiting for it when the current page was started.
+     */
+    private boolean delayedAnnotationsPending;
 
     /**
      * Constructs a new PDF document.
@@ -831,7 +835,7 @@ public class PdfDocument extends Document {
             if (imageWait != null || wasImage) {
                 newPage();
             }
-            if (annotationsImp.hasUnusedAnnotations()) {
+            if (delayedAnnotationsPending) {
                 throw new RuntimeException(MessageLocalization.getComposedMessage(
                         "not.all.annotations.could.be.added.to.the.document.the.document.doesn.t.have.enough.pages"));
             }
@@ -1149,6 +1153,9 @@ public class PdfDocument extends Document {
 
         // initialization of some page objects
         annotationsImp.resetAnnotations();
+        // Only annotations waiting for a later page are held at this point. The header and footer drawn below may
+        // add annotations of their own, which are no sign of a missing page if this page is never written.
+        delayedAnnotationsPending = annotationsImp.hasUnusedAnnotations();
         pageResources = new PageResources();
 
         writer.resetContent();
