@@ -3896,6 +3896,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
          * stack to which pages dictionaries are pushed to keep track of the current page attributes
          */
         private List<PdfDictionary> pageInh;
+        /**
+         * object numbers of the Pages nodes between the root and the node that is being read, to detect a node that is
+         * its own descendant
+         */
+        private IntHashtable pageInhNodes;
         private boolean keepPages;
 
         private PageRefs(PdfReader reader) {
@@ -3938,6 +3943,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             refsp = null;
             refsn = new ArrayList<>();
             pageInh = new ArrayList<>();
+            pageInhNodes = new IntHashtable();
             PdfObject obj = reader.catalog.get(PdfName.PAGES);
             if (obj instanceof PRIndirectReference) {
                 iteratePages((PRIndirectReference) obj);
@@ -3945,6 +3951,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 iteratePages((PdfDictionary) obj);
             }
             pageInh = null;
+            pageInhNodes = null;
             reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
         }
 
@@ -4147,6 +4154,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 refsn.add(rpage);
             } else {
                 // reference to a branch
+                if (pageInhNodes.containsKey(rpage.getNumber())) {
+                    // a node that is its own descendant: skip it
+                    return;
+                }
+                pageInhNodes.put(rpage.getNumber(), 1);
                 page.put(PdfName.TYPE, PdfName.PAGES);
                 pushPageAttributes(page);
                 for (int k = 0; k < kidsPR.size(); ++k) {
@@ -4164,6 +4176,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     }
                 }
                 popPageAttributes();
+                pageInhNodes.remove(rpage.getNumber());
             }
         }
 
@@ -4191,11 +4204,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             }
         }
 
-        protected PRIndirectReference getSinglePage(int n) {
+        protected PRIndirectReference getSinglePage(int n) throws IOException {
             PdfDictionary acc = new PdfDictionary();
             PdfDictionary top = reader.rootPages;
+            IntHashtable visited = new IntHashtable();
             int base = 0;
             while (true) {
+                boolean descended = false;
                 for (PdfName pageInhCandidate : pageInhCandidates) {
                     PdfObject obj = top.get(pageInhCandidate);
                     if (obj != null) {
@@ -4219,11 +4234,19 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                             return ref;
                         }
                         reader.releaseLastXrefPartial();
-                        top = dic;
+                        if (!visited.containsKey(ref.getNumber())) {
+                            visited.put(ref.getNumber(), 1);
+                            top = dic;
+                            descended = true;
+                        }
                         break;
                     }
                     reader.releaseLastXrefPartial();
                     base += acn;
+                }
+                if (!descended) {
+                    // the node has no kid that holds the page, or the kid is a node that was already visited
+                    throw new InvalidPdfException(MessageLocalization.getComposedMessage("page.not.found"));
                 }
             }
         }
