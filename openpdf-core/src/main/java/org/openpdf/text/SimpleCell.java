@@ -104,37 +104,9 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
      */
     private float widthpercentage = 0f;
     /**
-     * an extra spacing variable
+     * Extracted spacing and padding dimensions for this cell.
      */
-    private float spacing_left = Float.NaN;
-    /**
-     * an extra spacing variable
-     */
-    private float spacing_right = Float.NaN;
-    /**
-     * an extra spacing variable
-     */
-    private float spacing_top = Float.NaN;
-    /**
-     * an extra spacing variable
-     */
-    private float spacing_bottom = Float.NaN;
-    /**
-     * an extra padding variable
-     */
-    private float padding_left = Float.NaN;
-    /**
-     * an extra padding variable
-     */
-    private float padding_right = Float.NaN;
-    /**
-     * an extra padding variable
-     */
-    private float padding_top = Float.NaN;
-    /**
-     * an extra padding variable
-     */
-    private float padding_bottom = Float.NaN;
+    private final CellSpacingPadding spacingPadding = new CellSpacingPadding();
     /**
      * the colspan of a Cell
      */
@@ -184,23 +156,28 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
                                 element.getClass().getName()));
             }
         }
-        if (element.type() == Element.PARAGRAPH
-                || element.type() == Element.PHRASE
-                || element.type() == Element.ANCHOR
-                || element.type() == Element.CHUNK
-                || element.type() == Element.LIST
-                || element.type() == Element.MARKED
-                || element.type() == Element.JPEG
-                || element.type() == Element.JPEG2000
-                || element.type() == Element.JBIG2
-                || element.type() == Element.IMGRAW
-                || element.type() == Element.IMGTEMPLATE) {
+        if (isAllowedCellElement(element)) {
             content.add(element);
         } else {
             throw new BadElementException(
                     MessageLocalization.getComposedMessage("you.can.t.add.an.element.of.type.1.to.a.simplecell",
                             element.getClass().getName()));
         }
+    }
+
+    private boolean isAllowedCellElement(Element element) {
+        int elementType = element.type();
+        return elementType == Element.PARAGRAPH
+                || elementType == Element.PHRASE
+                || elementType == Element.ANCHOR
+                || elementType == Element.CHUNK
+                || elementType == Element.LIST
+                || elementType == Element.MARKED
+                || elementType == Element.JPEG
+                || elementType == Element.JPEG2000
+                || elementType == Element.JBIG2
+                || elementType == Element.IMGRAW
+                || elementType == Element.IMGTEMPLATE;
     }
 
     /**
@@ -240,10 +217,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         PdfPCell cell = new PdfPCell();
         cell.setBorder(NO_BORDER);
         SimpleCell tmp = new SimpleCell(CELL);
-        tmp.setSpacing_left(spacing_left);
-        tmp.setSpacing_right(spacing_right);
-        tmp.setSpacing_top(spacing_top);
-        tmp.setSpacing_bottom(spacing_bottom);
+        spacingPadding.copySpacingTo(tmp);
         tmp.cloneNonPositionParameters(rowAttributes);
         tmp.softCloneNonPositionParameters(this);
         cell.setCellEvent(tmp);
@@ -268,43 +242,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
         if (useDescender) {
             cell.setUseDescender(useDescender);
         }
-        float p;
-        float sp_left = spacing_left;
-        if (Float.isNaN(sp_left)) {
-            sp_left = 0f;
-        }
-        float sp_right = spacing_right;
-        if (Float.isNaN(sp_right)) {
-            sp_right = 0f;
-        }
-        float sp_top = spacing_top;
-        if (Float.isNaN(sp_top)) {
-            sp_top = 0f;
-        }
-        float sp_bottom = spacing_bottom;
-        if (Float.isNaN(sp_bottom)) {
-            sp_bottom = 0f;
-        }
-        p = padding_left;
-        if (Float.isNaN(p)) {
-            p = 0f;
-        }
-        cell.setPaddingLeft(p + sp_left);
-        p = padding_right;
-        if (Float.isNaN(p)) {
-            p = 0f;
-        }
-        cell.setPaddingRight(p + sp_right);
-        p = padding_top;
-        if (Float.isNaN(p)) {
-            p = 0f;
-        }
-        cell.setPaddingTop(p + sp_top);
-        p = padding_bottom;
-        if (Float.isNaN(p)) {
-            p = 0f;
-        }
-        cell.setPaddingBottom(p + sp_bottom);
+        spacingPadding.applyEffectivePaddingTo(cell);
         Element element;
         for (Object o : content) {
             element = (Element) o;
@@ -318,24 +256,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
      * org.openpdf.text.pdf.PdfContentByte[])
      */
     public void cellLayout(PdfPCell cell, Rectangle position, PdfContentByte[] canvases) {
-        float sp_left = spacing_left;
-        if (Float.isNaN(sp_left)) {
-            sp_left = 0f;
-        }
-        float sp_right = spacing_right;
-        if (Float.isNaN(sp_right)) {
-            sp_right = 0f;
-        }
-        float sp_top = spacing_top;
-        if (Float.isNaN(sp_top)) {
-            sp_top = 0f;
-        }
-        float sp_bottom = spacing_bottom;
-        if (Float.isNaN(sp_bottom)) {
-            sp_bottom = 0f;
-        }
-        Rectangle rect = new Rectangle(position.getLeft(sp_left), position.getBottom(sp_bottom),
-                position.getRight(sp_right), position.getTop(sp_top));
+        Rectangle rect = spacingPadding.createSpacedRectangle(position);
         rect.cloneNonPositionParameters(this);
         canvases[PdfPTable.BACKGROUNDCANVAS].rectangle(rect);
         rect.setBackgroundColor(null);
@@ -348,18 +269,7 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
      * @param padding padding that will be set
      */
     public void setPadding(float padding) {
-        if (Float.isNaN(padding_right)) {
-            setPadding_right(padding);
-        }
-        if (Float.isNaN(padding_left)) {
-            setPadding_left(padding);
-        }
-        if (Float.isNaN(padding_top)) {
-            setPadding_top(padding);
-        }
-        if (Float.isNaN(padding_bottom)) {
-            setPadding_bottom(padding);
-        }
+        spacingPadding.setDefaultPadding(padding);
     }
 
     /**
@@ -382,122 +292,119 @@ public class SimpleCell extends Rectangle implements PdfPCellEvent, TextElementA
      * @return Returns the padding_bottom.
      */
     public float getPadding_bottom() {
-        return padding_bottom;
+        return spacingPadding.getPaddingBottom();
     }
 
     /**
      * @param padding_bottom The padding_bottom to set.
      */
     public void setPadding_bottom(float padding_bottom) {
-        this.padding_bottom = padding_bottom;
+        spacingPadding.setPaddingBottom(padding_bottom);
     }
 
     /**
      * @return Returns the padding_left.
      */
     public float getPadding_left() {
-        return padding_left;
+        return spacingPadding.getPaddingLeft();
     }
 
     /**
      * @param padding_left The padding_left to set.
      */
     public void setPadding_left(float padding_left) {
-        this.padding_left = padding_left;
+        spacingPadding.setPaddingLeft(padding_left);
     }
 
     /**
      * @return Returns the padding_right.
      */
     public float getPadding_right() {
-        return padding_right;
+        return spacingPadding.getPaddingRight();
     }
 
     /**
      * @param padding_right The padding_right to set.
      */
     public void setPadding_right(float padding_right) {
-        this.padding_right = padding_right;
+        spacingPadding.setPaddingRight(padding_right);
     }
 
     /**
      * @return Returns the padding_top.
      */
     public float getPadding_top() {
-        return padding_top;
+        return spacingPadding.getPaddingTop();
     }
 
     /**
      * @param padding_top The padding_top to set.
      */
     public void setPadding_top(float padding_top) {
-        this.padding_top = padding_top;
+        spacingPadding.setPaddingTop(padding_top);
     }
 
     /**
      * @return Returns the spacing.
      */
     public float getSpacing_left() {
-        return spacing_left;
+        return spacingPadding.getSpacingLeft();
     }
 
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing_left(float spacing) {
-        this.spacing_left = spacing;
+        spacingPadding.setSpacingLeft(spacing);
     }
 
     /**
      * @return Returns the spacing.
      */
     public float getSpacing_right() {
-        return spacing_right;
+        return spacingPadding.getSpacingRight();
     }
 
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing_right(float spacing) {
-        this.spacing_right = spacing;
+        spacingPadding.setSpacingRight(spacing);
     }
 
     /**
      * @return Returns the spacing.
      */
     public float getSpacing_top() {
-        return spacing_top;
+        return spacingPadding.getSpacingTop();
     }
 
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing_top(float spacing) {
-        this.spacing_top = spacing;
+        spacingPadding.setSpacingTop(spacing);
     }
 
     /**
      * @return Returns the spacing.
      */
     public float getSpacing_bottom() {
-        return spacing_bottom;
+        return spacingPadding.getSpacingBottom();
     }
 
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing_bottom(float spacing) {
-        this.spacing_bottom = spacing;
+        spacingPadding.setSpacingBottom(spacing);
     }
 
     /**
      * @param spacing The spacing to set.
      */
     public void setSpacing(float spacing) {
-        this.spacing_left = spacing;
-        this.spacing_right = spacing;
-        this.spacing_top = spacing;
-        this.spacing_bottom = spacing;
+        spacingPadding.setSpacing(spacing);
     }
 
     /**
