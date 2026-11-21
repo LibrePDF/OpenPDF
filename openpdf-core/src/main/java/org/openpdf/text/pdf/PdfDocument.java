@@ -327,19 +327,20 @@ public class PdfDocument extends Document {
         cell.setBorder(Table.NO_BORDER);
         cell.setPadding(0);
         for (int i = 0; i < paragraph.size(); i++) {
-            if (paragraph.get(i) instanceof Chunk) {
+            if (isInlineElement(paragraph.get(i))) {
                 Paragraph subParagraph = new Paragraph();
                 boolean hasNewLine = false;
                 do {
-                    Chunk chunk = (Chunk) paragraph.get(i);
+                    Element inline = paragraph.get(i);
                     i++;
-                    if (chunk.getContent().equals("\n")) {
+                    if (inline instanceof Chunk && ((Chunk) inline).getContent().equals("\n")) {
                         hasNewLine = true;
                         break;
                     } else {
-                        subParagraph.add(chunk);
+                        // anchors are kept as they are, so that their links are preserved
+                        subParagraph.add(inline);
                     }
-                } while (i < paragraph.size() && paragraph.get(i) instanceof Chunk);
+                } while (i < paragraph.size() && isInlineElement(paragraph.get(i)));
                 i--;
                 // It's important to set the leading here.
                 subParagraph.setLeading(paragraph.getLeading());
@@ -353,6 +354,10 @@ public class PdfDocument extends Document {
         }
         table.addCell(cell);
         return table;
+    }
+
+    private static boolean isInlineElement(Element element) {
+        return element instanceof Chunk || element instanceof Anchor;
     }
 
     /**
