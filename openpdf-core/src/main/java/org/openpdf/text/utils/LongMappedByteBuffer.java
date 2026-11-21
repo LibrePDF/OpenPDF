@@ -54,15 +54,20 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 
 
 /**
  * A utility class that allows random access to files larger than 2GB by internally
  * mapping them into multiple {@link MappedByteBuffer} chunks of up to 2GB each.
+ * <p>
+ * This is the Java 21 implementation. On Java 22 and later, the multi-release variant of this class (compiled from
+ * {@code src/main/java22}) is used instead. It maps the file with the Foreign Function &amp; Memory API, so that
+ * {@link #close()} releases the mapping immediately.
  *
  *  @since 2.0.4
  */
-public class LongMappedByteBuffer {
+public class LongMappedByteBuffer implements AutoCloseable {
 
     private static final long CHUNK_SIZE = Integer.MAX_VALUE; // 2 GB
     private final MappedByteBuffer[] chunks;
@@ -232,5 +237,19 @@ public class LongMappedByteBuffer {
         for (MappedByteBuffer chunk : chunks) {
             chunk.force();
         }
+    }
+
+    /**
+     * Releases the references to the mapped chunks. The buffer must not be used after it has been closed.
+     * <p>
+     * Java 21 offers no supported way to unmap a {@link MappedByteBuffer} explicitly, so the mapping itself (and with
+     * it the lock on the file on Windows) is only released once the chunks have been garbage collected. On Java 22
+     * and later, the multi-release variant of this class releases the mapping immediately.
+     *
+     * @since 3.0.6
+     */
+    @Override
+    public void close() {
+        Arrays.fill(chunks, null);
     }
 }
