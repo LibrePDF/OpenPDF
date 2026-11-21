@@ -101,6 +101,14 @@ import org.openpdf.text.pdf.PdfString;
  * ignored. Pages that rely heavily on those features may render with missing
  * content.</p>
  *
+ * <h2>Annotations</h2>
+ * <p>After the page content stream, each {@code /Annots} entry's normal
+ * appearance stream ({@code /AP /N}, resolving an {@code /AS} state name when
+ * {@code /N} is a sub-dictionary of states) is rendered at its {@code /Rect}
+ * per the PDF §12.5.5 placement algorithm. Hidden/NoView-flagged and Popup
+ * annotations, and annotations with no usable appearance stream, are
+ * skipped &mdash; no default appearance is synthesized.</p>
+ *
  * <h2>Text rendering</h2>
  * <p>For each {@code Tf}-selected font, the renderer pulls the embedded font
  * program ({@code FontFile2}, {@code FontFile3} or {@code FontFile} on the
@@ -156,6 +164,9 @@ final class OpenPdfCorePageRenderer {
             PdfName.DEVICERGB, new PdfName("RGB"), CS_CAL_RGB);
     private static final Set<PdfName> DEVICE_CMYK_NAMES = Set.of(
             PdfName.DEVICECMYK, new PdfName("CMYK"));
+
+    private static final int ANNOTATION_FLAG_HIDDEN = 1 << 1; // PDF §12.5.3, bit position 2
+    private static final int ANNOTATION_FLAG_NOVIEW = 1 << 5; // PDF §12.5.3, bit position 6
 
     /**
      * Synthetic XObject-name prefix used for inline images that have been promoted out
@@ -281,6 +292,14 @@ final class OpenPdfCorePageRenderer {
 
         OpenPdfCorePageRenderer renderer = new OpenPdfCorePageRenderer(g2, resources);
         renderer.processContent(reader.getPageContent(pageNumber));
+
+        // Annotation /Rect coordinates are defined in the same page space "initial" maps to
+        // device space. A malformed content stream with unbalanced q/Q (or a top-level cm) can
+        // leave g2's transform/clip in an arbitrary state after processContent returns, so reset
+        // both explicitly rather than assuming the content stream cleaned up after itself.
+        g2.setTransform(initial);
+        g2.setClip(null);
+        renderer.renderAnnotations(pageDict);
     }
 
     private void processContent(byte[] contentBytes) throws IOException {
@@ -1170,14 +1189,7 @@ final class OpenPdfCorePageRenderer {
         GState savedState = state;
         try {
             state = new GState(state);
-            PdfArray matrix = form.getAsArray(PdfName.MATRIX);
-            if (matrix != null && matrix.size() >= 6) {
-                AffineTransform m = new AffineTransform(
-                        floatAt(matrix, 0), floatAt(matrix, 1),
-                        floatAt(matrix, 2), floatAt(matrix, 3),
-                        floatAt(matrix, 4), floatAt(matrix, 5));
-                g2.transform(m);
-            }
+            g2.transform(formMatrixOf(form));
             PdfArray bbox = form.getAsArray(PdfName.BBOX);
             if (bbox != null && bbox.size() >= 4) {
                 float x = floatAt(bbox, 0);
@@ -1201,6 +1213,155 @@ final class OpenPdfCorePageRenderer {
             g2.setTransform(savedTx);
             g2.setClip(savedClip);
         }
+    }
+
+    /**
+     * Reads a stream's {@code /Matrix} entry (a Form XObject or annotation appearance stream),
+     * or the identity transform if absent/malformed.
+     */
+    private static AffineTransform formMatrixOf(PRStream form) {
+        PdfArray matrix = form.getAsArray(PdfName.MATRIX);
+        if (matrix == null || matrix.size() < 6) {
+            return new AffineTransform();
+        }
+        return new AffineTransform(
+                floatAt(matrix, 0), floatAt(matrix, 1),
+                floatAt(matrix, 2), floatAt(matrix, 3),
+                floatAt(matrix, 4), floatAt(matrix, 5));
+    }
+
+    // ---------- Annotation appearance streams ----------
+
+    /**
+     * Renders each page annotation's normal appearance stream ({@code /AP /N}), positioned per
+     * PDF §12.5.5's Rect/BBox/Matrix algorithm. Annotations without a usable appearance stream
+     * (no {@code /AP}, or a missing {@code /AS} into a sub-dictionary of states) are skipped
+     * rather than synthesized &mdash; e.g. a checkbox's "Off" vs "Yes" appearance, or a Link's
+     * usually-invisible default border, are exactly what {@code /AP} is meant to capture, so
+     * there's no reasonable fallback to draw when it's absent.
+     */
+    private void renderAnnotations(PdfDictionary pageDict) {
+        PdfArray annots = pageDict == null ? null : pageDict.getAsArray(PdfName.ANNOTS);
+        if (annots == null) {
+            return;
+        }
+        for (PdfObject annotObj : annots.getElements()) {
+            PdfObject direct = annotObj instanceof PRIndirectReference ref
+                    ? PdfReader.getPdfObject(ref) : annotObj;
+            if (direct instanceof PdfDictionary annotDict) {
+                renderAnnotation(annotDict);
+            }
+        }
+    }
+
+    private void renderAnnotation(PdfDictionary annot) {
+        if (isHiddenOrNoView(annot) || PdfName.POPUP.equals(annot.getAsName(PdfName.SUBTYPE))) {
+            return;
+        }
+        PRStream appearance = normalAppearanceOf(annot);
+        if (appearance == null) {
+            return;
+        }
+        PdfArray rect = annot.getAsArray(PdfName.RECT);
+        if (rect == null || rect.size() < 4) {
+            return;
+        }
+        AffineTransform placement = appearancePlacementTransform(appearance, rect);
+        if (placement == null) {
+            return;
+        }
+        AffineTransform savedTx = g2.getTransform();
+        Shape savedClip = g2.getClip();
+        try {
+            g2.transform(placement);
+            renderForm(appearance);
+        } catch (RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping annotation appearance due to: {0}", e);
+        } finally {
+            g2.setTransform(savedTx);
+            g2.setClip(savedClip);
+        }
+    }
+
+    private static boolean isHiddenOrNoView(PdfDictionary annot) {
+        PdfNumber flags = annot.getAsNumber(PdfName.F);
+        if (flags == null) {
+            return false;
+        }
+        int f = flags.intValue();
+        return (f & ANNOTATION_FLAG_HIDDEN) != 0 || (f & ANNOTATION_FLAG_NOVIEW) != 0;
+    }
+
+    /**
+     * Resolves an annotation's {@code /AP /N} entry to a concrete appearance stream. {@code /N}
+     * is either directly a stream (the common case) or a sub-dictionary of named appearance
+     * states (e.g. a checkbox's {@code /Yes} / {@code /Off}), selected by the annotation's
+     * {@code /AS} name.
+     */
+    private static PRStream normalAppearanceOf(PdfDictionary annot) {
+        PdfDictionary apDict = annot.getAsDict(PdfName.AP);
+        if (apDict == null) {
+            return null;
+        }
+        PdfObject direct = resolveIndirect(apDict.get(PdfName.N));
+        if (direct instanceof PRStream stream) {
+            return stream;
+        }
+        if (!(direct instanceof PdfDictionary states)) {
+            return null;
+        }
+        PdfName stateName = annot.getAsName(PdfName.AS);
+        if (stateName == null) {
+            return null;
+        }
+        PdfObject state = resolveIndirect(states.get(stateName));
+        return state instanceof PRStream stream ? stream : null;
+    }
+
+    private static PdfObject resolveIndirect(PdfObject obj) {
+        return obj instanceof PRIndirectReference ref ? PdfReader.getPdfObject(ref) : obj;
+    }
+
+    /**
+     * Computes the transform that positions an annotation's appearance stream per PDF §12.5.5:
+     * the stream's own {@code /BBox} corners are mapped through its {@code /Matrix} and reduced
+     * to their axis-aligned bounding box, which is then scaled/translated (independently in X
+     * and Y, no rotation) to align with the annotation's {@code /Rect}. {@link #renderForm}
+     * applies {@code /Matrix} itself when it subsequently renders the stream, so this transform
+     * only supplies that alignment step, not {@code /Matrix} again.
+     *
+     * @return the placement transform, or {@code null} if the stream has no usable {@code /BBox}
+     */
+    private static AffineTransform appearancePlacementTransform(PRStream appearance, PdfArray rect) {
+        PdfArray bbox = appearance.getAsArray(PdfName.BBOX);
+        if (bbox == null || bbox.size() < 4) {
+            return null;
+        }
+        double[] corners = {
+                floatAt(bbox, 0), floatAt(bbox, 1),
+                floatAt(bbox, 2), floatAt(bbox, 1),
+                floatAt(bbox, 2), floatAt(bbox, 3),
+                floatAt(bbox, 0), floatAt(bbox, 3),
+        };
+        formMatrixOf(appearance).transform(corners, 0, corners, 0, 4);
+        double tx0 = Math.min(Math.min(corners[0], corners[2]), Math.min(corners[4], corners[6]));
+        double tx1 = Math.max(Math.max(corners[0], corners[2]), Math.max(corners[4], corners[6]));
+        double ty0 = Math.min(Math.min(corners[1], corners[3]), Math.min(corners[5], corners[7]));
+        double ty1 = Math.max(Math.max(corners[1], corners[3]), Math.max(corners[5], corners[7]));
+
+        float rx0 = Math.min(floatAt(rect, 0), floatAt(rect, 2));
+        float ry0 = Math.min(floatAt(rect, 1), floatAt(rect, 3));
+        float rx1 = Math.max(floatAt(rect, 0), floatAt(rect, 2));
+        float ry1 = Math.max(floatAt(rect, 1), floatAt(rect, 3));
+
+        double sx = tx1 != tx0 ? (rx1 - rx0) / (tx1 - tx0) : 1;
+        double sy = ty1 != ty0 ? (ry1 - ry0) / (ty1 - ty0) : 1;
+
+        AffineTransform placement = new AffineTransform();
+        placement.translate(rx0, ry0);
+        placement.scale(sx, sy);
+        placement.translate(-tx0, -ty0);
+        return placement;
     }
 
     /**
