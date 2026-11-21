@@ -968,6 +968,8 @@ public abstract class PdfContentStreamHandler {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 for (PdfObject element : ((PdfArray) object).getElements()) {
                     baos.write(getContentBytesFromPdfObjectStatic(element));
+                    // The streams of a page may be split between any two tokens, so keep those tokens apart.
+                    baos.write('\n');
                 }
                 return baos.toByteArray();
             default:
