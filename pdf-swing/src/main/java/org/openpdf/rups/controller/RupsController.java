@@ -157,7 +157,6 @@ public class RupsController extends Observable
             pdfFile = null;
             setChanged();
             super.notifyObservers(RupsMenuBar.CLOSE);
-            return;
         }
     }
 
@@ -166,14 +165,15 @@ public class RupsController extends Observable
     /**
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */
+    @Override
     public void valueChanged(TreeSelectionEvent evt) {
-        Object selectednode = readerController.getPdfTree().getLastSelectedPathComponent();
-        if (selectednode instanceof PdfTrailerTreeNode) {
+        Object selectedNode = readerController.getPdfTree().getLastSelectedPathComponent();
+        if (selectedNode instanceof PdfTrailerTreeNode) {
             menuBar.update(this, RupsMenuBar.FILE_MENU);
             return;
         }
-        if (selectednode instanceof PdfObjectTreeNode) {
-            readerController.update(this, selectednode);
+        if (selectedNode instanceof PdfObjectTreeNode) {
+            readerController.update(this, selectedNode);
         }
     }
 
@@ -182,6 +182,7 @@ public class RupsController extends Observable
     /**
      * @see org.openpdf.rups.view.PageSelectionListener#gotoPage(int)
      */
+    @Override
     public int gotoPage(int pageNumber) {
         readerController.gotoPage(pageNumber);
         return pageNumber;
