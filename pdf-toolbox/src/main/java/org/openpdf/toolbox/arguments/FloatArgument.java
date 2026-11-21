@@ -57,8 +57,8 @@ public class FloatArgument extends AbstractArgument {
      * @param e ActionEvent
      */
     public void actionPerformed(ActionEvent e) {
-        CustomDialog cd = new CustomDialog("Enter a value for " + name +
-                ":", CustomDialog.instantiateFloatDocument());
+        CustomDialog cd = new CustomDialog("Enter a value for " + name + ":",
+                CustomDialog.instantiateFloatDocument());
         setValue(cd.showInputDialog(this.getValue() == null ? "0" : this.getValue().toString()));
     }
 }

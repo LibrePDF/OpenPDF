@@ -53,9 +53,8 @@ public class ITextTextRenderer implements TextRenderer {
         FontDescription description = ((ITextFSFont) font).getFontDescription();
         BaseFont bf = description.getFont();
         float size = font.getSize2D();
-        float strikethroughThickness = description.getYStrikeoutSize() != 0 ?
-                description.getYStrikeoutSize() / 1000f * size :
-                size / 12.0f;
+        float strikethroughThickness = description.getYStrikeoutSize() != 0
+                ? description.getYStrikeoutSize() / 1000f * size : size / 12.0f;
 
         return new ITextFSFontMetrics(
                 bf.getFontDescriptor(BaseFont.BBOXURY, size),

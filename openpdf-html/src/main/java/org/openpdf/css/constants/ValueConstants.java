@@ -169,8 +169,8 @@ public final class ValueConstants {
             case CSSPrimitiveValue.CSS_STRING:
                 return true;
             case CSSPrimitiveValue.CSS_UNKNOWN:
-                XRLog.cascade(Level.WARNING, "Asked whether type was absolute, given CSS_UNKNOWN as the type. " +
-                        "Might be one of those funny values like background-position.");
+                XRLog.cascade(Level.WARNING, "Asked whether type was absolute, given CSS_UNKNOWN as the type. "
+                        + "Might be one of those funny values like background-position.");
                 GeneralUtil.dumpShortException(new Exception("Taking a thread dump..."));
                 // fall-through
             default:
@@ -216,17 +216,14 @@ public final class ValueConstants {
             Field[] fields = CSSPrimitiveValue.class.getFields();
             for (Field f : fields) {
                 int mod = f.getModifiers();
-                if (Modifier.isFinal(mod) &&
-                        Modifier.isStatic(mod) &&
-                        Modifier.isPublic(mod)) {
-
+                if (Modifier.isFinal(mod) && Modifier.isStatic(mod) && Modifier.isPublic(mod)) {
                     Short val = (Short) f.get(null);
                     String name = f.getName();
                     if (name.startsWith("CSS_")) {
-                        if (!name.equals("CSS_INHERIT") &&
-                                !name.equals("CSS_PRIMITIVE_VALUE") &&
-                                !name.equals("CSS_VALUE_LIST") &&
-                                !name.equals("CSS_CUSTOM")) {
+                        if (!name.equals("CSS_INHERIT")
+                                && !name.equals("CSS_PRIMITIVE_VALUE")
+                                && !name.equals("CSS_VALUE_LIST")
+                                && !name.equals("CSS_CUSTOM")) {
 
                             map.put(val, name.substring("CSS_".length()));
                         }

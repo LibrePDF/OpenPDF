@@ -111,8 +111,8 @@ class EnumerateTTC extends TrueTypeFont {
                 rf.seek(directoryOffset);
                 int sfntVersion = rf.readInt();
                 boolean trueTypeFont = sfntVersion == TRUE_TYPE_SFNT_VERSION;
-                boolean cffDataFont = sfntVersion == CFF_DATA_SFNT_VERSION &&
-                        (majorVersion == 1 || majorVersion == 2);
+                boolean cffDataFont = sfntVersion == CFF_DATA_SFNT_VERSION
+                        && (majorVersion == 1 || majorVersion == 2);
                 if (!trueTypeFont && !cffDataFont) {
                     throw new DocumentException(
                             MessageLocalization.getComposedMessage("1.is.not.a.valid.ttf.file", fileName));

@@ -241,8 +241,8 @@ public abstract class AbstractOutputDevice implements OutputDevice {
             backgroundImage = null;
         }
 
-        if ((backgroundColor == null || backgroundColor == FSRGBColor.TRANSPARENT) &&
-                backgroundImage == null && backgroundLinearGradient == null) {
+        if ((backgroundColor == null || backgroundColor == FSRGBColor.TRANSPARENT)
+                && backgroundImage == null && backgroundLinearGradient == null) {
             return;
         }
 

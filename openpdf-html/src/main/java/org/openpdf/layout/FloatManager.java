@@ -86,8 +86,7 @@ public class FloatManager {
         alignToLastOpposingFloat(cssCtx, bfc, current, direction);
         alignToLastFloat(cssCtx, bfc, current, direction);
 
-        if (!fitsInContainingBlock(current) ||
-                overlaps(cssCtx, bfc, current, getFloats(direction))) {
+        if (!fitsInContainingBlock(current) || overlaps(cssCtx, bfc, current, getFloats(direction))) {
             moveAllTheWayOver(current, direction);
             moveFloatBelow(cssCtx, bfc, current, getFloats(direction));
         }
@@ -187,8 +186,8 @@ public class FloatManager {
     }
 
     private boolean fitsInContainingBlock(BlockBox current) {
-        return current.getX() >= 0 &&
-                (current.getX() + current.getWidth()) <= current.getContainingBlock().getContentWidth();
+        return current.getX() >= 0
+                && (current.getX() + current.getWidth()) <= current.getContainingBlock().getContentWidth();
     }
 
     private int findLowestY(CssContext cssCtx, List<BoxOffset> floats) {

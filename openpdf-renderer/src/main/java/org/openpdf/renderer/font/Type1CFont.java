@@ -174,10 +174,10 @@ public class Type1CFont extends OutlineFont {
             this.pos += 2;
             return this.type = NUM;
         } else if (this.num == 29 && !charstring) {
-            this.num = ((this.data[this.pos] & 0xff) << 24) |
-                    ((this.data[this.pos + 1] & 0xff) << 16) |
-                    ((this.data[this.pos + 2] & 0xff) << 8) |
-                    ((this.data[this.pos + 3] & 0xff));
+            this.num = ((this.data[this.pos] & 0xff) << 24)
+                    | ((this.data[this.pos + 1] & 0xff) << 16)
+                    | ((this.data[this.pos + 2] & 0xff) << 8)
+                    | ((this.data[this.pos + 3] & 0xff));
             this.pos += 4;
             return this.type = NUM;
         } else if (this.num == 12) {  // two-byte command
@@ -198,10 +198,10 @@ public class Type1CFont extends OutlineFont {
             printData();
             throw new RuntimeException("Got a 255 code while reading dict");
         } else { // num was 255
-            this.fnum = (((this.data[this.pos] & 0xff) << 24) |
-                    ((this.data[this.pos + 1] & 0xff) << 16) |
-                    ((this.data[this.pos + 2] & 0xff) << 8) |
-                    ((this.data[this.pos + 3] & 0xff))) / 65536f;
+            this.fnum = (((this.data[this.pos] & 0xff) << 24)
+                    | ((this.data[this.pos + 1] & 0xff) << 16)
+                    | ((this.data[this.pos + 2] & 0xff) << 8)
+                    | ((this.data[this.pos + 3] & 0xff))) / 65536f;
             this.pos += 4;
             return this.type = FLT;
         }
@@ -298,8 +298,7 @@ public class Type1CFont extends OutlineFont {
         }
         int encsz = readByte();
         if (encsz < 1 || encsz > 4) {
-            throw new RuntimeException("Offsize: " + encsz +
-                    ", must be in range 1-4.");
+            throw new RuntimeException("Offsize: " + encsz + ", must be in range 1-4.");
         }
         // pos is now at the first offset.  last offset is at count*encsz
         this.pos += count * encsz;
@@ -372,8 +371,7 @@ public class Type1CFont extends OutlineFont {
         int count = readInt(2);
         int encsz = readByte();
         if (encsz < 1 || encsz > 4) {
-            throw new RuntimeException("Offsize: " + encsz +
-                    ", must be in range 1-4.");
+            throw new RuntimeException("Offsize: " + encsz + ", must be in range 1-4.");
         }
         this.pos += encsz * id;
         int from = readInt(encsz);

@@ -3234,8 +3234,7 @@ public class PdfName extends PdfObject implements Comparable<PdfName> {
         final int flags = Modifier.STATIC | Modifier.PUBLIC | Modifier.FINAL;
         try {
             for (Field curFld : fields) {
-                if ((curFld.getModifiers() & flags) == flags &&
-                        curFld.getType().equals(PdfName.class)) {
+                if ((curFld.getModifiers() & flags) == flags && curFld.getType().equals(PdfName.class)) {
                     PdfName name = (PdfName) curFld.get(null);
                     staticNames.put(decodeName(name.toString()), name);
                 }

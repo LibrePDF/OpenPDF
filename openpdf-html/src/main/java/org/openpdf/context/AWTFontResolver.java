@@ -100,11 +100,11 @@ public class AWTFontResolver implements FontResolver {
                                      IdentValue style,
                                      IdentValue variant) {
         int font_const = Font.PLAIN;
-        if (weight != null &&
-                (weight == IdentValue.BOLD ||
-                weight == IdentValue.FONT_WEIGHT_700 ||
-                weight == IdentValue.FONT_WEIGHT_800 ||
-                weight == IdentValue.FONT_WEIGHT_900)) {
+        if (weight != null
+                && (weight == IdentValue.BOLD
+                || weight == IdentValue.FONT_WEIGHT_700
+                || weight == IdentValue.FONT_WEIGHT_800
+                || weight == IdentValue.FONT_WEIGHT_900)) {
 
             font_const = font_const | Font.BOLD;
         }

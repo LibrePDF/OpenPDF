@@ -51,8 +51,8 @@ public class LaunchAction extends PDFAction {
             && (this.winParam == null) 
             && (this.unixParam == null)
             && (this.macParam == null)) {
-            throw new PDFParseException("Could not parse launch action (file or OS " +
-                    "specific launch parameters are missing): " + obj.toString());
+            throw new PDFParseException("Could not parse launch action (file or OS "
+                    + "specific launch parameters are missing): " + obj.toString());
         }
     }
 
@@ -95,8 +95,8 @@ public class LaunchAction extends PDFAction {
             } else if (fileObj.getType() == PDFObject.STRING) {
                 file.setFileName(fileObj.getStringValue());
             } else {
-                throw new PDFParseException("File specification could not be parsed " +
-                    "(should be of type 'Dictionary' or 'String'): " + fileObj.toString());
+                throw new PDFParseException("File specification could not be parsed "
+                    + "(should be of type 'Dictionary' or 'String'): " + fileObj.toString());
             }
         }
         return file;

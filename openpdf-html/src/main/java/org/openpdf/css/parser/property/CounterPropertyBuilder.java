@@ -95,10 +95,10 @@ public abstract class CounterPropertyBuilder extends AbstractPropertyBuilder {
     }
 
     private void checkNumberIsInteger(CSSName cssName, CSSPrimitiveValue value) {
-        if ((int) value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER) !=
-                    Math.round(value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER))) {
-            throw new CSSParseException("The value " + value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER) + " in " +
-                    cssName + " must be an integer", -1);
+        if ((int) value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER)
+                != Math.round(value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER))) {
+            throw new CSSParseException("The value " + value.getFloatValue(CSSPrimitiveValue.CSS_NUMBER) + " in "
+                    + cssName + " must be an integer", -1);
         }
     }
 

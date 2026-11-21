@@ -64,8 +64,7 @@ public class ASCIIHexDecode {
                     c = -1;
                 } else {
                     // unknown character
-                    throw new PDFParseException("Bad character " + c + 
-                                                "in ASCIIHex decode");
+                    throw new PDFParseException("Bad character " + c + "in ASCIIHex decode");
                 }
                 
                 // return the useful character

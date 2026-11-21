@@ -62,14 +62,14 @@ class ImageLoadQueue {
             wait();
         }
         if (_loadQueue.getLast() == KILL_SWITCH) {
-            XRLog.general(Level.FINE, "Thread " + Thread.currentThread().getName() +
-                    " requested item, but queue is shutting down; returning kill switch.");
+            XRLog.general(Level.FINE, "Thread " + Thread.currentThread().getName()
+                    + " requested item, but queue is shutting down; returning kill switch.");
             return KILL_SWITCH;
         } else {
             ImageLoadItem item = _loadQueue.removeLast();
 
-            XRLog.general(Level.FINE, "Thread " + Thread.currentThread().getName() +
-                    " pulled item " + item._uri + " from queue, " + (_loadQueue.size() - 1) + " remaining");
+            XRLog.general(Level.FINE, "Thread " + Thread.currentThread().getName()
+                    + " pulled item " + item._uri + " from queue, " + (_loadQueue.size() - 1) + " remaining");
             return item;
         }
     }

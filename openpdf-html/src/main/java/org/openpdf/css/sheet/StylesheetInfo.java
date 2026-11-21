@@ -72,8 +72,7 @@ public class StylesheetInfo {
      */
     public boolean appliesToMedia(String media) {
         String mLowerCase = media.toLowerCase(ROOT);
-        return mLowerCase.equals("all") ||
-            mediaTypes.contains("all") || mediaTypes.contains(mLowerCase);
+        return mLowerCase.equals("all") || mediaTypes.contains("all") || mediaTypes.contains(mLowerCase);
     }
 
     public static List<String> mediaTypes(String media) {

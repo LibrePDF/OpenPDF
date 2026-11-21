@@ -33,10 +33,10 @@ public class PdfDocument620Test {
 
     @Test
     public void generate2DocumentsWithLongLine() throws IOException {
-        String s = "sagdageafedddddd dddddddddddddd dddddddddddddddddd ddddddddddd dddddddd" +
-                "sdaffffff ffffffffffffff ffffffffffffff ffffffffffff" +
-                "dsaffffffffff ffffffffffffffffff ffffffffffffff fffffffffffff" +
-                "dsaffff ffffffffff fffffffffffffffff";
+        String s = "sagdageafedddddd dddddddddddddd dddddddddddddddddd ddddddddddd dddddddd"
+                + "sdaffffff ffffffffffffff ffffffffffffff ffffffffffff"
+                + "dsaffffffffff ffffffffffffffffff ffffffffffffff fffffffffffff"
+                + "dsaffff ffffffffff fffffffffffffffff";
         createPdf("longLine", s, true);
         createPdf("longLine", s, false);
     }

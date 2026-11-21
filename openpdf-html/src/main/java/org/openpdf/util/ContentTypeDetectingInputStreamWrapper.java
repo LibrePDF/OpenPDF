@@ -34,8 +34,8 @@ public class ContentTypeDetectingInputStreamWrapper extends BufferedInputStream 
         try {
             byte[] buffer = new byte[count];
             int bytesRead = in.read(buffer);
-            return bytesRead >= count ?
-                buffer :
+            return bytesRead >= count
+                ? buffer :
                 bytesRead <= 0 ? NO_DATA : Arrays.copyOf(buffer, bytesRead); // Not enough data in stream
         } finally {
             in.reset();

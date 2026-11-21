@@ -672,9 +672,7 @@ public class PDFObject {
         // within. So if someone asks for the decrypter for
         // one of these in-stream objects, no decryption should
         // ever be applied. This can be seen with inline images.
-        return owner != null ?
-                owner.getDefaultDecrypter() :
-                IdentityDecrypter.getInstance();
+        return owner != null ? owner.getDefaultDecrypter() : IdentityDecrypter.getInstance();
     }
 
      /**
@@ -841,8 +839,7 @@ public class PDFObject {
                 PDFXref lXref = (PDFXref) value;
                 PDFXref rXref = (PDFXref) obj.value;
 
-                return ((lXref.getID() == rXref.getID()) &&
-                        (lXref.getGeneration() == rXref.getGeneration()));
+                return ((lXref.getID() == rXref.getID()) && (lXref.getGeneration() == rXref.getGeneration()));
             }
         }
 

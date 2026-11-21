@@ -2271,8 +2271,8 @@ public abstract class Image extends Rectangle {
     }
 
     private static boolean isJBIG2(int[] array) {
-        return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2' &&
-                array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';
+        return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2'
+                && array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';
     }
 
     private static boolean isGif(int[] array) {
@@ -2292,13 +2292,13 @@ public abstract class Image extends Rectangle {
     }
 
     private static boolean isJpeg2000(int[] array) {
-        return (array[0] == 0x00 && array[1] == 0x00 && array[2] == 0x00 && array[3] == 0x0c) ||
-                (array[0] == 0xff && array[1] == 0x4f && array[2] == 0xff && array[3] == 0x51);
+        return (array[0] == 0x00 && array[1] == 0x00 && array[2] == 0x00 && array[3] == 0x0c)
+                || (array[0] == 0xff && array[1] == 0x4f && array[2] == 0xff && array[3] == 0x51);
     }
 
     private static boolean isTiff(int[] array) {
-        return (array[0] == 'M' && array[1] == 'M' && array[2] == 0 && array[3] == 42) ||
-                (array[0] == 'I' && array[1] == 'I' && array[2] == 42 && array[3] == 0);
+        return (array[0] == 'M' && array[1] == 'M' && array[2] == 0 && array[3] == 42)
+                || (array[0] == 'I' && array[1] == 'I' && array[2] == 42 && array[3] == 0);
     }
 
     private static boolean isWMF(int[] array) {

@@ -62,8 +62,8 @@ public class FirstLineBaselineExample {
         float desiredBaseline = 540f;
         ct.setYLine(desiredBaseline + leading);  // Manual calculation required!
 
-        Paragraph paragraph = new Paragraph("This text uses the old approach.\n" +
-                "First line baseline had to be calculated manually.", font);
+        Paragraph paragraph = new Paragraph("This text uses the old approach.\n"
+                + "First line baseline had to be calculated manually.", font);
         paragraph.setLeading(leading);
         ct.addText(paragraph);
         ct.go();
@@ -86,8 +86,8 @@ public class FirstLineBaselineExample {
         float desiredBaseline = 340f;
         ct.setFirstLineBaselineY(desiredBaseline);  // Simple and intuitive!
 
-        Paragraph paragraph = new Paragraph("This text uses the new API.\n" +
-                "First line baseline is set directly to " + desiredBaseline + ".", font);
+        Paragraph paragraph = new Paragraph("This text uses the new API.\n"
+                + "First line baseline is set directly to " + desiredBaseline + ".", font);
         paragraph.setLeading(leading);
         ct.addText(paragraph);
         ct.go();
@@ -115,8 +115,7 @@ public class FirstLineBaselineExample {
             // Set first line baseline to exact position
             ct.setFirstLineBaselineY(baselineYPositions[i]);
             
-            Paragraph para = new Paragraph("Line " + (i + 1) + 
-                    " at baseline Y = " + baselineYPositions[i], font);
+            Paragraph para = new Paragraph("Line " + (i + 1) + " at baseline Y = " + baselineYPositions[i], font);
             ct.addText(para);
             ct.go();
         }

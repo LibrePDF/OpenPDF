@@ -91,8 +91,7 @@ public class FunctionType2 extends PDFFunction {
         
         // calculate the output values
         for (int i = 0; i < getNumOutputs(); i++) {
-            outputs[i + outputOffset] = getC0(i) + 
-                (float) (Math.pow(input, getN()) * (getC1(i) - getC0(i)));
+            outputs[i + outputOffset] = getC0(i) + (float) (Math.pow(input, getN()) * (getC1(i) - getC0(i)));
         }
     }
     

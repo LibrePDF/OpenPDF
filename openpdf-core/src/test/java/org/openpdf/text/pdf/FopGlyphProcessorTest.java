@@ -38,8 +38,8 @@ class FopGlyphProcessorTest {
             // 3. เขียนเนื้อหาทดสอบ
             document.add(new Paragraph("คำทดสอบ: จำ ทำ น้ำ ต่ำ ก้ำ", thaiFont));
 
-            String longText = "Lorem Ipsum คือ เนื้อหาจำลองที่ใช้กันในธุรกิจงานพิมพ์หรืองานเรียงพิมพ์ " +
-                    "มันได้กลายมาเป็นเนื้อหาจำลองมาตรฐานของธุรกิจดังกล่าวมาตั้งแต่ศตวรรษที่ 16";
+            String longText = "Lorem Ipsum คือ เนื้อหาจำลองที่ใช้กันในธุรกิจงานพิมพ์หรืองานเรียงพิมพ์ "
+                    + "มันได้กลายมาเป็นเนื้อหาจำลองมาตรฐานของธุรกิจดังกล่าวมาตั้งแต่ศตวรรษที่ 16";
             document.add(new Paragraph(longText, thaiFont));
 
             FopGlyphProcessorTest.log.info("Save to: " + tmp.toAbsolutePath());

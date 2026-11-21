@@ -196,8 +196,7 @@ public class PhotoAlbum extends AbstractTool {
                 writer.setPageLabels(pageLabels);
                 document.close();
             } else {
-                System.err.println("No images were found in directory " +
-                        directory.getAbsolutePath());
+                System.err.println("No images were found in directory " + directory.getAbsolutePath());
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(internalFrame,

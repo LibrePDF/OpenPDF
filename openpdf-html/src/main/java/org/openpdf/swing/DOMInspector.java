@@ -247,8 +247,8 @@ final class ElementPropertiesPanel extends JPanel {
 
                 case 0 -> me.getKey();
                 case 1 -> cpv.getCssText();
-                case 2 -> ValueConstants.isNumber(cpv.getPrimitiveType()) ?
-                        cpv.getFloatValue(cpv.getPrimitiveType()) :
+                case 2 -> ValueConstants.isNumber(cpv.getPrimitiveType())
+                        ? cpv.getFloatValue(cpv.getPrimitiveType()) :
                         ""; //actual.cssValue().getCssText();
 
                     /* ouch, can't do this now:
@@ -418,9 +418,9 @@ class DOMTreeModel implements TreeModel {
             NodeList nl = parent.getChildNodes();
             for (int i = 0, len = nl.getLength(); i < len; i++) {
                 Node child = nl.item(i);
-                if (child.getNodeType() == Node.ELEMENT_NODE ||
-                        child.getNodeType() == Node.COMMENT_NODE ||
-                        (child.getNodeType() == Node.TEXT_NODE && !child.getNodeValue().trim().isEmpty())) {
+                if (child.getNodeType() == Node.ELEMENT_NODE
+                        || child.getNodeType() == Node.COMMENT_NODE
+                        || (child.getNodeType() == Node.TEXT_NODE && !child.getNodeValue().trim().isEmpty())) {
                     children.add(child);
                 }
             }

@@ -32,11 +32,11 @@ public final class PdfBatch {
 
         @Override
         public String toString() {
-            return "BatchResult{" +
-                    "successes=" + successes.size() +
-                    ", failures=" + failures.size() +
-                    ", total=" + total() +
-                    '}';
+            return "BatchResult{"
+                    + "successes=" + successes.size()
+                    + ", failures=" + failures.size()
+                    + ", total=" + total()
+                    + '}';
         }
     }
 

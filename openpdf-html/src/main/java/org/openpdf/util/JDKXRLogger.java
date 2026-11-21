@@ -145,8 +145,8 @@ public class JDKXRLogger implements XRLogger {
                 Formatter formatter = fclass.getConstructor().newInstance();
                 handler.setFormatter(formatter);
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-                throw new XRRuntimeException("Could not initialize logging properties; " +
-                        "Can't instantiate Formatter class " + formatterClassName + ": " + e.getClass().getSimpleName(), e);
+                throw new XRRuntimeException("Could not initialize logging properties; "
+                        + "Can't instantiate Formatter class " + formatterClassName + ": " + e.getClass().getSimpleName(), e);
             }
         }
     }
@@ -190,8 +190,8 @@ public class JDKXRLogger implements XRLogger {
                 String hl = Configuration.valueFor("xr.util-logging." + name + ".level", "INFO");
                 handler.setLevel(LoggerUtil.parseLogLevel(hl, Level.INFO));
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-                throw new XRRuntimeException("Could not initialize logging properties; " +
-                        "Can't instantiate Handler class " + name + ": " + e.getClass().getSimpleName(), e);
+                throw new XRRuntimeException("Could not initialize logging properties; "
+                        + "Can't instantiate Handler class " + name + ": " + e.getClass().getSimpleName(), e);
             }
         }
 

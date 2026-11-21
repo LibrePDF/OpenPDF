@@ -192,9 +192,8 @@ public class BorderPropertySet extends RectPropertySet {
             @Nullable CssContext ctx
     ) {
         BorderPropertySet result = new BorderPropertySet(style, ctx);
-        return result.isAllZeros() && !result.hasHidden() && !result.hasBorderRadius() ?
-                BorderPropertySet.EMPTY_BORDER :
-                result;
+        return result.isAllZeros() && !result.hasHidden() && !result.hasBorderRadius()
+                ? BorderPropertySet.EMPTY_BORDER : result;
 
     }
 

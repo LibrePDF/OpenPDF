@@ -159,8 +159,8 @@ public class InlineBoxing {
                             c, maxAvailableWidth, Edge.RIGHT);
                 }
 
-                String master = iB.isDynamicFunction() ?
-                        iB.getContentFunction().getLayoutReplacementText() : iB.getText();
+                String master =
+                        iB.isDynamicFunction() ? iB.getContentFunction().getLayoutReplacementText() : iB.getText();
                 LineBreakContext lbContext = new LineBreakContext(master, iB.getTextNode());
 
                 int q = 0;
@@ -219,8 +219,7 @@ public class InlineBoxing {
                             }
                         }
 
-                        if (!lbContext.isUnbreakable() ||
-                                (lbContext.isUnbreakable() && !currentLine.isContainsContent())) {
+                        if (!lbContext.isUnbreakable() || (lbContext.isUnbreakable() && !currentLine.isContainsContent())) {
                             if (iB.isDynamicFunction()) {
                                 inlineText.setFunctionData(new FunctionData(
                                         iB.getContentFunction(), iB.getFunction()));
@@ -289,8 +288,8 @@ public class InlineBoxing {
                     currentIB.setEndsHere(true);
 
                     if (currentIB.getStyle().requiresLayer()) {
-                        if (!currentIB.isPending() && (currentIB.getElement() == null ||
-                                currentIB.getElement() != c.getLayer().getMaster().getElement())) {
+                        if (!currentIB.isPending() && (currentIB.getElement() == null
+                                || currentIB.getElement() != c.getLayer().getMaster().getElement())) {
                             throw new RuntimeException("internal error");
                         }
                         if (!currentIB.isPending()) {
@@ -300,8 +299,8 @@ public class InlineBoxing {
                         }
                     }
 
-                    currentIB = currentIB.getParent() instanceof LineBox ?
-                            null : (InlineLayoutBox) currentIB.getParent();
+                    currentIB =
+                            currentIB.getParent() instanceof LineBox ? null : (InlineLayoutBox) currentIB.getParent();
                 }
             } else {
                 BlockBox child = (BlockBox) node;
@@ -577,8 +576,7 @@ public class InlineBoxing {
 
         int halfLeading = Math.round((lineHeight - iB.getStyle().getFont(c).size) / 2);
         if (halfLeading > 0) {
-            halfLeading = Math.round((lineHeight -
-                    (fm.getDescent() + fm.getAscent())) / 2);
+            halfLeading = Math.round((lineHeight - (fm.getDescent() + fm.getAscent())) / 2);
         }
 
         iB.setBaseline(Math.round(fm.getAscent()));
@@ -598,9 +596,7 @@ public class InlineBoxing {
                 iB.getY(), (int) (baseline + fm.getDescent()),
                 inlineTop, Math.round(inlineTop + lineHeight),
                 (int) Math.floor(iB.getY() - border.top() - padding.top()),
-                (int) Math.ceil(iB.getY() +
-                        fm.getAscent() + fm.getDescent() +
-                        border.bottom() + padding.bottom())
+                (int) Math.ceil(iB.getY() + fm.getAscent() + fm.getDescent() + border.bottom() + padding.bottom())
         );
     }
 
@@ -668,8 +664,8 @@ public class InlineBoxing {
         CalculatedStyle style = box.getStyle();
 
         if (style.isLength(CSSName.VERTICAL_ALIGN)) {
-            box.setY((int) (measurements.getBaseline() - ascent -
-                    style.getFloatPropertyProportionalTo(CSSName.VERTICAL_ALIGN, style.getLineHeight(c), c)));
+            box.setY((int) (measurements.getBaseline() - ascent
+                    - style.getFloatPropertyProportionalTo(CSSName.VERTICAL_ALIGN, style.getLineHeight(c), c)));
         } else {
             IdentValue vAlign = style.getIdent(CSSName.VERTICAL_ALIGN);
 
@@ -697,11 +693,9 @@ public class InlineBoxing {
             LayoutContext c, Box container, FSFontMetrics strutM) {
         float lineHeight = container.getStyle().getLineHeight(c);
 
-        int halfLeading = Math.round((lineHeight -
-                container.getStyle().getFont(c).size) / 2);
+        int halfLeading = Math.round((lineHeight - container.getStyle().getFont(c).size) / 2);
         if (halfLeading > 0) {
-            halfLeading = Math.round((lineHeight -
-                    (strutM.getDescent() + strutM.getAscent())) / 2);
+            halfLeading = Math.round((lineHeight - (strutM.getDescent() + strutM.getAscent())) / 2);
         }
 
         int baseline = (int) (halfLeading + strutM.getAscent());
@@ -754,9 +748,8 @@ public class InlineBoxing {
 
         // XXX Revisit this.  Do we need this when dealing with unbreakable
         // text?  Is a line required to always have a minimum height?
-        if (current.getHeight() != 0 &&
-                current.getHeight() < minHeight &&
-                ! current.isContainsOnlyBlockLevelContent()) {
+        if (current.getHeight() != 0 && current.getHeight() < minHeight
+                && !current.isContainsOnlyBlockLevelContent()) {
             current.setHeight(minHeight);
         }
 
@@ -790,8 +783,8 @@ public class InlineBoxing {
     }
 
     private static void alignLine(final LayoutContext c, final LineBox current, final int maxAvailableWidth) {
-        FloatDistances distances = (!current.isContainsDynamicFunction() && !current.getParent().getStyle().isTextJustify()) ?
-                new DynamicFloatDistances(c, current, maxAvailableWidth) :
+        FloatDistances distances = (!current.isContainsDynamicFunction() && !current.getParent().getStyle().isTextJustify())
+                ? new DynamicFloatDistances(c, current, maxAvailableWidth) :
                 new StaticFloatDistances(c, current, maxAvailableWidth);
         current.setFloatDistances(distances);
         current.align(false);
@@ -875,8 +868,8 @@ public class InlineBoxing {
     private static boolean hasTrimmableLeadingSpace(
             LineBox line, CalculatedStyle style, LineBreakContext lbContext,
             boolean zeroWidthInlineBlock) {
-        if ((! line.isContainsContent() || zeroWidthInlineBlock) &&
-                lbContext.getStartSubstring().startsWith(WhitespaceStripper.SPACE)) {
+        if ((! line.isContainsContent() || zeroWidthInlineBlock)
+                && lbContext.getStartSubstring().startsWith(WhitespaceStripper.SPACE)) {
             IdentValue whitespace = style.getWhitespace();
             return whitespace == IdentValue.NORMAL
                     || whitespace == IdentValue.NOWRAP

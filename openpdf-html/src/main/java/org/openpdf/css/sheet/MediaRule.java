@@ -42,8 +42,8 @@ public class MediaRule implements RulesetContainer {
 
     @CheckReturnValue
     public boolean matches(String medium) {
-        return medium.equalsIgnoreCase("all") || _mediaTypes.contains("all") ||
-                _mediaTypes.contains(medium.toLowerCase(ROOT));
+        return medium.equalsIgnoreCase("all") || _mediaTypes.contains("all")
+                || _mediaTypes.contains(medium.toLowerCase(ROOT));
     }
 
     @Override

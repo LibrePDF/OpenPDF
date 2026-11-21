@@ -64,8 +64,7 @@ public class CSSParseException extends RuntimeException {
             return _genericMessage + " at line " + (_line + 1) + ".";
         } else {
             String found = _found == null ? "end of file" : _found.getExternalName();
-            return "Found " + found + " where " +
-                descr(_expected) + " was expected at line " + (_line + 1) + ".";
+            return "Found " + found + " where " + descr(_expected) + " was expected at line " + (_line + 1) + ".";
         }
     }
 

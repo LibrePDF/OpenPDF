@@ -128,17 +128,17 @@ public class PageBox {
     private PageDimensions resolvePageDimensions(CssContext cssCtx) {
         CalculatedStyle style = getStyle();
 
-        int width = style.isLength(FS_PAGE_WIDTH) ?
-                style.getIntPropertyProportionalTo(FS_PAGE_WIDTH, 0, cssCtx) :
+        int width = style.isLength(FS_PAGE_WIDTH)
+                ? style.getIntPropertyProportionalTo(FS_PAGE_WIDTH, 0, cssCtx) :
                 resolveAutoPageWidth(cssCtx);
 
-        int height = style.isLength(FS_PAGE_HEIGHT) ?
-                style.getIntPropertyProportionalTo(FS_PAGE_HEIGHT, 0, cssCtx) :
+        int height = style.isLength(FS_PAGE_HEIGHT)
+                ? style.getIntPropertyProportionalTo(FS_PAGE_HEIGHT, 0, cssCtx) :
                 resolveAutoPageHeight(cssCtx);
 
         //noinspection SuspiciousNameCombination
-        return style.isIdent(FS_PAGE_ORIENTATION, LANDSCAPE) ?
-                new PageDimensions(height, width) :
+        return style.isIdent(FS_PAGE_ORIENTATION, LANDSCAPE)
+                ? new PageDimensions(height, width) :
                 new PageDimensions(width, height);
     }
 

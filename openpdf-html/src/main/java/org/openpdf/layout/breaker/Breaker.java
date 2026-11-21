@@ -89,9 +89,7 @@ public class Breaker {
         }
 
         //check if we should break on the next newline
-        if (whitespace == IdentValue.PRE ||
-                whitespace == IdentValue.PRE_WRAP ||
-                whitespace == IdentValue.PRE_LINE) {
+        if (whitespace == IdentValue.PRE || whitespace == IdentValue.PRE_WRAP || whitespace == IdentValue.PRE_LINE) {
             int n = context.getStartSubstring().indexOf(WhitespaceStripper.EOL);
             if (n > -1) {
                 context.setEnd(context.getStart() + n + 1);
@@ -107,8 +105,7 @@ public class Breaker {
         }
 
         //check if we may wrap
-        if (whitespace == IdentValue.PRE ||
-                (context.isNeedsNewLine() && context.getWidth() <= avail)) {
+        if (whitespace == IdentValue.PRE || (context.isNeedsNewLine() && context.getWidth() <= avail)) {
             return;
         }
 
