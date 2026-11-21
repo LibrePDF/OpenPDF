@@ -47,6 +47,7 @@
 package org.openpdf.text.pdf.parser;
 
 import org.openpdf.text.pdf.PdfDictionary;
+import org.openpdf.text.pdf.PdfIndirectReference;
 import org.openpdf.text.pdf.PdfName;
 import org.openpdf.text.pdf.PdfObject;
 import org.openpdf.text.pdf.PdfReader;
@@ -58,7 +59,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Tool that parses the content of a PDF document.
@@ -86,6 +89,19 @@ public class PdfContentReaderTool {
      * @return a String representation of the dictionary
      */
     public static String getDictionaryDetail(PdfDictionary dic, int depth) {
+        return getDictionaryDetail(dic, depth, new HashSet<>());
+    }
+
+    /**
+     * Shows the detail of a dictionary, without following an indirect reference back to a dictionary that is already
+     * being shown.
+     *
+     * @param dic       the dictionary of which you want the detail
+     * @param depth     the depth of the current dictionary (for nested dictionaries)
+     * @param ancestors the indirect references of the dictionaries being shown above this one
+     * @return a String representation of the dictionary
+     */
+    private static String getDictionaryDetail(PdfDictionary dic, int depth, Set<String> ancestors) {
         StringBuilder builder = new StringBuilder();
         builder.append('(');
         List<PdfName> subDictionaries = new ArrayList<>();
@@ -111,8 +127,19 @@ public class PdfContentReaderTool {
             builder.append("Subdictionary ");
             builder.append(pdfSubDictionaryName);
             builder.append(" = ");
+            String reference = null;
+            if (dic.get(pdfSubDictionaryName) instanceof PdfIndirectReference ref) {
+                reference = ref.getNumber() + " " + ref.getGeneration() + " R";
+                if (!ancestors.add(reference)) {
+                    builder.append(reference).append(" (circular reference)");
+                    continue;
+                }
+            }
             builder.append(getDictionaryDetail(
-                    dic.getAsDict(pdfSubDictionaryName), depth + 1));
+                    dic.getAsDict(pdfSubDictionaryName), depth + 1, ancestors));
+            if (reference != null) {
+                ancestors.remove(reference);
+            }
         }
         return builder.toString();
     }
