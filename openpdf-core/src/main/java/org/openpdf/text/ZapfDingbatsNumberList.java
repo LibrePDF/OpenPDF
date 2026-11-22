@@ -124,15 +124,11 @@ public class ZapfDingbatsNumberList extends List {
     }
 
     private int getTypeBaseCharOffset() {
-        switch (type) {
-            case 0:
-                return 171;
-            case 1:
-                return 181;
-            case 2:
-                return 191;
-            default:
-                return 201;
-        }
+        return switch (type) {
+            case 0 -> 171;
+            case 1 -> 181;
+            case 2 -> 191;
+            default -> 201;
+        };
     }
 }

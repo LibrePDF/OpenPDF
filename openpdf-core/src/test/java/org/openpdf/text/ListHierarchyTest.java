@@ -43,8 +43,31 @@ class ListHierarchyTest {
         assertThat(dingbatsItem.getListSymbol().getContent()).isEqualTo("* ");
 
         ZapfDingbatsNumberList numberList = new ZapfDingbatsNumberList(0, 10);
-        numberList.add("num");
+        assertThat(numberList.add("num")).isTrue();
         ListItem numberItem = (ListItem) numberList.getItems().get(0);
         assertThat(numberItem.getListSymbol().getContent()).isEqualTo((char) 172 + " ");
+    }
+
+    @Test
+    void jpegParsesApp0DpiAppeAndFrameDimensions() throws Exception {
+        byte[] minimalJpeg = new byte[] {
+                (byte) 0xFF, (byte) 0xD8, // SOI
+                // APP0 JFIF (length 16, units=1 (inch), dpiX=300 (0x012C), dpiY=150 (0x0096))
+                (byte) 0xFF, (byte) 0xE0, 0x00, 0x10,
+                'J', 'F', 'I', 'F', 0x00, 0x01, 0x01, 0x01, 0x01, 0x2C, 0x00, (byte) 0x96, 0x00, 0x00,
+                // APPE Adobe marker (length 14 = 2 + 12 bytes)
+                (byte) 0xFF, (byte) 0xEE, 0x00, 0x0E,
+                'A', 'd', 'o', 'b', 'e', 0, 0, 0, 0, 0, 0, 0,
+                // SOF0 valid frame marker (length 11, 8 bpc, height=24, width=48, components=3)
+                (byte) 0xFF, (byte) 0xC0, 0x00, 0x0B, 0x08, 0x00, 0x18, 0x00, 0x30, 0x03, 0x01, 0x11, 0x00
+        };
+
+        Jpeg jpeg = new Jpeg(minimalJpeg);
+
+        assertThat(jpeg.getDpiX()).isEqualTo(300);
+        assertThat(jpeg.getDpiY()).isEqualTo(150);
+        assertThat(jpeg.isInverted()).isTrue();
+        assertThat(jpeg.getScaledWidth()).isEqualTo(48f);
+        assertThat(jpeg.getScaledHeight()).isEqualTo(24f);
     }
 }

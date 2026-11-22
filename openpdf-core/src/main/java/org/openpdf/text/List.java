@@ -130,7 +130,7 @@ public class List implements TextElementArray {
     /**
      * Default post-symbol suffix used by symbol-based lists.
      */
-    protected static final String SYMBOL_SPACE_SUFFIX = " ";
+    static final String SYMBOL_SPACE_SUFFIX = " ";
 
     // member variables
 
@@ -332,7 +332,7 @@ public class List implements TextElementArray {
      * @param symbolText the core symbol text for the current list item
      * @return a configured <CODE>Chunk</CODE> representing the list item symbol
      */
-    protected Chunk createSymbolChunk(String symbolText) {
+    Chunk createSymbolChunk(String symbolText) {
         Chunk chunk = new Chunk(preSymbol, symbol.getFont());
         chunk.append(symbolText);
         chunk.append(postSymbol);
@@ -346,7 +346,7 @@ public class List implements TextElementArray {
      * @param symbolChunk the <CODE>Chunk</CODE> to use as the list symbol
      * @return true if adding the item succeeded
      */
-    protected boolean configureAndAddItem(ListItem item, Chunk symbolChunk) {
+    boolean configureAndAddItem(ListItem item, Chunk symbolChunk) {
         item.setListSymbol(symbolChunk);
         item.setIndentationLeft(symbolIndent, autoindent);
         item.setIndentationRight(0);
@@ -358,7 +358,7 @@ public class List implements TextElementArray {
      *
      * @param fontName the font family name to apply
      */
-    protected void setSymbolFont(String fontName) {
+    void setSymbolFont(String fontName) {
         float fontSize = symbol.getFont().getSize();
         symbol.setFont(FontFactory.getFont(fontName, fontSize, Font.NORMAL));
     }

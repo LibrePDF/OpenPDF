@@ -2276,10 +2276,20 @@ public abstract class Image extends Rectangle {
      * @param width  the image width
      * @param height the image height
      */
-    protected void setDimensions(int width, int height) {
-        scaledHeight = (float) height;
+    void setDimensions(int width, int height) {
+        setDimensions((float) width, (float) height);
+    }
+
+    /**
+     * Initializes both scaled dimensions and the corresponding bounding box top/right coordinates.
+     *
+     * @param width  the image width
+     * @param height the image height
+     */
+    void setDimensions(float width, float height) {
+        scaledHeight = height;
         setTop(scaledHeight);
-        scaledWidth = (float) width;
+        scaledWidth = width;
         setRight(scaledWidth);
     }
 
