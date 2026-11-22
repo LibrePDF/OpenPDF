@@ -692,11 +692,12 @@ public class PdfSignatureAppearance {
                 String signedBy = PdfPKCS7.getSubjectFields((X509Certificate) certChain[0]).getField("CN");
                 Rectangle sr2 = new Rectangle(signatureRect.getWidth() - MARGIN,
                         signatureRect.getHeight() - MARGIN);
-                float signedSize = fitText(font, signedBy, sr2, -1, runDirection);
+                Font nameFont = new Font(font);
+                float signedSize = fitText(nameFont, signedBy, sr2, -1, runDirection);
 
                 ColumnText ct2 = new ColumnText(t);
                 ct2.setRunDirection(runDirection);
-                ct2.setSimpleColumn(new Phrase(signedBy, font),
+                ct2.setSimpleColumn(new Phrase(signedBy, nameFont),
                         signatureRect.getLeft(), signatureRect.getBottom(),
                         signatureRect.getRight(), signatureRect.getTop(), signedSize,
                         Element.ALIGN_LEFT);
