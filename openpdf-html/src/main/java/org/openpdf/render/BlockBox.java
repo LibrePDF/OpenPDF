@@ -2137,14 +2137,14 @@ public class BlockBox extends Box implements InlinePaintable {
             ContentLimit contentLimit =
                 currentContainer.getContentLimit(current);
 
-            if (current != start) {
+            if (current != start && contentLimit != null) {
                 int top = contentLimit.getTop();
                 if (top != ContentLimit.UNDEFINED) {
                     parentContainer.updateTop(c, top - extraTop);
                 }
             }
 
-            if (current != end) {
+            if (current != end && contentLimit != null) {
                 int bottom = contentLimit.getBottom();
                 if (bottom != ContentLimit.UNDEFINED) {
                     parentContainer.updateBottom(c, bottom + extraBottom);

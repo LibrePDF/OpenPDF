@@ -38,6 +38,8 @@ package org.openpdf.toolbox.plugins;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import org.openpdf.text.Document;
 import org.openpdf.text.pdf.PRAcroForm;
@@ -56,6 +58,8 @@ import org.openpdf.toolbox.arguments.filters.PdfFilter;
  */
 public class ReversePages
         extends AbstractTool {
+
+    private static final Logger LOGGER = Logger.getLogger(ReversePages.class.getName());
 
     static {
         addVersion(
@@ -151,7 +155,7 @@ public class ReversePages
             document.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not reverse the pages of the PDF file", e);
         }
     }
 

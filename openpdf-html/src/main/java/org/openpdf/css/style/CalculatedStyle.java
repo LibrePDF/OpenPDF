@@ -136,6 +136,16 @@ public class CalculatedStyle {
     private CalculatedStyle(@Nullable CalculatedStyle parent) {
         _derivedValuesById = new FSDerivedValue[CSSName.countCSSNames()];
         _parent = parent;
+        // Lazily computed per-style values are never taken over from the parent style
+        _border = null;
+        _margin = null;
+        _padding = null;
+        _lineHeight = 0;
+        _lineHeightResolved = false;
+        _FSFont = null;
+        _FSFontMetrics = null;
+        _backgroundSize = null;
+        _font = null;
     }
 
     /**

@@ -33,8 +33,6 @@ The features of OpenPDF include:
 [![CodeQL](https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml/badge.svg)](https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/librepdf/openpdf/badge)](https://www.codefactor.io/repository/github/librepdf/openpdf)
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
-![Java 21](https://img.shields.io/badge/Java-21-blue?logo=java&logoColor=white)
-![Java 24](https://img.shields.io/badge/Java-24-blue?logo=java&logoColor=yellow)
 ![Java 25](https://img.shields.io/badge/Java-25-blue?logo=java&logoColor=blue)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Supported-ADD8E6?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
 
@@ -170,7 +168,10 @@ More details: [Contributing](CONTRIBUTING.md)
 
 We have now different versions of OpenPDF, and they require different versions of Java:
 
-- The 2.1.x Branch (and later) requires Java 21 or later.
+- OpenPDF 4.0 and later (the `master` branch) requires Java 25 or later.
+- OpenPDF 2.1 to 3.0 requires Java 21 or later. OpenPDF 3.0 is maintained in the
+  [3.0-java21](https://github.com/LibrePDF/OpenPDF/tree/3.0-java21) branch, which is the branch to use
+  if you need Java 21.
 - The 2.0.x Branch requires Java 17 or later.
 - The 1.4.x Branch requires Java 11 or later.
 - The 1.3.x Branch requires Java 8 or later.

@@ -516,7 +516,7 @@ class TrueTypeFont extends BaseFont {
             int length = rf.readUnsignedShort();
             int offset = rf.readUnsignedShort();
             if (nameID == id) {
-                int pos = rf.getFilePointer();
+                long pos = rf.getFilePointer();
                 rf.seek(table_location[0] + startOfStorage + offset);
                 String name;
                 if (platformID == 0 || platformID == 3 || (platformID == 2 && platformEncodingID == 1)) {
@@ -559,7 +559,7 @@ class TrueTypeFont extends BaseFont {
             int nameID = rf.readUnsignedShort();
             int length = rf.readUnsignedShort();
             int offset = rf.readUnsignedShort();
-            int pos = rf.getFilePointer();
+            long pos = rf.getFilePointer();
             rf.seek(table_location[0] + startOfStorage + offset);
             String name;
             if (platformID == 0 || platformID == 3 || (platformID == 2 && platformEncodingID == 1)) {
@@ -1142,11 +1142,12 @@ class TrueTypeFont extends BaseFont {
         dic.put(PdfName.ASCENT, new PdfNumber(os_2.sTypoAscender * 1000 / head.unitsPerEm));
         dic.put(PdfName.CAPHEIGHT, new PdfNumber(os_2.sCapHeight * 1000 / head.unitsPerEm));
         dic.put(PdfName.DESCENT, new PdfNumber(os_2.sTypoDescender * 1000 / head.unitsPerEm));
-        dic.put(PdfName.FONTBBOX, new PdfRectangle(
-                head.xMin * 1000 / head.unitsPerEm,
-                head.yMin * 1000 / head.unitsPerEm,
-                head.xMax * 1000 / head.unitsPerEm,
-                head.yMax * 1000 / head.unitsPerEm));
+        // the bounding box values are intentionally truncated to integers
+        int llx = head.xMin * 1000 / head.unitsPerEm;
+        int lly = head.yMin * 1000 / head.unitsPerEm;
+        int urx = head.xMax * 1000 / head.unitsPerEm;
+        int ury = head.yMax * 1000 / head.unitsPerEm;
+        dic.put(PdfName.FONTBBOX, new PdfRectangle((float) llx, (float) lly, (float) urx, (float) ury));
         if (cidset != null) {
             dic.put(PdfName.CIDSET, cidset);
         }
@@ -1257,7 +1258,7 @@ class TrueTypeFont extends BaseFont {
         try {
             rf2 = new RandomAccessFileOrArray(rf);
             rf2.reOpen();
-            byte[] b = new byte[rf2.length()];
+            byte[] b = new byte[(int) rf2.length()];
             rf2.readFully(b);
             return b;
         } finally {
@@ -1459,8 +1460,11 @@ class TrueTypeFont extends BaseFont {
                 return fontSize * hhea.LineGap / head.unitsPerEm;
             case AWT_MAXADVANCE:
                 return fontSize * hhea.advanceWidthMax / head.unitsPerEm;
-            case UNDERLINE_POSITION:
-                return (underlinePosition - underlineThickness / 2) * fontSize / head.unitsPerEm;
+            case UNDERLINE_POSITION: {
+                // half of the thickness is intentionally truncated to an integer
+                int halfThickness = underlineThickness / 2;
+                return (underlinePosition - halfThickness) * fontSize / head.unitsPerEm;
+            }
             case UNDERLINE_THICKNESS:
                 return underlineThickness * fontSize / head.unitsPerEm;
             case STRIKETHROUGH_POSITION:

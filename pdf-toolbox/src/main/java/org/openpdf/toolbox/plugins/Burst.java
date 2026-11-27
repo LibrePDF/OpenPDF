@@ -49,6 +49,8 @@ package org.openpdf.toolbox.plugins;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import org.openpdf.text.Document;
 import org.openpdf.text.pdf.PdfContentByte;
@@ -67,6 +69,8 @@ import org.openpdf.toolbox.swing.PdfInformationPanel;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Burst extends AbstractTool {
+
+    private static final Logger LOGGER = Logger.getLogger(Burst.class.getName());
 
     static {
         addVersion("$Id: Burst.java 3271 2008-04-18 20:39:42Z xlv $");
@@ -152,7 +156,7 @@ public class Burst extends AbstractTool {
                 document.close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not burst the PDF file", e);
         }
     }
 

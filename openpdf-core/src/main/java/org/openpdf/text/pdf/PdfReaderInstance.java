@@ -114,8 +114,11 @@ class PdfReaderInstance {
     }
 
     PdfObject getResources(int pageNumber) {
-        PdfObject obj = PdfReader.getPdfObjectRelease(reader.getPageNRelease(pageNumber).get(PdfName.RESOURCES));
-        return obj;
+        PdfDictionary page = reader.getPageNRelease(pageNumber);
+        if (page == null) {
+            return null;
+        }
+        return PdfReader.getPdfObjectRelease(page.get(PdfName.RESOURCES));
     }
 
     /**
@@ -128,6 +131,10 @@ class PdfReaderInstance {
      */
     PdfStream getFormXObject(int pageNumber, int compressionLevel) throws IOException {
         PdfDictionary page = reader.getPageNRelease(pageNumber);
+        if (page == null) {
+            throw new IllegalArgumentException(
+                    MessageLocalization.getComposedMessage("invalid.page.number.1", pageNumber));
+        }
         PdfObject contents = PdfReader.getPdfObjectRelease(page.get(PdfName.CONTENTS));
         PdfDictionary dic = new PdfDictionary();
         byte[] bout = null;

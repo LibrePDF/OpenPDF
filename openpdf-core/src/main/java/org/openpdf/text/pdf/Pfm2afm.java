@@ -148,11 +148,15 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Converts a PFM file into an AFM file.
  */
 public final class Pfm2afm {
+
+    private static final Logger LOGGER = Logger.getLogger(Pfm2afm.class.getName());
 
     private RandomAccessFileOrArray in;
     private PrintWriter out;
@@ -538,7 +542,7 @@ public final class Pfm2afm {
             in.close();
             out.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not convert the PFM file to an AFM file", e);
         }
     }
 

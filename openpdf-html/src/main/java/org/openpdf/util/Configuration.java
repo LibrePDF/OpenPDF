@@ -119,6 +119,8 @@ public class Configuration {
     /**
      * Logger we use internally related to configuration.
      */
+    // Not a duplicate of "log": this is the caller-supplied java.util.logging target set via setConfigLogger().
+    @SuppressWarnings("java:S9436")
     @Nullable
     private Logger configLogger;
 
