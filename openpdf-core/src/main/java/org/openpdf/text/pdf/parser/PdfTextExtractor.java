@@ -157,6 +157,8 @@ public class PdfTextExtractor {
                 PdfArray contentArray = (PdfArray) contentObject;
                 for (PdfObject pdfObject : contentArray.getElements()) {
                     allBytes.write(getContentBytesFromContentObject(pdfObject));
+                    // The streams of a page may be split between any two tokens, so keep those tokens apart.
+                    allBytes.write('\n');
                 }
                 result = allBytes.toByteArray();
                 break;
