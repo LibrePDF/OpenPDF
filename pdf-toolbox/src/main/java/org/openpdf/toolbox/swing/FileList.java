@@ -42,6 +42,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -60,6 +62,8 @@ import org.openpdf.text.pdf.PdfReader;
  */
 public class FileList
         extends JInternalFrame implements DropTargetListener {
+
+    private static final Logger LOGGER = Logger.getLogger(FileList.class.getName());
 
     private static final long serialVersionUID = -7238230038043975672L;
 
@@ -83,7 +87,7 @@ public class FileList
         try {
             jbInit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not initialize the file list", ex);
         }
     }
 
@@ -136,7 +140,7 @@ public class FileList
                 System.out.println(f.toString());
             }
         } catch (IOException | UnsupportedFlavorException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not read the dropped files", ex);
         }
         dtde.dropComplete(true);
         File[] filar = new File[filevector.size()];

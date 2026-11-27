@@ -212,6 +212,9 @@ class FontDetails {
             case BaseFont.FONT_TYPE_T1:
             case BaseFont.FONT_TYPE_TT: {
                 b = baseFont.convertToBytes(text);
+                if (b == null) {
+                    break;
+                }
 
                 for (byte b1 : b) {
                     shortTag[b1 & 0xff] = 1;

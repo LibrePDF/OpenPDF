@@ -141,7 +141,7 @@ public class MetaState {
     }
 
     public void selectMetaObject(int index, PdfContentByte cb) {
-        MetaObject obj = (MetaObject) MetaObjects.get(index);
+        MetaObject obj = isMetaObjectIndex(index) ? (MetaObject) MetaObjects.get(index) : null;
         if (obj == null) {
             return;
         }
@@ -193,7 +193,17 @@ public class MetaState {
     }
 
     public void deleteMetaObject(int index) {
-        MetaObjects.set(index, null);
+        if (isMetaObjectIndex(index)) {
+            MetaObjects.set(index, null);
+        }
+    }
+
+    /**
+     * Checks an object index that was read from the image. Like an index of a deleted object, an index outside the
+     * object table selects or deletes nothing.
+     */
+    private boolean isMetaObjectIndex(int index) {
+        return index >= 0 && index < MetaObjects.size();
     }
 
     public void saveState(PdfContentByte cb) {

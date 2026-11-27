@@ -37,6 +37,8 @@ package org.openpdf.toolbox.plugins;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import org.openpdf.text.Document;
 import org.openpdf.text.Rectangle;
@@ -56,6 +58,8 @@ import org.openpdf.toolbox.arguments.filters.PdfFilter;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class NUp extends AbstractTool {
+
+    private static final Logger LOGGER = Logger.getLogger(NUp.class.getName());
 
     static {
         addVersion("$Id: NUp.java 3427 2008-05-24 18:32:31Z xlv $");
@@ -135,7 +139,9 @@ public class NUp extends AbstractTool {
                 unitSize = new Rectangle(unitSize.getHeight() / 2, unitSize.getWidth());
             }
             int n = (int) Math.pow(2, pow2);
-            int r = (int) Math.pow(2, pow2 / 2);
+            // the number of rows is 2 to the power of half of pow2, rounded down
+            int halfPow2 = pow2 / 2;
+            int r = (int) Math.pow(2, halfPow2);
             int c = n / r;
             // step 1: creation of a document-object
             Document document = new Document(newSize, 0, 0, 0, 0);
@@ -154,7 +160,8 @@ public class NUp extends AbstractTool {
                 }
                 p = i + 1;
                 offsetX = unitSize.getWidth() * ((i % n) % c);
-                offsetY = newSize.getHeight() - (unitSize.getHeight() * (((i % n) / c) + 1));
+                int row = (i % n) / c;
+                offsetY = newSize.getHeight() - (unitSize.getHeight() * (row + 1));
                 currentSize = reader.getPageSize(p);
                 factor = Math.min(unitSize.getWidth() / currentSize.getWidth(),
                         unitSize.getHeight() / currentSize.getHeight());
@@ -166,7 +173,7 @@ public class NUp extends AbstractTool {
             // step 5: we close the document
             document.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not create the N-up PDF file", e);
         }
     }
 

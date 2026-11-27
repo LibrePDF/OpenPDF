@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -50,6 +52,7 @@ public class FormTree extends JTree implements TreeSelectionListener, Observer {
      * A serial version UID.
      */
     private static final long serialVersionUID = -3584003547303700407L;
+    private static final Logger LOGGER = Logger.getLogger(FormTree.class.getName());
     /**
      * Nodes in the FormTree correspond with nodes in the main PdfTree.
      */
@@ -125,7 +128,7 @@ public class FormTree extends JTree implements TreeSelectionListener, Observer {
                     xfaTree.load(xfaFile);
                     xfaTextArea.load(xfaFile);
                 } catch (IOException | DocumentException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "Could not load the XFA form", e);
                 }
             }
             setModel(new DefaultTreeModel(root));

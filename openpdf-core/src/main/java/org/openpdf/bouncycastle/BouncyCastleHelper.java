@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSEnvelopedData;
-import org.bouncycastle.cms.Recipient;
 import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 
@@ -35,16 +34,20 @@ public class BouncyCastleHelper {
         for (PdfObject recipient : recipients.getElements()) {
             strings.remove(recipient);
             try {
+                // a recipient is identified by the issuer and serial number of a certificate holder
+                X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
                 CMSEnvelopedData data = new CMSEnvelopedData(recipient.getBytes());
 
                 final Collection<RecipientInformation> recipientInformations = data.getRecipientInfos().getRecipients();
                 for (RecipientInformation recipientInfo : recipientInformations) {
-                    if (recipientInfo.getRID().match(certificate)) {
+                    if (recipientInfo.getRID().match(certificateHolder)) {
                         // OJO...
                         // https://www.bouncycastle.org/docs/pkixdocs1.5on/org/bouncycastle/cms/CMSEnvelopedData.html
-                        Recipient rec = new JceKeyTransEnvelopedRecipient(
-                                (PrivateKey) certificateKey)
-                                .setProvider(certificateKeyProvider);
+                        JceKeyTransEnvelopedRecipient rec = new JceKeyTransEnvelopedRecipient(
+                                (PrivateKey) certificateKey);
+                        if (certificateKeyProvider != null) {
+                            rec.setProvider(certificateKeyProvider);
+                        }
                         envelopedData = recipientInfo.getContent(rec);
                         // ******************************************************************************
                         break;

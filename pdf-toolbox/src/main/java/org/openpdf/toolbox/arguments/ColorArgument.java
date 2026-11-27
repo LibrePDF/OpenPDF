@@ -74,7 +74,7 @@ public class ColorArgument extends AbstractArgument {
                 + Integer.toHexString(
                 (newColor.getRed() << 16)
                         | (newColor.getGreen() << 8)
-                        | (newColor.getBlue() << 0)).toUpperCase());
+                        | newColor.getBlue()).toUpperCase());
     }
 
 

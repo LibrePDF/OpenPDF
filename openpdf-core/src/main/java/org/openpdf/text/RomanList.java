@@ -95,34 +95,14 @@ public class RomanList extends List {
      */
     @Override
     public boolean add(Element o) {
-        if (o instanceof ListItem) {
-            ListItem item = (ListItem) o;
-            Chunk chunk;
-            chunk = new Chunk(preSymbol, symbol.getFont());
-            chunk.append(RomanNumberFactory.getString(first + list.size(), lowercase));
-            chunk.append(postSymbol);
-            item.setListSymbol(chunk);
-            item.setIndentationLeft(symbolIndent, autoindent);
-            item.setIndentationRight(0);
-            list.add(item);
-        } else if (o instanceof List) {
-            List nested = (List) o;
-            nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
-            first--;
-            return list.add(nested);
+        if (o instanceof ListItem item) {
+            int itemNumber = first + list.size();
+            Chunk chunk = createSymbolChunk(RomanNumberFactory.getString(itemNumber, lowercase));
+            return configureAndAddItem(item, chunk);
+        } else if (o instanceof List nested) {
+            return add(nested);
         }
         return false;
-    }
-
-    /**
-     * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
-     *
-     * @param s the string to add.
-     * @return true if adding the string succeeded
-     */
-    @Override
-    public boolean add(String s) {
-        return this.add(new ListItem(s));
     }
 
 }

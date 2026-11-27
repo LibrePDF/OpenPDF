@@ -92,7 +92,7 @@ class PdfReaderMalformedPageTreeTest {
                             .isInstanceOfSatisfying(ExceptionConverter.class, e ->
                                     assertThat(e.getException())
                                             .isInstanceOf(InvalidPdfException.class)
-                                            .hasMessage("Page not found.")));
+                                            .hasMessage("The page tree is invalid.")));
         }
     }
 

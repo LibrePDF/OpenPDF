@@ -114,10 +114,36 @@ public abstract class Predictor {
             predictor.setColumns(columnsObj.getIntValue());
         }
         
+        // make sure that the parameters describe a row of samples
+        predictor.getBytesPerRow();
+
         // all set
         return predictor;
     }
     
+    /**
+     * Get the number of bytes that a row of samples takes, without the
+     * byte that tells which PNG algorithm was used for the row.
+     *
+     * @return the number of bytes, which is at least one
+     * @throws PDFParseException if there is no such row: the number of
+     *  columns or colors is less than one, the number of bits per component
+     *  is not 1, 2, 4, 8 or 16, or the row is too long to be read
+     */
+    protected int getBytesPerRow() throws PDFParseException {
+        boolean validBits = this.bpc == 1 || this.bpc == 2 || this.bpc == 4 || this.bpc == 8 || this.bpc == 16;
+        long samples = (long) this.columns * this.colors;
+        if (!validBits || this.columns < 1 || this.colors < 1 || samples > Integer.MAX_VALUE) {
+            throw new PDFParseException("Invalid predictor parameters: Columns " + this.columns
+                    + ", Colors " + this.colors + ", BitsPerComponent " + this.bpc);
+        }
+        long bytes = (samples * this.bpc + 7) / 8;
+        if (bytes >= Integer.MAX_VALUE) {
+            throw new PDFParseException("Predictor row is too long: " + bytes);
+        }
+        return (int) bytes;
+    }
+
     /**
      * Get the algorithm in use
      *
