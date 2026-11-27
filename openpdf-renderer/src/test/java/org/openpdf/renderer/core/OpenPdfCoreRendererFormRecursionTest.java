@@ -150,7 +150,7 @@ class OpenPdfCoreRendererFormRecursionTest {
         int xref = pdf.length();
         pdf.append("xref\n0 ").append(objects.size() + 1).append("\n0000000000 65535 f \n");
         for (int offset : offsets) {
-            pdf.append(String.format("%010d 00000 n \n", offset));
+            pdf.append(String.format("%010d 00000 n ", offset)).append('\n');
         }
         pdf.append("trailer\n<< /Size ").append(objects.size() + 1).append(" /Root 1 0 R >>\nstartxref\n")
                 .append(xref).append("\n%%EOF\n");
