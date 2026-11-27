@@ -146,6 +146,10 @@ public class ImgWMF extends Image {
             int right = in.readShort();
             int bottom = in.readShort();
             int inch = in.readWord();
+            if (inch == 0) {
+                throw new BadElementException(
+                        MessageLocalization.getComposedMessage("1.is.not.a.valid.placeable.windows.metafile", errorID));
+            }
             dpiX = 72;
             dpiY = 72;
             float width = (float) (right - left) / inch * 72f;
