@@ -148,10 +148,9 @@ public class ImgWMF extends Image {
             int inch = in.readWord();
             dpiX = 72;
             dpiY = 72;
-            scaledHeight = (float) (bottom - top) / inch * 72f;
-            setTop(scaledHeight);
-            scaledWidth = (float) (right - left) / inch * 72f;
-            setRight(scaledWidth);
+            float width = (float) (right - left) / inch * 72f;
+            float height = (float) (bottom - top) / inch * 72f;
+            setDimensions(width, height);
         } finally {
             if (is != null) {
                 is.close();
