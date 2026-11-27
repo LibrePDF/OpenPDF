@@ -81,7 +81,7 @@ public class ImgJBIG2 extends Image {
      * Empty constructor.
      */
     public ImgJBIG2() {
-        super((Image) null);
+        super((URL) null);
     }
 
     /**
@@ -92,6 +92,8 @@ public class ImgJBIG2 extends Image {
      * @param data    the raw image data
      * @param globals JBIG2 globals
      */
+    // MD5 is only used as a fingerprint to recognise identical JBIG2 globals, not for security
+    @SuppressWarnings("java:S4790")
     public ImgJBIG2(int width, int height, byte[] data, byte[] globals) {
         super((URL) null);
         type = JBIG2;

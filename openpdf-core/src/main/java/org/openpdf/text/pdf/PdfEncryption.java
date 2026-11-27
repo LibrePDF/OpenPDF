@@ -190,6 +190,7 @@ public class PdfEncryption {
         keyLength = enc.keyLength;
         encryptMetadata = enc.encryptMetadata;
         embeddedFilesOnly = enc.embeddedFilesOnly;
+        cryptoMode = enc.cryptoMode;
         publicKeyHandler = enc.publicKeyHandler;
         if (enc.ueKey != null) {
             ueKey = enc.ueKey.clone();
@@ -577,6 +578,8 @@ public class PdfEncryption {
         }
     }
 
+    // SHA-1 is required by the PDF public-key security handler
+    @SuppressWarnings("java:S4790")
     public PdfDictionary getEncryptionDictionary() {
         PdfDictionary dic = new PdfDictionary();
 

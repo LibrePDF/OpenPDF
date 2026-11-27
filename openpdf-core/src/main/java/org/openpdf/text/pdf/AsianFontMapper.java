@@ -47,8 +47,12 @@
 package org.openpdf.text.pdf;
 
 import java.awt.Font;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AsianFontMapper extends DefaultFontMapper {
+
+    private static final Logger LOGGER = Logger.getLogger(AsianFontMapper.class.getName());
 
     public static final String ChineseSimplifiedFont = "STSong-Light";
     public static final String ChineseSimplifiedEncoding_H = "UniGB-UCS2-H";
@@ -90,7 +94,7 @@ public class AsianFontMapper extends DefaultFontMapper {
                 return BaseFont.createFont(defaultFont, encoding, true);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not create a PDF font for the AWT font", e);
         }
         return null;
 

@@ -330,6 +330,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         this.cryptoRef = (PRIndirectReference) duplicatePdfObject(reader.cryptoRef,
                 this);
         this.ownerPasswordUsed = reader.ownerPasswordUsed;
+        // state that is only used while parsing a document is not duplicated
+        this.objStmMark = null;
+        this.newXrefType = false;
+        this.objNum = 0;
+        this.objGen = 0;
+        this.encryptionError = false;
     }
 
     static int getPageRotation(PdfDictionary page) {
@@ -353,16 +359,23 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      * @return a normalized <CODE>Rectangle</CODE>
      */
     public static Rectangle getNormalizedRectangle(PdfArray box) {
-        float llx = ((PdfNumber) getPdfObjectRelease(box.getPdfObject(0)))
-                .floatValue();
-        float lly = ((PdfNumber) getPdfObjectRelease(box.getPdfObject(1)))
-                .floatValue();
-        float urx = ((PdfNumber) getPdfObjectRelease(box.getPdfObject(2)))
-                .floatValue();
-        float ury = ((PdfNumber) getPdfObjectRelease(box.getPdfObject(3)))
-                .floatValue();
+        if (box == null) {
+            throw new IllegalArgumentException("The rectangle array must not be null");
+        }
+        float llx = getRectangleValue(box, 0);
+        float lly = getRectangleValue(box, 1);
+        float urx = getRectangleValue(box, 2);
+        float ury = getRectangleValue(box, 3);
         return new Rectangle(Math.min(llx, urx), Math.min(lly, ury), Math.max(llx,
                 urx), Math.max(lly, ury));
+    }
+
+    private static float getRectangleValue(PdfArray box, int idx) {
+        PdfObject value = getPdfObjectRelease(box.getPdfObject(idx));
+        if (!(value instanceof PdfNumber)) {
+            throw new IllegalArgumentException("The rectangle array entry " + idx + " is not a number");
+        }
+        return ((PdfNumber) value).floatValue();
     }
 
     /**
@@ -1458,6 +1471,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     /**
      *
      */
+    // SHA-1 is required by the PDF public-key security handler
+    @SuppressWarnings("java:S4790")
     private void readDecryptedDocObj() throws IOException {
         if (encrypted) {
             return;
@@ -1909,7 +1924,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     protected PdfObject readOneObjStm(PRStream stream, int idx)
             throws IOException {
-        int first = stream.getAsNumber(PdfName.FIRST).intValue();
+        PdfNumber firstNumber = stream.getAsNumber(PdfName.FIRST);
+        if (firstNumber == null) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("error.reading.objstm"));
+        }
+        int first = firstNumber.intValue();
         byte[] b = getStreamBytes(stream, tokens.getFile());
         PRTokeniser saveTokens = tokens;
         tokens = new PRTokeniser(b);
@@ -2072,8 +2092,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     protected void readObjStm(PRStream stream, IntHashtable map)
             throws IOException {
-        int first = stream.getAsNumber(PdfName.FIRST).intValue();
-        int n = stream.getAsNumber(PdfName.N).intValue();
+        PdfNumber firstNumber = stream.getAsNumber(PdfName.FIRST);
+        PdfNumber countNumber = stream.getAsNumber(PdfName.N);
+        if (firstNumber == null || countNumber == null) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("error.reading.objstm"));
+        }
+        int first = firstNumber.intValue();
+        int n = countNumber.intValue();
         byte[] b = getStreamBytes(stream, tokens.getFile());
         PRTokeniser saveTokens = tokens;
         tokens = new PRTokeniser(b);
@@ -3277,8 +3303,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         pageRefs.resetReleasePage();
         ArrayList<PdfAnnotation.PdfImportedLink> result = new ArrayList<>();
         PdfDictionary pageDic = pageRefs.getPageN(page);
-        if (pageDic.get(PdfName.ANNOTS) != null) {
-            PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);
+        PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);
+        if (annots != null) {
             for (int j = 0; j < annots.size(); ++j) {
                 PdfDictionary annot = (PdfDictionary) getPdfObjectRelease(annots
                         .getPdfObject(j));

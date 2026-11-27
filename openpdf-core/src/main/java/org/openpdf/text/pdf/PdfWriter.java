@@ -92,6 +92,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -110,6 +112,8 @@ public class PdfWriter extends DocWriter implements
         PdfXConformance,
         PdfRunDirection,
         PdfAnnotations {
+
+    private static final Logger LOGGER = Logger.getLogger(PdfWriter.class.getName());
 
     /**
      * The highest generation number possible.
@@ -1791,7 +1795,7 @@ public class PdfWriter extends DocWriter implements
             XmpWriter xmp = new XmpWriter(baos, pdf.getInfo(), pdfxConformance.getPDFXConformance());
             xmp.close();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not create the XMP metadata", ioe);
         }
         return baos.toByteArray();
     }

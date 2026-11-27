@@ -151,6 +151,8 @@ public class PdfSmartCopy extends PdfCopy {
         private byte[] b;
         private int hash;
 
+        // MD5 is only used as a content fingerprint to find equal streams, not for security
+        @SuppressWarnings("java:S4790")
         ByteStore(PRStream str) throws IOException {
             MessageDigest md5;
             try {

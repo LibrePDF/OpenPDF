@@ -159,6 +159,11 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         arrayIn = file.arrayIn;
         startOffset = file.startOffset;
         plainRandomAccess = file.plainRandomAccess;
+        // the copy does not share the open file handles nor the read position of the original
+        rf = null;
+        trf = null;
+        arrayInPtr = 0;
+        back = 0;
     }
 
     public static byte[] InputStreamToArray(InputStream is) throws IOException {
@@ -435,7 +440,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2) < 0) {
             throw new EOFException();
         }
-        return (short) ((ch2 << 8) + (ch1 << 0));
+        return (short) ((ch2 << 8) + ch1);
     }
 
     public int readUnsignedShort() throws IOException {
@@ -469,7 +474,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2) < 0) {
             throw new EOFException();
         }
-        return (ch2 << 8) + (ch1 << 0);
+        return (ch2 << 8) + ch1;
     }
 
     public char readChar() throws IOException {
@@ -503,7 +508,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2) < 0) {
             throw new EOFException();
         }
-        return (char) ((ch2 << 8) + (ch1 << 0));
+        return (char) ((ch2 << 8) + ch1);
     }
 
     public int readInt() throws IOException {
@@ -542,7 +547,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
         }
-        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
+        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + ch1);
     }
 
     /**
@@ -570,7 +575,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
         }
-        return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
+        return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + ch4);
     }
 
     public final long readUnsignedIntLE() throws IOException {
@@ -581,7 +586,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
         }
-        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
+        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + ch1);
     }
 
     public long readLong() throws IOException {

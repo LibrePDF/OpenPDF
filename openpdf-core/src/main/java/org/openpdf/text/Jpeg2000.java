@@ -164,6 +164,9 @@ public class Jpeg2000 extends Image {
         inp = null;
         try {
             if (rawData == null) {
+                if (url == null) {
+                    throw new IOException("The JPEG2000 image has neither data nor a URL to read from.");
+                }
                 inp = url.openStream();
             } else {
                 inp = new java.io.ByteArrayInputStream(rawData);

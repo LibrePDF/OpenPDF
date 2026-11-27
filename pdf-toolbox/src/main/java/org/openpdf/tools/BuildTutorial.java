@@ -53,6 +53,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.XMLConstants;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -68,6 +70,8 @@ import javax.xml.transform.stream.StreamSource;
  * @author Bruno Lowagie
  */
 public class BuildTutorial {
+
+    private static final Logger LOGGER = Logger.getLogger(BuildTutorial.class.getName());
 
     static String root;
     static FileWriter build;
@@ -103,7 +107,7 @@ public class BuildTutorial {
                 build.flush();
                 build.close();
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                LOGGER.log(Level.WARNING, "Could not build the tutorial", ioe);
             }
         } else {
             System.err
@@ -180,7 +184,11 @@ public class BuildTutorial {
             Transformer xformer = template.newTransformer();
 
             // passing 2 parameters
-            String branch = outfile.getParentFile().getCanonicalPath().substring(root.length());
+            File outdir = outfile.getParentFile();
+            if (outdir == null) {
+                throw new IOException("No parent directory for output file " + outfile);
+            }
+            String branch = outdir.getCanonicalPath().substring(root.length());
             branch = branch.replace(File.separatorChar, '/');
             StringBuilder path = new StringBuilder();
             for (int i = 0; i < branch.length(); i++) {
@@ -200,7 +208,7 @@ public class BuildTutorial {
             // output file
             xformer.transform(source, result);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not transform the XML file", e);
         }
     }
 }
