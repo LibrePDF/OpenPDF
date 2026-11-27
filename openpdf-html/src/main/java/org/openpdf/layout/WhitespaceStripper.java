@@ -47,7 +47,7 @@ public class WhitespaceStripper {
      * @deprecated no longer used: the time this pattern needs grows with the square of the length of a run of
      *         white space. The white space around line feeds is collapsed without a pattern now.
      */
-    @Deprecated
+    @Deprecated(since = "3.0.7")
     public final static Pattern linefeed_space_collapse = Pattern.compile("\\s+\\n\\s+"); //Pattern is thread-safe
     public final static Pattern linefeed_to_space = Pattern.compile("\\n");
     public final static Pattern tab_to_space = Pattern.compile("\\t");
