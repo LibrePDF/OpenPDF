@@ -41,6 +41,13 @@ public class WhitespaceStripper {
     public final static String EOL = "\n";
     public final static char EOLC = '\n';
 
+    /**
+     * Matches a line feed with white space on both sides.
+     *
+     * @deprecated no longer used: the time this pattern needs grows with the square of the length of a run of
+     *         white space. The white space around line feeds is collapsed without a pattern now.
+     */
+    @Deprecated
     public final static Pattern linefeed_space_collapse = Pattern.compile("\\s+\\n\\s+"); //Pattern is thread-safe
     public final static Pattern linefeed_to_space = Pattern.compile("\\n");
     public final static Pattern tab_to_space = Pattern.compile("\\t");
@@ -143,7 +150,7 @@ public class WhitespaceStripper {
 
     private static String collapseWhitespace(InlineBox iB, IdentValue whitespace, String text, boolean collapseLeading) {
         if (whitespace == IdentValue.NORMAL || whitespace == IdentValue.NOWRAP) {
-            text = linefeed_space_collapse.matcher(text).replaceAll(EOL);
+            text = collapseAroundLinefeeds(text);
         } else if (whitespace == IdentValue.PRE) {
             text = space_before_linefeed_collapse.matcher(text).replaceAll(EOL);
         }
@@ -168,6 +175,55 @@ public class WhitespaceStripper {
         }
 
         return text;
+    }
+
+    /**
+     * Replaces every run of white space that has a line feed with white space on both sides of it by a single
+     * line feed. This is what replacing the pattern {@link #linefeed_space_collapse} does, in time that is in
+     * proportion to the length of the text.
+     *
+     * @param text the text
+     * @return the text with the white space around line feeds collapsed
+     */
+    static String collapseAroundLinefeeds(String text) {
+        if (text.indexOf(EOLC) < 0) {
+            return text;
+        }
+        StringBuilder collapsed = new StringBuilder(text.length());
+        int length = text.length();
+        int position = 0;
+        while (position < length) {
+            if (!isPatternWhitespace(text.charAt(position))) {
+                collapsed.append(text.charAt(position));
+                position++;
+                continue;
+            }
+            int end = position + 1;
+            // the position of a line feed in the run that is not its first character, if there is one
+            int linefeed = -1;
+            while (end < length && isPatternWhitespace(text.charAt(end))) {
+                if (linefeed < 0 && text.charAt(end) == EOLC) {
+                    linefeed = end;
+                }
+                end++;
+            }
+            // the line feed must not be the last character of the run either
+            if (linefeed >= 0 && linefeed < end - 1) {
+                collapsed.append(EOLC);
+            } else {
+                collapsed.append(text, position, end);
+            }
+            position = end;
+        }
+        return collapsed.toString();
+    }
+
+    /**
+     * Tells if a character is white space for a pattern: space, tab, line feed, vertical tab, form feed and
+     * carriage return.
+     */
+    private static boolean isPatternWhitespace(char c) {
+        return c == ' ' || c == '\t' || c == '\n' || c == 0x0B || c == '\f' || c == '\r';
     }
 }
 
