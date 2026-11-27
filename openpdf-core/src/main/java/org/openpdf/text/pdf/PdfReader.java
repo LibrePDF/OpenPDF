@@ -735,12 +735,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         InflaterInputStream zip = new InflaterInputStream(stream);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] b = new byte[strict ? 4092 : 1];
-        try {
+        try (zip) {
             int n;
             while ((n = zip.read(b)) >= 0) {
                 out.write(b, 0, n);
             }
-            zip.close();
             out.close();
             return out.toByteArray();
         } catch (Exception e) {
