@@ -156,20 +156,23 @@ public class PdfEncryption {
 
     private int cryptoMode;
 
-    public PdfEncryption() {
-        publicKeyHandler = new PdfPublicKeySecurityHandler();
-    }
-
     /**
      * Creates a new MD5 message digest. A digest is stateful and not thread safe, so each computation uses its own
-     * instance.
+     * instance. MD5 is mandated by the standard security handler of the PDF specification.
      */
+    @SuppressWarnings("java:S4790")
     private static MessageDigest newMd5() {
+        MessageDigest md5;
         try {
-            return MessageDigest.getInstance("MD5");
+            md5 = MessageDigest.getInstance("MD5");
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
+        return md5;
+    }
+
+    public PdfEncryption() {
+        publicKeyHandler = new PdfPublicKeySecurityHandler();
     }
 
     public PdfEncryption(PdfEncryption enc) {
@@ -472,7 +475,8 @@ public class PdfEncryption {
     public void setupAllKeys(byte[] userPassword, byte[] ownerPassword,
             int permissions) {
         if (ownerPassword == null || ownerPassword.length == 0) {
-            ownerPassword = newMd5().digest(createDocumentId());
+            MessageDigest md5 = newMd5();
+            ownerPassword = md5.digest(createDocumentId());
         }
         permissions |=
                 (revision == STANDARD_ENCRYPTION_128 || revision == AES_128 || revision == AES_256_V3) ? 0xfffff0c0
