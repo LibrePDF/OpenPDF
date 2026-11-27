@@ -32,6 +32,11 @@ import java.util.regex.Pattern;
  * @author Torbjoern Gannholm
  */
 public class WhitespaceStripper {
+    /**
+     * The largest number of spaces a tab character is replaced with. A larger tab-size is reduced to it.
+     */
+    private static final int MAX_TAB_SIZE = 64;
+
     public final static String SPACE = " ";
     public final static String EOL = "\n";
     public final static char EOLC = '\n';
@@ -129,6 +134,13 @@ public class WhitespaceStripper {
         return text.isEmpty() ? collapseLeading : collapseNext;
     }
 
+    private static String tabReplacement(InlineBox iB) {
+        int tabSize = Math.min((int) iB.getStyle().asFloat(CSSName.TAB_SIZE), MAX_TAB_SIZE);
+        char[] tabs = new char[Math.max(tabSize, 0)];
+        Arrays.fill(tabs, ' ');
+        return new String(tabs);
+    }
+
     private static String collapseWhitespace(InlineBox iB, IdentValue whitespace, String text, boolean collapseLeading) {
         if (whitespace == IdentValue.NORMAL || whitespace == IdentValue.NOWRAP) {
             text = linefeed_space_collapse.matcher(text).replaceAll(EOL);
@@ -141,10 +153,7 @@ public class WhitespaceStripper {
             text = tab_to_space.matcher(text).replaceAll(SPACE);
             text = space_collapse.matcher(text).replaceAll(SPACE);
         } else if (whitespace == IdentValue.PRE || whitespace == IdentValue.PRE_WRAP) {
-            int tabSize = (int) iB.getStyle().asFloat(CSSName.TAB_SIZE);
-            char[] tabs = new char[tabSize];
-            Arrays.fill(tabs, ' ');
-            text = tab_to_space.matcher(text).replaceAll(new String(tabs));
+            text = tab_to_space.matcher(text).replaceAll(tabReplacement(iB));
         } else if (whitespace == IdentValue.PRE_LINE) {
             text = tab_to_space.matcher(text).replaceAll(SPACE);
             text = space_collapse.matcher(text).replaceAll(SPACE);

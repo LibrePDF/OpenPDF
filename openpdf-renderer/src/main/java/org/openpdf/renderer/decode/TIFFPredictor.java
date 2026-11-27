@@ -42,11 +42,17 @@ public class TIFFPredictor extends Predictor {
         final int numComponents = getColors();
         final int pixelBits = numComponents * getBitsPerComponent();
 
-        int bytePerRow = (getColumns() * pixelBits + 7) / 8;
+        int bytePerRow = getBytesPerRow();
+        if (imageData.remaining() < bytePerRow) {
+            // there is not even one row of data
+            out.flip();
+            return out;
+        }
 
         final byte[] row = new byte[bytePerRow];
 
-        while (imageData.remaining() > 0) {
+        // data after the last complete row is ignored
+        while (imageData.remaining() >= bytePerRow) {
             imageData.get(row);
             if (getBitsPerComponent() == 8) {
                 for (int i = numComponents; i < row.length; i += numComponents) {

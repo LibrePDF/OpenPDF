@@ -57,6 +57,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openpdf.text.Document;
 import org.openpdf.text.pdf.PdfCopy;
 import org.openpdf.text.pdf.PdfImportedPage;
@@ -71,6 +73,8 @@ import org.openpdf.text.pdf.SimpleBookmark;
  * @since 2.1.1 (renamed to follow Java naming conventions)
  */
 public class ConcatPdf {
+
+    private static final Logger LOGGER = Logger.getLogger(ConcatPdf.class.getName());
 
     /**
      * This class can be used to concatenate existing PDF files. (This was an example known as PdfCopy.java)
@@ -89,7 +93,7 @@ public class ConcatPdf {
                 }
                 concat(sources, outFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "Could not concatenate the PDF files", e);
             }
         }
     }

@@ -174,6 +174,9 @@ public class PdfLister {
         PdfReader reader = readerInst.getReader();
 
         PdfDictionary page = reader.getPageN(pageNum);
+        if (page == null) {
+            return;
+        }
         listDict(page);
         PdfObject obj = PdfReader.getPdfObject(page.get(PdfName.CONTENTS));
         if (obj == null) {

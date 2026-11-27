@@ -142,7 +142,8 @@ class PdfCopyFieldsImp extends PdfWriter {
 
     private static String getCOName(PRIndirectReference ref) {
         StringBuilder name = new StringBuilder();
-        while (ref != null) {
+        PdfTraversalGuard parents = new PdfTraversalGuard();
+        while (ref != null && parents.visit(ref)) {
             PdfObject obj = PdfReader.getPdfObject(ref);
             if (obj == null || obj.type() != PdfObject.DICTIONARY) {
                 break;

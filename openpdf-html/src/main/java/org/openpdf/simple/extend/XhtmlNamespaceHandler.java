@@ -92,90 +92,47 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
         // check for cell padding
         Element table = findTable(e);
         if (table != null) {
-            s = getAttribute(table, "cellpadding");
-            if (s != null) {
-                style.append("padding: ");
-                style.append(convertToLength(s));
-                style.append(";");
-            }
+            appendLength(style, table, "cellpadding", "padding: ", ";");
             s = getAttribute(table, "border");
             if (s != null && ! s.equals("0")) {
                 style.append("border: 1px outset black;");
             }
         }
-        s = getAttribute(e, "width");
-        if (s != null) {
-            style.append("width: ");
-            style.append(convertToLength(s));
-            style.append(";");
-        }
-        s = getAttribute(e, "height");
-        if (s != null) {
-            style.append("height: ");
-            style.append(convertToLength(s));
-            style.append(";");
-        }
+        appendLength(style, e, "width", "width: ", ";");
+        appendLength(style, e, "height", "height: ", ";");
         applyTableContentAlign(e, style);
-        s = getAttribute(e, "bgcolor");
-        if (s != null) {
+        appendBackground(e, style);
+        return style.toString();
+    }
+
+    /**
+     * Appends the declarations for the background color and the background image of a table or a table cell.
+     */
+    private void appendBackground(Element e, StringBuilder style) {
+        String s = getAttribute(e, "bgcolor");
+        if (AttributeValues.isColor(s)) {
             s = s.toLowerCase(ROOT);
             style.append("background-color: ");
             if (looksLikeAMangledColor(s)) {
                 style.append('#');
-                style.append(s);
-            } else {
-                style.append(s);
             }
+            style.append(s);
             style.append(';');
         }
         s = getAttribute(e, "background");
         if (s != null) {
-            style.append("background-image: url(");
-            style.append(s);
-            style.append(");");
+            style.append("background-image: ");
+            style.append(AttributeValues.cssUrl(s));
+            style.append(";");
         }
-        return style.toString();
     }
 
     private String applyTableStyles(Element e) {
         StringBuilder style = new StringBuilder();
-        String s;
-        s = getAttribute(e, "width");
-        if (s != null) {
-            style.append("width: ");
-            style.append(convertToLength(s));
-            style.append(";");
-        }
-        s = getAttribute(e, "border");
-        if (s != null) {
-            style.append("border: ");
-            style.append(convertToLength(s));
-            style.append(" inset black;");
-        }
-        s = getAttribute(e, "cellspacing");
-        if (s != null) {
-            style.append("border-collapse: separate; border-spacing: ");
-            style.append(convertToLength(s));
-            style.append(";");
-        }
-        s = getAttribute(e, "bgcolor");
-        if (s != null) {
-            s = s.toLowerCase(ROOT);
-            style.append("background-color: ");
-            if (looksLikeAMangledColor(s)) {
-                style.append('#');
-                style.append(s);
-            } else {
-                style.append(s);
-            }
-            style.append(';');
-        }
-        s = getAttribute(e, "background");
-        if (s != null) {
-            style.append("background-image: url(");
-            style.append(s);
-            style.append(");");
-        }
+        appendLength(style, e, "width", "width: ", ";");
+        appendLength(style, e, "border", "border: ", " inset black;");
+        appendLength(style, e, "cellspacing", "border-collapse: separate; border-spacing: ", ";");
+        appendBackground(e, style);
         applyFloatingAlign(e, style);
         return style.toString();
     }
@@ -206,13 +163,13 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
 
     private void applyTableContentAlign(Element e, StringBuilder style) {
         String s = getAttribute(e, "align");
-        if (s != null) {
+        if (AttributeValues.isTextAlign(s)) {
             style.append("text-align: ");
             style.append(s.toLowerCase(ROOT));
             style.append(";");
         }
         s = getAttribute(e, "valign");
-        if (s != null) {
+        if (AttributeValues.isVerticalAlign(s)) {
             style.append("vertical-align: ");
             style.append(s.toLowerCase(ROOT));
             style.append(";");

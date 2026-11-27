@@ -49,7 +49,13 @@ public class CMapParser {
     private static final String MARK_END_OF_DICTIONARY = ">>";
     private static final String MARK_END_OF_ARRAY = "]";
 
+    /**
+     * The deepest nesting of arrays and dictionaries that is parsed.
+     */
+    private static final int MAX_NESTING_DEPTH = 256;
+
     private byte[] tokenParserByteBuffer = new byte[512];
+    private int nestingDepth;
 
     /**
      * Creates a new instance of CMapParser.
@@ -92,8 +98,8 @@ public class CMapParser {
                     case BEGIN_CODESPACE_RANGE: {
                         Number cosCount = (Number) previousToken;
                         for (int j = 0; j < cosCount.intValue(); j++) {
-                            byte[] startRange = (byte[]) parseNextToken(cmapStream);
-                            byte[] endRange = (byte[]) parseNextToken(cmapStream);
+                            byte[] startRange = (byte[]) parseRequiredToken(cmapStream);
+                            byte[] endRange = (byte[]) parseRequiredToken(cmapStream);
                             CodespaceRange range = new CodespaceRange();
                             range.setStart(startRange);
                             range.setEnd(endRange);
@@ -104,8 +110,8 @@ public class CMapParser {
                     case BEGIN_BASE_FONT_CHAR: {
                         Number cosCount = (Number) previousToken;
                         for (int j = 0; j < cosCount.intValue(); j++) {
-                            byte[] inputCode = (byte[]) parseNextToken(cmapStream);
-                            Object nextToken = parseNextToken(cmapStream);
+                            byte[] inputCode = (byte[]) parseRequiredToken(cmapStream);
+                            Object nextToken = parseRequiredToken(cmapStream);
                             if (nextToken instanceof byte[]) {
                                 byte[] bytes = (byte[]) nextToken;
                                 String value = createStringFromBytes(bytes);
@@ -124,9 +130,9 @@ public class CMapParser {
                         Number cosCount = (Number) previousToken;
 
                         for (int j = 0; j < cosCount.intValue(); j++) {
-                            byte[] startCode = (byte[]) parseNextToken(cmapStream);
-                            byte[] endCode = (byte[]) parseNextToken(cmapStream);
-                            Object nextToken = parseNextToken(cmapStream);
+                            byte[] startCode = (byte[]) parseRequiredToken(cmapStream);
+                            byte[] endCode = (byte[]) parseRequiredToken(cmapStream);
+                            Object nextToken = parseRequiredToken(cmapStream);
                             List array = null;
                             byte[] tokenBytes = null;
                             if (nextToken instanceof List) {
@@ -165,6 +171,68 @@ public class CMapParser {
             previousToken = token;
         }
         return result;
+    }
+
+    /**
+     * Reads the next token of an entry that the CMap announced.
+     *
+     * @throws IOException if the input ends before the entry does
+     */
+    private Object parseRequiredToken(PushbackInputStream is) throws IOException {
+        Object token = parseNextToken(is);
+        if (token == null) {
+            throw new IOException(MessageLocalization.getComposedMessage("unexpected.end.of.file"));
+        }
+        return token;
+    }
+
+    private void enterNestedToken() throws IOException {
+        if (nestingDepth >= MAX_NESTING_DEPTH) {
+            throw new IOException(MessageLocalization.getComposedMessage("cmap.nesting.too.deep"));
+        }
+        ++nestingDepth;
+    }
+
+    private List<Object> parseArray(PushbackInputStream is) throws IOException {
+        enterNestedToken();
+        try {
+            List<Object> list = new ArrayList<>();
+            Object nextToken = parseRequiredToken(is);
+            while (nextToken != MARK_END_OF_ARRAY) {
+                list.add(nextToken);
+                nextToken = parseRequiredToken(is);
+            }
+            return list;
+        } finally {
+            --nestingDepth;
+        }
+    }
+
+    private Map<String, Object> parseDictionary(PushbackInputStream is) throws IOException {
+        enterNestedToken();
+        try {
+            Map<String, Object> result = new HashMap<>();
+            Object key = parseNextToken(is);
+            while (key instanceof LiteralName && key != MARK_END_OF_DICTIONARY) {
+                Object value = parseNextToken(is);
+                result.put(((LiteralName) key).name, value);
+                key = parseNextToken(is);
+            }
+            return result;
+        } finally {
+            --nestingDepth;
+        }
+    }
+
+    /**
+     * Makes room for one more byte of a hexadecimal string.
+     */
+    private void ensureTokenBufferCapacity(int index) {
+        if (index >= tokenParserByteBuffer.length) {
+            byte[] larger = new byte[tokenParserByteBuffer.length * 2];
+            System.arraycopy(tokenParserByteBuffer, 0, larger, 0, tokenParserByteBuffer.length);
+            tokenParserByteBuffer = larger;
+        }
     }
 
     private Object parseNextToken(PushbackInputStream is) throws IOException {
@@ -210,30 +278,15 @@ public class CMapParser {
                 break;
             }
             case '[': {
-                List<Object> list = new ArrayList<>();
-
-                Object nextToken = parseNextToken(is);
-                while (nextToken != MARK_END_OF_ARRAY) {
-                    list.add(nextToken);
-                    nextToken = parseNextToken(is);
-                }
-                retval = list;
+                retval = parseArray(is);
                 break;
             }
             case '<': {
                 int theNextByte = is.read();
                 if (theNextByte == '<') {
-                    Map<String, Object> result = new HashMap<>();
                     //we are reading a dictionary
-                    Object key = parseNextToken(is);
-                    while (key instanceof LiteralName && key != MARK_END_OF_DICTIONARY) {
-                        Object value = parseNextToken(is);
-                        result.put(((LiteralName) key).name, value);
-                        key = parseNextToken(is);
-                    }
-                    retval = result;
+                    retval = parseDictionary(is);
                 } else {
-                    //won't read more than 512 bytes
 
                     int multiplyer = 16;
                     int bufferIndex = -1;
@@ -256,6 +309,7 @@ public class CMapParser {
                         intValue *= multiplyer;
                         if (multiplyer == 16) {
                             bufferIndex++;
+                            ensureTokenBufferCapacity(bufferIndex);
                             tokenParserByteBuffer[bufferIndex] = 0;
                             multiplyer = 1;
                         } else {

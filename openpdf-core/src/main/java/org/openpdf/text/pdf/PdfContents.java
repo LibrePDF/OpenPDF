@@ -86,6 +86,7 @@ class PdfContents extends PdfStream {
     PdfContents(PdfContentByte under, PdfContentByte content, PdfContentByte text, PdfContentByte secondContent,
             Rectangle page) throws BadPdfFormatException {
         super();
+        Deflater deflater = null;
         try {
             PdfWriter writer = text.getPdfWriter();
             boolean useBrotli = Document.compress
@@ -94,7 +95,6 @@ class PdfContents extends PdfStream {
             streamBytes = new ByteArrayOutputStream();
 
             OutputStream out;
-            Deflater deflater = null;
             if (useBrotli) {
                 compressed = true;
                 out = BrotliFilter.encoder(streamBytes);
@@ -150,9 +150,6 @@ class PdfContents extends PdfStream {
                 secondContent.getInternalBuffer().writeTo(out);
             }
             out.close();
-            if (deflater != null) {
-                deflater.end();
-            }
 
             put(PdfName.LENGTH, new PdfNumber(streamBytes.size()));
             if (compressed) {
@@ -160,6 +157,10 @@ class PdfContents extends PdfStream {
             }
         } catch (Exception e) {
             throw new BadPdfFormatException(e.getMessage());
+        } finally {
+            if (deflater != null) {
+                deflater.close();
+            }
         }
     }
 }

@@ -114,6 +114,9 @@ public class Normalize
 
         if (kidsPR == null) {
             PdfArray arr = page.getAsArray(PdfName.MEDIABOX);
+            if (arr == null) {
+                throw new IOException("Page " + (pagecount + 1) + " has no MediaBox array");
+            }
             curwidth = Float.parseFloat(arr.getPdfObject(2).toString());
             curheight = Float.parseFloat(arr.getPdfObject(3).toString());
 
@@ -177,7 +180,10 @@ public class Normalize
         System.out.print("change!");
 
         PdfDictionary parent = page.getAsDict(PdfName.PARENT);
-        PdfArray kids = parent.getAsArray(PdfName.KIDS);
+        PdfArray kids = parent == null ? null : parent.getAsArray(PdfName.KIDS);
+        if (kids == null) {
+            throw new IOException("Page " + (pagecount + 1) + " has no parent page tree node with a Kids array");
+        }
         PdfIndirectReference ref = writer.getPdfIndirectReference();
         kids.add(count_in_leaf, ref);
 
@@ -252,8 +258,11 @@ public class Normalize
         System.out.println("last page odd. add page!");
 
         PdfDictionary page = reader.getPageN(reader.getNumberOfPages());
-        PdfDictionary parent = page.getAsDict(PdfName.PARENT);
-        PdfArray kids = parent.getAsArray(PdfName.KIDS);
+        PdfDictionary parent = page == null ? null : page.getAsDict(PdfName.PARENT);
+        PdfArray kids = parent == null ? null : parent.getAsArray(PdfName.KIDS);
+        if (kids == null) {
+            throw new IOException("The last page has no parent page tree node with a Kids array");
+        }
         PdfIndirectReference ref = writer.getPdfIndirectReference();
         kids.add(ref);
 
