@@ -47,7 +47,7 @@ class Java2DRendererTest {
   }
 
   @Test
-  void convertHtmlToImage_withXhtmlDoctype() throws Exception {
+  void convertHtmlToImageWithXhtmlDoctype() throws Exception {
     String html = """
             <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -60,7 +60,7 @@ class Java2DRendererTest {
   }
 
   @Test
-  void convertHtmlToImage_doesNotReadExternalEntity(@TempDir Path tempDir) throws Exception {
+  void convertHtmlToImageDoesNotReadExternalEntity(@TempDir Path tempDir) throws Exception {
     Path file = tempDir.resolve("entity.txt");
     Files.writeString(file, "<div style=\"width: 100px; height: 50px; background-color: red\">x</div>");
     String html = """
