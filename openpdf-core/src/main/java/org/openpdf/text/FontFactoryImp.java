@@ -76,6 +76,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class FontFactoryImp implements FontProvider {
 
+    private static final String[] FONT_FILE_MARKERS = {".ttf", ".otf", ".ttc", ".afm", ".pfm"};
     private static final String[] TTFamilyOrder = {
             "3", "1", "1033",
             "3", "0", "1033",
@@ -239,6 +240,54 @@ public class FontFactoryImp implements FontProvider {
         }
 
         return new Font(basefont, size, style, color);
+    }
+
+    /**
+     * Constructs a <CODE>Font</CODE>-object for a font name that comes from a document, for example the face name
+     * of a font in an image or in HTML. Other than {@link #getFont(String, String, boolean, float, int, Color)},
+     * this method never uses the name as the path or URL of a font file: the name is only resolved against the
+     * registered fonts, the registered font families and the built-in fonts.
+     *
+     * @param fontname the name of the font
+     * @param encoding the encoding of the font
+     * @param embedded true if the font is to be embedded in the PDF
+     * @param size     the size of this font
+     * @param style    the style of this font
+     * @param color    the <CODE>Color</CODE> of this font.
+     * @return the Font constructed based on the parameters, a font without a base font if the name is not known
+     */
+    public Font getRegisteredFont(String fontname, String encoding, boolean embedded, float size, int style,
+            Color color) {
+        if (fontname == null || !isFontFileName(fontname)) {
+            return getFont(fontname, encoding, embedded, size, style, color);
+        }
+        // the name would be opened as a file or URL by BaseFont, so only the path it was registered with is used
+        String path = trueTypeFonts.get(fontname.toLowerCase(Locale.ROOT));
+        if (path == null) {
+            return new Font(Font.UNDEFINED, size, style, color);
+        }
+        try {
+            return new Font(BaseFont.createFont(path, encoding, embedded, true, null, null), size, style, color);
+        } catch (DocumentException | IOException e) {
+            return new Font(Font.UNDEFINED, size, style, color);
+        }
+    }
+
+    /**
+     * Checks if a font name would be handled as the name of a font file by
+     * {@link BaseFont#createFont(String, String, boolean)}, which opens such a name as a file or as a URL.
+     *
+     * @param fontname the name of the font
+     * @return true if the name looks like the name of a font file
+     */
+    public static boolean isFontFileName(String fontname) {
+        String lowerCaseFontname = fontname.toLowerCase(Locale.ROOT);
+        for (String marker : FONT_FILE_MARKERS) {
+            if (lowerCaseFontname.contains(marker)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
