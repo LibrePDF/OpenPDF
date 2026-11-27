@@ -2111,6 +2111,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         int first = firstNumber.intValue();
         int n = countNumber.intValue();
         byte[] b = getStreamBytes(stream, tokens.getFile());
+        checkObjStmCount(n, b.length);
         PRTokeniser saveTokens = tokens;
         tokens = new PRTokeniser(b);
         try {
@@ -2151,6 +2152,92 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         } finally {
             tokens = saveTokens;
         }
+    }
+
+    /**
+     * Checks the number of objects an object stream claims to hold. Each of them needs an object number and an
+     * offset in the decoded stream, so the stream cannot hold more objects than half its length in bytes.
+     */
+    private static void checkObjStmCount(int count, int decodedLength) throws InvalidPdfException {
+        if (count < 0 || count > decodedLength / 2) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("error.reading.objstm"));
+        }
+    }
+
+    /**
+     * Returns the largest number of objects a cross-reference table of this file is allowed to describe. Memory
+     * is reserved for every object the table announces, so the limit is what a file of this length can hold if
+     * each object takes a single byte.
+     */
+    private long maxXrefObjectCount() throws IOException {
+        return Math.min(tokens.length(), Integer.MAX_VALUE / 2);
+    }
+
+    /**
+     * Checks an object count read from a cross-reference table or its trailer before memory is reserved for it.
+     *
+     * @param objectCount the number of objects, counted from object 0
+     * @return {@code objectCount}
+     * @throws IOException if the count is negative or larger than the file can hold
+     */
+    private int checkXrefObjectCount(long objectCount) throws IOException {
+        if (objectCount < 0 || objectCount > maxXrefObjectCount()) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("xref.size.exceeds.file.length"));
+        }
+        return (int) objectCount;
+    }
+
+    /**
+     * Checks the header of a cross-reference subsection.
+     *
+     * @param start the number of the first object of the subsection
+     * @param count the number of entries in the subsection
+     * @return the object number right after the last entry
+     * @throws IOException if the subsection is not plausible for this file
+     */
+    private int checkXrefSubsection(int start, int count) throws IOException {
+        if (start < 0 || count < 0) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("xref.size.exceeds.file.length"));
+        }
+        return checkXrefObjectCount((long) start + count);
+    }
+
+    /**
+     * Checks a subsection of a cross-reference stream, which cannot have more entries than its decoded data holds.
+     *
+     * @param start     the number of the first object of the subsection
+     * @param count     the number of entries in the subsection
+     * @param wc        the /W field widths of the three entry fields
+     * @param available the number of decoded bytes that have not been read yet
+     * @return the object number right after the last entry
+     * @throws IOException if the subsection is not plausible for this file
+     */
+    private int checkXRefStreamSubsection(int start, int count, int[] wc, int available) throws IOException {
+        long entryLength = (long) Math.max(wc[0], 0) + Math.max(wc[1], 0) + Math.max(wc[2], 0);
+        if (count > 0 && (entryLength == 0 || count > available / entryLength)) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("xref.size.exceeds.file.length"));
+        }
+        return checkXrefSubsection(start, count);
+    }
+
+    /**
+     * Checks that the data of a cross-reference stream lies within the file.
+     *
+     * @param stm    the cross-reference stream
+     * @param length the value of its /Length entry
+     * @return {@code length}
+     * @throws IOException if the length is negative or reaches beyond the end of the file
+     */
+    private int checkXRefStreamLength(PRStream stm, int length) throws IOException {
+        if (length < 0 || length > tokens.length() - stm.getOffset()) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage(ILLEGAL_LENGTH_VALUE));
+        }
+        return length;
     }
 
     private void ensureXrefSize(int size) {
@@ -2240,7 +2327,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                         .throwError(MessageLocalization
                                 .getComposedMessage("number.of.entries.in.this.xref.subsection.not.found"));
             }
-            end = tokens.intValue() + start;
+            end = checkXrefSubsection(start, tokens.intValue());
             if (start == 1) { // fix incorrect start number
                 long back = tokens.getFilePointer();
                 tokens.nextValidToken();
@@ -2279,7 +2366,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         }
         PdfDictionary trailer = (PdfDictionary) readPRObject();
         PdfNumber xrefSize = (PdfNumber) trailer.get(PdfName.SIZE);
-        ensureXrefSize(xrefSize.intValue() * 2);
+        ensureXrefSize(checkXrefObjectCount(xrefSize.intValue()) * 2);
         PdfObject xrs = trailer.get(PdfName.XREFSTM);
         if (xrs != null && xrs.isNumber()) {
             long loc = ((PdfNumber) xrs).longValue();
@@ -2305,8 +2392,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             trailer = new PdfDictionary();
             trailer.putAll(stm);
         }
-        stm.setLength(((PdfNumber) stm.get(PdfName.LENGTH)).intValue());
-        int size = ((PdfNumber) stm.get(PdfName.SIZE)).intValue();
+        stm.setLength(checkXRefStreamLength(stm, ((PdfNumber) stm.get(PdfName.LENGTH)).intValue()));
+        int size = checkXrefObjectCount(((PdfNumber) stm.get(PdfName.SIZE)).intValue());
         PdfArray index;
         PdfObject obj = stm.get(PdfName.INDEX);
         if (obj == null) {
@@ -2341,7 +2428,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         for (int idx = 0; idx < index.size(); idx += 2) {
             int start = index.getAsNumber(idx).intValue();
             int length = index.getAsNumber(idx + 1).intValue();
-            ensureXrefSize((start + length) * 2);
+            ensureXrefSize(checkXRefStreamSubsection(start, length, wc, b.length - bptr) * 2);
             while (length-- > 0) {
                 bptr = readXRefStreamEntry(b, bptr, wc, start);
                 ++start;
@@ -2455,6 +2542,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         int top = 0;
         trailer = null;
         byte[] line = new byte[64];
+        long maxObjectCount = maxXrefObjectCount();
         for (; ; ) {
             long pos = tokens.getFilePointer();
             if (!tokens.readLineSegment(line)) {
@@ -2479,7 +2567,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 }
             } else if (line[0] >= '0' && line[0] <= '9') {
                 int[] obj = PRTokeniser.checkObjectStart(line);
-                if (obj == null) {
+                if (obj == null || obj[0] < 0 || obj[0] >= maxObjectCount) {
                     continue;
                 }
                 int num = obj[0];
