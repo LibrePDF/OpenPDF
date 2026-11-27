@@ -92,6 +92,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     static final PdfName[] pageInhCandidates = {PdfName.MEDIABOX,
             PdfName.ROTATE, PdfName.RESOURCES, PdfName.CROPBOX};
 
+    /**
+     * The deepest nesting of arrays and dictionaries within one object that the parsers accept.
+     */
+    static final int MAX_NESTING_DEPTH = 512;
+
     private static final String ENDSTREAM = "endstream";
     private static final byte[] endstreamBytes = PdfEncodings
             .convertToBytes(ENDSTREAM, null);
@@ -2558,9 +2563,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         int type = tokens.getTokenType();
         switch (type) {
             case PRTokeniser.TK_START_DIC: {
-                ++readDepth;
-                PdfDictionary dic = readDictionary();
-                --readDepth;
+                PdfDictionary dic = readNestedDictionary();
                 long pos = tokens.getFilePointer();
                 // be careful in the trailer. May not be a "next" token.
                 boolean hasNext;
@@ -2592,10 +2595,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 }
             }
             case PRTokeniser.TK_START_ARRAY: {
-                ++readDepth;
-                PdfArray arr = readArray();
-                --readDepth;
-                return arr;
+                return readNestedArray();
             }
             case PRTokeniser.TK_NUMBER:
                 return new PdfNumber(tokens.getStringValue());
@@ -2647,6 +2647,32 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 }
                 return new PdfLiteral(-type, tokens.getStringValue());
         }
+    }
+
+    private PdfDictionary readNestedDictionary() throws IOException {
+        enterNestedObject();
+        try {
+            return readDictionary();
+        } finally {
+            --readDepth;
+        }
+    }
+
+    private PdfArray readNestedArray() throws IOException {
+        enterNestedObject();
+        try {
+            return readArray();
+        } finally {
+            --readDepth;
+        }
+    }
+
+    private void enterNestedObject() throws IOException {
+        if (readDepth >= MAX_NESTING_DEPTH) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("object.nesting.too.deep"));
+        }
+        ++readDepth;
     }
 
     /**
