@@ -83,10 +83,7 @@ public class ImgTemplate extends Image {
                     "a.pattern.can.not.be.used.as.a.template.to.create.an.image"));
         }
         type = IMGTEMPLATE;
-        scaledHeight = template.getHeight();
-        setTop(scaledHeight);
-        scaledWidth = template.getWidth();
-        setRight(scaledWidth);
+        setDimensions(template.getWidth(), template.getHeight());
         setTemplateData(template);
         plainWidth = getWidth();
         plainHeight = getHeight();

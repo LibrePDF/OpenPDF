@@ -51,6 +51,8 @@
 package org.openpdf.tools;
 
 import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openpdf.text.Document;
 import org.openpdf.text.DocumentException;
 import org.openpdf.text.error_messages.MessageLocalization;
@@ -66,6 +68,8 @@ import org.openpdf.text.pdf.PdfWriter;
  * @since 2.1.1 (renamed to follow Java naming conventions)
  */
 public class SplitPdf extends java.lang.Object {
+
+    private static final Logger LOGGER = Logger.getLogger(SplitPdf.class.getName());
 
     /**
      * This class can be used to split an existing PDF file.
@@ -134,7 +138,7 @@ public class SplitPdf extends java.lang.Object {
                 document1.close();
                 document2.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "Could not split the PDF file", e);
             }
         }
     }

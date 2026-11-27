@@ -51,6 +51,7 @@ package org.openpdf.text.pdf;
 
 import org.openpdf.text.Rectangle;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Implements the form XObject.
@@ -100,7 +101,7 @@ public class PdfTemplate extends PdfContentByte {
      */
 
     PdfTemplate(PdfWriter wr) {
-        super(wr);
+        super(Objects.requireNonNull(wr, "The writer must not be null"));
         type = TYPE_TEMPLATE;
         pageResources = new PageResources();
         pageResources.addDefaultColor(wr.getDefaultColorspace());

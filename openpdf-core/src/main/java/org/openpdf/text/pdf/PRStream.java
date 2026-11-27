@@ -61,7 +61,7 @@ import java.util.zip.DeflaterOutputStream;
 public class PRStream extends PdfStream {
 
     protected PdfReader reader;
-    protected int offset;
+    protected long offset;
     protected int length;
 
     //added by ujihara for decryption
@@ -90,7 +90,7 @@ public class PRStream extends PdfStream {
         this.reader = reader;
     }
 
-    public PRStream(PdfReader reader, int offset) {
+    public PRStream(PdfReader reader, long offset) {
         this.reader = reader;
         this.offset = offset;
     }
@@ -111,13 +111,11 @@ public class PRStream extends PdfStream {
         this.reader = reader;
         this.offset = -1;
         if (Document.compress) {
-            try {
+            try (Deflater deflater = new Deflater(compressionLevel)) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                Deflater deflater = new Deflater(compressionLevel);
                 DeflaterOutputStream zip = new DeflaterOutputStream(stream, deflater);
                 zip.write(conts);
                 zip.close();
-                deflater.end();
                 bytes = stream.toByteArray();
             } catch (IOException ioe) {
                 throw new ExceptionConverter(ioe);
@@ -154,13 +152,11 @@ public class PRStream extends PdfStream {
         remove(PdfName.FILTER);
         this.offset = -1;
         if (Document.compress && compress) {
-            try {
+            try (Deflater deflater = new Deflater(compressionLevel)) {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                Deflater deflater = new Deflater(compressionLevel);
                 DeflaterOutputStream zip = new DeflaterOutputStream(stream, deflater);
                 zip.write(data);
                 zip.close();
-                deflater.end();
                 bytes = stream.toByteArray();
                 this.compressionLevel = compressionLevel;
             } catch (IOException ioe) {
@@ -182,7 +178,7 @@ public class PRStream extends PdfStream {
         setData(data, true);
     }
 
-    public int getOffset() {
+    public long getOffset() {
         return offset;
     }
 

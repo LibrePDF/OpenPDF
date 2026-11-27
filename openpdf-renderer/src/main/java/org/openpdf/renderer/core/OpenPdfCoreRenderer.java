@@ -145,6 +145,9 @@ public class OpenPdfCoreRenderer implements Closeable {
     public Rectangle2D getPageSize(int pageNumber) {
         ensureOpen();
         org.openpdf.text.Rectangle r = reader.getPageSizeWithRotation(pageNumber);
+        if (r == null) {
+            throw new IllegalArgumentException("pageNumber " + pageNumber + " does not refer to an existing page");
+        }
         return new Rectangle2D.Float(0f, 0f, r.getWidth(), r.getHeight());
     }
 

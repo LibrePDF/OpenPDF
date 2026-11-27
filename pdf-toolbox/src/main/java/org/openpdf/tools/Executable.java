@@ -108,6 +108,7 @@ public class Executable {
                 process.waitFor();
             }
         } catch (InterruptedException ignored) {
+            Thread.currentThread().interrupt();
         }
         return process;
     }
@@ -296,6 +297,9 @@ public class Executable {
                     Runtime.getRuntime().exec(new String[]{browser, url});
                 }
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException(MessageLocalization.getComposedMessage("error.attempting.to.launch.web.browser"));
         } catch (Exception e) {
             throw new IOException(MessageLocalization.getComposedMessage("error.attempting.to.launch.web.browser"));
         }

@@ -1866,19 +1866,19 @@ public class CSSParser {
             case URI -> {
                 char[] ch = _lexer.yytext().toCharArray();
                 int start = 4;
-                while (ch[start] == '\t' || ch[start] == '\r' ||
-                        ch[start] == '\n' || ch[start] == '\f') {
+                while (start < ch.length && (ch[start] == '\t' || ch[start] == '\r' ||
+                        ch[start] == '\n' || ch[start] == '\f')) {
                     start++;
                 }
-                if (ch[start] == '\'' || ch[start] == '"') {
+                if (start < ch.length && (ch[start] == '\'' || ch[start] == '"')) {
                     start++;
                 }
                 int end = ch.length - 2;
-                while (ch[end] == '\t' || ch[end] == '\r' ||
-                        ch[end] == '\n' || ch[end] == '\f') {
+                while (end >= 0 && (ch[end] == '\t' || ch[end] == '\r' ||
+                        ch[end] == '\n' || ch[end] == '\f')) {
                     end--;
                 }
-                if (ch[end] == '\'' || ch[end] == '"') {
+                if (end >= 0 && (ch[end] == '\'' || ch[end] == '"')) {
                     end--;
                 }
 

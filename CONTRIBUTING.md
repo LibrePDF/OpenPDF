@@ -24,7 +24,11 @@ of the contributors will also identify and prevent conflict of interests.
 | 1.3             | 8            |
 | 1.4             | 11           |
 | 2.0             | 17           |
-| 2.1+ (master)   | 21          |
+| 2.1 - 3.0       | 21           |
+| 4.0+ (master)   | 25           |
+
+OpenPDF 3.0 for Java 21 is maintained in the `3.0-java21` branch. Bug fixes that should also reach
+Java 21 users need a pull request against that branch.
 
 ### Please note
 

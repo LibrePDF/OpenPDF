@@ -50,39 +50,48 @@
 package org.openpdf.text.utils;
 
 import java.io.IOException;
+import java.lang.foreign.Arena;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
+import java.nio.ReadOnlyBufferException;
 import java.nio.channels.FileChannel;
 
 
 /**
- * A utility class that allows random access to files larger than 2GB by internally
- * mapping them into multiple {@link MappedByteBuffer} chunks of up to 2GB each.
+ * A utility class that allows random access to memory-mapped files, including files larger than 2GB.
+ * <p>
+ * The file is mapped with the Foreign Function &amp; Memory API (JEP 454) into a single {@link MemorySegment} that
+ * belongs to its own {@link Arena}. Closing this buffer closes the arena, which unmaps the file immediately instead
+ * of waiting for the garbage collector. This releases the lock that Windows holds on mapped files, so they can be
+ * deleted or moved right after {@link #close()}.
+ * <p>
+ * A shared arena is used, because a {@code PdfReader} may be created in one thread and read in another. Accessing
+ * the buffer after it has been closed throws an {@link IllegalStateException}; it never accesses unmapped memory.
  *
  *  @since 2.0.4
  */
-public class LongMappedByteBuffer {
+public class LongMappedByteBuffer implements AutoCloseable {
 
-    private static final long CHUNK_SIZE = Integer.MAX_VALUE; // 2 GB
-    private final MappedByteBuffer[] chunks;
+    private final Arena arena;
+    private final MemorySegment segment;
     private final long size;
 
     private long position = 0;
 
     /**
-     * Constructs a new LongMappedByteBuffer by chunk-mapping the file channel.
+     * Constructs a new LongMappedByteBuffer by mapping the file channel.
      */
     public LongMappedByteBuffer(FileChannel channel, FileChannel.MapMode mode) throws IOException {
         this.size = channel.size();
-        int numChunks = (int) ((size + CHUNK_SIZE - 1) / CHUNK_SIZE);
-        this.chunks = new MappedByteBuffer[numChunks];
-
-        for (int i = 0; i < numChunks; i++) {
-            long pos = i * CHUNK_SIZE;
-            long chunkSize = Math.min(CHUNK_SIZE, size - pos);
-            chunks[i] = channel.map(mode, pos, chunkSize);
+        Arena mappingArena = Arena.ofShared();
+        try {
+            this.segment = channel.map(mode, 0, size, mappingArena);
+        } catch (Throwable t) {
+            mappingArena.close();
+            throw t;
         }
+        this.arena = mappingArena;
     }
 
     public byte get() {
@@ -95,40 +104,18 @@ public class LongMappedByteBuffer {
         if (pos >= size) {
             throw new BufferUnderflowException(); // triggers EOF handling in MappedRandomAccessFile
         }
-        int chunkIndex = (int) (pos / CHUNK_SIZE);
-        int offset = (int) (pos % CHUNK_SIZE);
-        MappedByteBuffer chunk = chunks[chunkIndex];
-        return chunk.get(offset);
+        return segment.get(ValueLayout.JAVA_BYTE, pos);
     }
-
-
 
     public void get(long pos, byte[] dst, int off, int len) {
         if (off < 0 || len < 0 || off + len > dst.length) {
             throw new IndexOutOfBoundsException("Invalid offset/length");
         }
-
-        long readPos = pos;  
-        int remaining = len;
-        int dstPos = off;
-
-        while (remaining > 0) {
-            int chunkIndex = (int) (readPos / CHUNK_SIZE);
-            int chunkOffset = (int) (readPos % CHUNK_SIZE);
-            int chunkRemaining = chunks[chunkIndex].limit() - chunkOffset;
-            int toRead = Math.min(remaining, chunkRemaining);
-
-            ByteBuffer dup = chunks[chunkIndex].duplicate();
-            dup.position(chunkOffset);
-            dup.get(dst, dstPos, toRead);
-
-            readPos += toRead;
-            dstPos += toRead;
-            remaining -= toRead;
+        if (len == 0) {
+            return;
         }
+        MemorySegment.copy(segment, ValueLayout.JAVA_BYTE, pos, dst, off, len);
     }
-
-
 
     public void get(byte[] dst, int off, int len) {
         get(position, dst, off, len);
@@ -141,36 +128,20 @@ public class LongMappedByteBuffer {
     }
 
     public void put(long pos, byte value) {
-        int chunkIndex = (int) (pos / CHUNK_SIZE);
-        int offset = (int) (pos % CHUNK_SIZE);
-        chunks[chunkIndex].put(offset, value);
+        checkWritable();
+        segment.set(ValueLayout.JAVA_BYTE, pos, value);
     }
 
     public void put(byte[] src, int off, int len) {
         if (off < 0 || len < 0 || off + len > src.length) {
             throw new IndexOutOfBoundsException("Invalid offset/length");
         }
-
-        int remaining = len;
-        int srcPos = off;
-        long pos = position;
-
-        while (remaining > 0) {
-            int chunkIndex = (int) (pos / CHUNK_SIZE);
-            int chunkOffset = (int) (pos % CHUNK_SIZE);
-            int chunkRemaining = chunks[chunkIndex].limit() - chunkOffset;
-            int toWrite = Math.min(remaining, chunkRemaining);
-
-            ByteBuffer dup = chunks[chunkIndex].duplicate();
-            dup.position(chunkOffset);
-            dup.put(src, srcPos, toWrite);
-
-            pos += toWrite;
-            srcPos += toWrite;
-            remaining -= toWrite;
+        if (len == 0) {
+            return;
         }
-
-        position = pos;
+        checkWritable();
+        MemorySegment.copy(src, off, segment, ValueLayout.JAVA_BYTE, position, len);
+        position += len;
     }
 
     public int read(byte[] bytes, int off, int len) {
@@ -188,8 +159,6 @@ public class LongMappedByteBuffer {
 
         return available;
     }
-
-
 
     public long position() {
         return position;
@@ -213,24 +182,35 @@ public class LongMappedByteBuffer {
     }
 
     public LongMappedByteBuffer load() {
-        for (MappedByteBuffer chunk : chunks) {
-            chunk.load();
-        }
+        segment.load();
         return this;
     }
 
     public boolean isLoaded() {
-        for (MappedByteBuffer chunk : chunks) {
-            if (!chunk.isLoaded()) {
-                return false;
-            }
-        }
-        return true;
+        return segment.isLoaded();
     }
 
     public void force() {
-        for (MappedByteBuffer chunk : chunks) {
-            chunk.force();
+        segment.force();
+    }
+
+    /**
+     * Unmaps the file immediately. The buffer must not be used after it has been closed. Calling this method more
+     * than once has no effect.
+     *
+     * @since 4.0.0
+     */
+    @Override
+    public synchronized void close() {
+        if (arena.scope().isAlive()) {
+            arena.close();
+        }
+    }
+
+    private void checkWritable() {
+        // same exception as a read-only MappedByteBuffer, instead of an IllegalArgumentException
+        if (segment.isReadOnly()) {
+            throw new ReadOnlyBufferException();
         }
     }
 }

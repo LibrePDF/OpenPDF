@@ -51,6 +51,8 @@ package org.openpdf.tools;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openpdf.text.pdf.PdfEncryptor;
 import org.openpdf.text.pdf.PdfReader;
 import org.openpdf.text.pdf.PdfWriter;
@@ -62,6 +64,8 @@ import org.openpdf.text.pdf.PdfWriter;
  * @since 2.1.1 (renamed to follow Java naming conventions)
  */
 public class EncryptPdf {
+
+    private static final Logger LOGGER = Logger.getLogger(EncryptPdf.class.getName());
 
     private final static int INPUT_FILE = 0;
     private final static int OUTPUT_FILE = 1;
@@ -125,7 +129,7 @@ public class EncryptPdf {
                     args[STRENGTH].equals("128"), moreInfo);
             System.out.println("Done.");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not encrypt the PDF file", e);
         }
     }
 }

@@ -154,6 +154,8 @@ public class TableBox extends BlockBox {
 
         if (isMarginAreaRoot()) {
             _tableLayout = new MarginTableLayout(this);
+        } else if (style == null) {
+            throw new IllegalArgumentException("A table box requires a style to select its table layout");
         } else if (style.isIdent(CSSName.TABLE_LAYOUT, IdentValue.AUTO) || style.isAutoWidth()) {
             _tableLayout = new AutoTableLayout(this);
         } else {
