@@ -51,6 +51,7 @@ package org.openpdf.toolbox.plugins;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -125,7 +126,7 @@ public class HtmlBookmarks extends AbstractTool {
      * @param bookmark the bookmark that has the data for the line
      * @return a subsection of section
      */
-    private static Section createBookmark(String pdf, Section section, Map<String, Object> bookmark) {
+    static Section createBookmark(String pdf, Section section, Map<String, Object> bookmark) {
         Section s;
         Paragraph title = new Paragraph((String) bookmark.get("Title"));
         System.out.println((String) bookmark.get("Title"));
@@ -136,13 +137,13 @@ public class HtmlBookmarks extends AbstractTool {
                 StringTokenizer tokens = new StringTokenizer(page);
                 String token = tokens.nextToken();
                 Anchor anchor = new Anchor(" page" + token);
-                anchor.setReference(pdf + "#page=" + token);
+                anchor.setReference(safeReference(pdf + "#page=" + token));
                 title.add(anchor);
             }
         } else if ("URI".equals(action)) {
             String url = (String) bookmark.get("URI");
             Anchor anchor = new Anchor(" Goto URL");
-            anchor.setReference(url);
+            anchor.setReference(safeReference(url));
             title.add(anchor);
         } else if ("GoToR".equals(action)) {
             String remote = (String) bookmark.get("File");
@@ -157,7 +158,7 @@ public class HtmlBookmarks extends AbstractTool {
                 anchor.add(new Chunk(" page " + token));
                 remote = remote + "#page=" + token;
             }
-            anchor.setReference(remote);
+            anchor.setReference(safeReference(remote));
             title.add(anchor);
         }
         if (section == null) {
@@ -167,6 +168,31 @@ public class HtmlBookmarks extends AbstractTool {
         }
         s.setNumberDepth(0);
         return s;
+    }
+
+    /**
+     * Decides if a link that was found in a PDF file can be used in the HTML file. Only links without a scheme
+     * (relative links) and links with the scheme http or https are used.
+     *
+     * @param reference the link
+     * @return the link, or <CODE>null</CODE> if it has another scheme
+     */
+    static String safeReference(String reference) {
+        if (reference == null) {
+            return null;
+        }
+        // browsers ignore whitespace and control characters in a scheme
+        String compact = reference.replaceAll("[\\s\\p{Cntrl}]", "");
+        int end = 0;
+        while (end < compact.length() && ":/?#\\".indexOf(compact.charAt(end)) < 0) {
+            end++;
+        }
+        if (end == compact.length() || compact.charAt(end) != ':') {
+            // no scheme
+            return reference;
+        }
+        String scheme = compact.substring(0, end).toLowerCase(Locale.ROOT);
+        return "http".equals(scheme) || "https".equals(scheme) ? reference : null;
     }
 
     /**
