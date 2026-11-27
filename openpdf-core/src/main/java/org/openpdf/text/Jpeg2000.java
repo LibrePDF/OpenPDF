@@ -50,6 +50,7 @@
 package org.openpdf.text;
 
 import org.openpdf.text.error_messages.MessageLocalization;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -76,6 +77,8 @@ public class Jpeg2000 extends Image {
     public static final int JP2_DBTL = 0x6474626c;
     public static final int JP2_BPCC = 0x62706363;
     public static final int JP2_JP2 = 0x6a703220;
+
+    private static final int MIN_BOX_LENGTH = 8;
 
     InputStream inp;
     int boxLength;
@@ -131,9 +134,23 @@ public class Jpeg2000 extends Image {
     private int cio_read(int n) throws IOException {
         int v = 0;
         for (int i = n - 1; i >= 0; i--) {
-            v += inp.read() << (i << 3);
+            int b = inp.read();
+            if (b < 0) {
+                throw new EOFException("Unexpected end of the JPEG2000 image.");
+            }
+            v += b << (i << 3);
         }
         return v;
+    }
+
+    /**
+     * A box is at least as long as its header. A shorter (or, read as a signed number, negative) length would make
+     * the reader skip nothing and go over the same data again.
+     */
+    private void checkBoxLength() throws IOException {
+        if (boxLength < MIN_BOX_LENGTH) {
+            throw new IOException("Invalid JPEG2000 box size: " + boxLength);
+        }
     }
 
     public void jp2_read_boxhdr() throws IOException {
@@ -151,6 +168,7 @@ public class Jpeg2000 extends Image {
         } else if (boxLength == 0) {
             throw new IOException(MessageLocalization.getComposedMessage("unsupported.box.size.eq.eq.0"));
         }
+        checkBoxLength();
     }
 
     /**

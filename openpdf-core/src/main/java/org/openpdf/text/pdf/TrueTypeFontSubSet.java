@@ -271,6 +271,8 @@ class TrueTypeFontSubSet {
             throw new DocumentException(
                     MessageLocalization.getComposedMessage("table.1.does.not.exist.in.2", "loca", fileName));
         }
+        TrueTypeFont.checkTableLocation("loca", tableLocation[TABLE_OFFSET], tableLocation[TABLE_LENGTH],
+                rf.length(), fileName);
         rf.seek(tableLocation[TABLE_OFFSET]);
         if (locaShortTable) {
             int entries = tableLocation[TABLE_LENGTH] / 2;
