@@ -64,7 +64,9 @@ import org.openpdf.text.pdf.RandomAccessFileOrArray;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Extracts text from a PDF file.
@@ -138,12 +140,22 @@ public class PdfTextExtractor {
      * @throws IOException
      */
     private byte[] getContentBytesFromContentObject(PdfObject contentObject) throws IOException {
+        return getContentBytesFromContentObject(contentObject, new HashSet<>());
+    }
+
+    private byte[] getContentBytesFromContentObject(PdfObject contentObject, Set<Integer> visited)
+            throws IOException {
         final byte[] result;
         switch (contentObject.type()) {
             case PdfObject.INDIRECT:
                 PRIndirectReference ref = (PRIndirectReference) contentObject;
                 PdfObject directObject = PdfReader.getPdfObject(ref);
-                result = getContentBytesFromContentObject(directObject);
+                if (PdfContentStreamHandler.isRepeatedContentContainer(ref, directObject, visited)) {
+                    // a content array that contains itself
+                    result = new byte[0];
+                    break;
+                }
+                result = getContentBytesFromContentObject(directObject, visited);
                 break;
             case PdfObject.STREAM:
                 PRStream stream = (PRStream) PdfReader.getPdfObject(contentObject);
@@ -156,7 +168,7 @@ public class PdfTextExtractor {
                 ByteArrayOutputStream allBytes = new ByteArrayOutputStream();
                 PdfArray contentArray = (PdfArray) contentObject;
                 for (PdfObject pdfObject : contentArray.getElements()) {
-                    allBytes.write(getContentBytesFromContentObject(pdfObject));
+                    allBytes.write(getContentBytesFromContentObject(pdfObject, visited));
                 }
                 result = allBytes.toByteArray();
                 break;
