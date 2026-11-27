@@ -23,11 +23,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.github.librepdf</groupId>
-      <artifactId>openpdf-renderer</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
     </dependency>
