@@ -66,6 +66,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class XMLResource extends AbstractResource {
     private static final String EXTERNAL_GENERAL_ENTITIES = "http://xml.org/sax/features/external-general-entities";
+    private static final String DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
     private static final XMLResourceBuilder XML_RESOURCE_BUILDER = new XMLResourceBuilder();
     private static final AtomicBoolean useConfiguredParser = new AtomicBoolean(true);
 
@@ -187,12 +188,12 @@ public class XMLResource extends AbstractResource {
 
     /**
      * Creates the JDK default reader, which is only used when no HTML parser can be loaded. Unlike the HTML
-     * parser it processes document type declarations, so it is configured not to read external general entities
-     * and not to open external DTDs by itself. The DTDs and entity sets bundled with this library are still
-     * available through the {@link FSEntityResolver} that is set on every reader.
+     * parser it would process document type declarations, so it refuses a document that has one. It is also
+     * configured not to read external general entities and not to open external DTDs.
      */
     static XMLReader newDefaultXMLReader() throws ParserConfigurationException, SAXException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setFeature(DISALLOW_DOCTYPE_DECL, true);
         factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
         factory.setXIncludeAware(false);
         setOptionalFeature(factory, EXTERNAL_GENERAL_ENTITIES);

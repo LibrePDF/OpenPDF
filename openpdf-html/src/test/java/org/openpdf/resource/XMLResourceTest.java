@@ -3,6 +3,7 @@ package org.openpdf.resource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class XMLResourceTest {
     private static final String MARKER = "content-of-a-local-file";
@@ -25,7 +27,7 @@ class XMLResourceTest {
         String xml = "<!DOCTYPE html [<!ENTITY x SYSTEM \"" + file.toUri() + "\">]>"
                 + "<html><body>before &x; after</body></html>";
 
-        assertThat(parseWithDefaultReader(xml)).doesNotContain(MARKER).contains("before", "after");
+        assertThatThrownBy(() -> parseWithDefaultReader(xml)).isInstanceOf(SAXParseException.class);
     }
 
     @Test
@@ -35,16 +37,21 @@ class XMLResourceTest {
         String xml = "<!DOCTYPE html SYSTEM \"" + file.toUri() + "\">"
                 + "<html><body>before &x; after</body></html>";
 
-        assertThat(parseWithDefaultReader(xml)).doesNotContain(MARKER);
+        assertThatThrownBy(() -> parseWithDefaultReader(xml)).isInstanceOf(SAXParseException.class);
     }
 
     @Test
-    void defaultReaderStillKnowsTheBundledXhtmlEntities() throws Exception {
+    void defaultReaderRefusesADocumentTypeDeclaration() {
         String xml = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\""
                 + " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"
-                + "<html><body>a&nbsp;b</body></html>";
+                + "<html><body>text</body></html>";
 
-        assertThat(parseWithDefaultReader(xml)).isEqualTo("a b");
+        assertThatThrownBy(() -> parseWithDefaultReader(xml)).isInstanceOf(SAXParseException.class);
+    }
+
+    @Test
+    void defaultReaderParsesADocumentWithoutADocumentTypeDeclaration() throws Exception {
+        assertThat(parseWithDefaultReader("<html><body>a &amp; b</body></html>")).isEqualTo("a & b");
     }
 
     private static String parseWithDefaultReader(String xml) throws Exception {
