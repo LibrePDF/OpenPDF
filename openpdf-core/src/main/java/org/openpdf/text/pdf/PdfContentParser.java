@@ -69,6 +69,10 @@ public class PdfContentParser {
      * Holds value of property tokeniser.
      */
     private PRTokeniser tokeniser;
+    /**
+     * How many arrays and dictionaries enclose the object that is being read.
+     */
+    private int readDepth;
 
     /**
      * Creates a new instance of PdfContentParser
@@ -189,11 +193,20 @@ public class PdfContentParser {
         int type = tokeniser.getTokenType();
         switch (type) {
             case PRTokeniser.TK_START_DIC: {
-                PdfDictionary dic = readDictionary();
-                return dic;
+                enterNestedObject();
+                try {
+                    return readDictionary();
+                } finally {
+                    --readDepth;
+                }
             }
             case PRTokeniser.TK_START_ARRAY:
-                return readArray();
+                enterNestedObject();
+                try {
+                    return readArray();
+                } finally {
+                    --readDepth;
+                }
             case PRTokeniser.TK_STRING:
                 PdfString str = new PdfString(tokeniser.getStringValue(), null).setHexWriting(tokeniser.isHexString());
                 return str;
@@ -206,6 +219,13 @@ public class PdfContentParser {
             default:
                 return new PdfLiteral(-type, tokeniser.getStringValue());
         }
+    }
+
+    private void enterNestedObject() throws IOException {
+        if (readDepth >= PdfReader.MAX_NESTING_DEPTH) {
+            throw new IOException(MessageLocalization.getComposedMessage("object.nesting.too.deep"));
+        }
+        ++readDepth;
     }
 
     /**
