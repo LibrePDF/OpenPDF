@@ -62,10 +62,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -73,6 +75,11 @@ import java.util.Stack;
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class PdfContentStreamHandler {
+
+    /**
+     * The deepest nesting of form XObjects that is processed.
+     */
+    private static final int MAX_FORM_XOBJECT_DEPTH = 64;
 
     protected final Stack<List<TextAssemblyBuffer>> textFragmentStreams = new Stack<>();
     protected final Stack<String> contextNames = new Stack<>();
@@ -96,6 +103,12 @@ public abstract class PdfContentStreamHandler {
      * stream (issue #1268: a page selecting fonts hundreds of times used gigabytes of memory).
      */
     private final Map<Integer, CMapAwareDocumentFont> documentFontCache = new HashMap<>();
+    /**
+     * The form XObjects whose content is being processed right now: the object number for a form that is an
+     * indirect object, the stream itself otherwise. A form that draws itself, directly or through other forms,
+     * is found here.
+     */
+    private final Set<Object> formXObjectsInProgress = new HashSet<>();
     /**
      * Text matrix.
      */
@@ -957,6 +970,24 @@ public abstract class PdfContentStreamHandler {
         }
     }
 
+    private static Object formXObjectKey(PdfObject entry, PdfStream stream) {
+        if (entry instanceof PdfIndirectReference) {
+            return ((PdfIndirectReference) entry).getNumber();
+        }
+        return stream;
+    }
+
+    /**
+     * Registers a form XObject whose content is about to be processed.
+     *
+     * @param formKey the key of the form, see {@link #formXObjectsInProgress}
+     * @return {@code false} if the form must not be processed, because it is being processed already or because
+     *         the forms are nested too deeply
+     */
+    private boolean enterFormXObject(Object formKey) {
+        return formXObjectsInProgress.size() < MAX_FORM_XOBJECT_DEPTH && formXObjectsInProgress.add(formKey);
+    }
+
     /**
      * Gets the content bytes from a PdfObject, which may be a reference, a stream or an array.
      * This is a utility method that can be used by subclasses and other classes in this package.
@@ -978,15 +1009,37 @@ public abstract class PdfContentStreamHandler {
      * @throws IOException if there's an error reading the content
      */
     static byte[] getContentBytesFromPdfObjectStatic(PdfObject object) throws IOException {
+        return collectContentBytes(object, new HashSet<>());
+    }
+
+    /**
+     * Tells whether a reference found while collecting content leads to an array, or to another reference, that
+     * was collected before, as in a content array that contains itself. Streams may be used more than once.
+     *
+     * @param reference the indirect reference
+     * @param target    the object the reference leads to
+     * @param visited   the object numbers of the arrays and references collected so far; the reference is added
+     * @return {@code true} if the target must not be collected again
+     */
+    static boolean isRepeatedContentContainer(PdfObject reference, PdfObject target, Set<Integer> visited) {
+        return target != null && !target.isStream()
+                && !visited.add(((PdfIndirectReference) reference).getNumber());
+    }
+
+    private static byte[] collectContentBytes(PdfObject object, Set<Integer> visited) throws IOException {
         switch (object.type()) {
             case PdfObject.INDIRECT:
-                return getContentBytesFromPdfObjectStatic(PdfReader.getPdfObject(object));
+                PdfObject target = PdfReader.getPdfObject(object);
+                if (isRepeatedContentContainer(object, target, visited)) {
+                    return new byte[0];
+                }
+                return collectContentBytes(target, visited);
             case PdfObject.STREAM:
                 return PdfReader.getStreamBytes((PRStream) PdfReader.getPdfObject(object));
             case PdfObject.ARRAY:
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 for (PdfObject element : ((PdfArray) object).getElements()) {
-                    baos.write(getContentBytesFromPdfObjectStatic(element));
+                    baos.write(collectContentBytes(element, visited));
                 }
                 return baos.toByteArray();
             default:
@@ -1018,23 +1071,33 @@ public abstract class PdfContentStreamHandler {
                 }
                 PdfStream stream = (PdfStream) dictionary.getDirectObject(name);
                 PdfName subType = stream.getAsName(PdfName.SUBTYPE);
-                if (PdfName.FORM.equals(subType)) {
-                    PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
-                    if (resources2 == null) {
-                        resources2 = resources;
-                    }
-
-                    byte[] data;
+                Object formKey = formXObjectKey(dictionary.get(name), stream);
+                if (PdfName.FORM.equals(subType) && handler.enterFormXObject(formKey)) {
                     try {
-                        data = handler.getContentBytesFromPdfObject(stream);
-                    } catch (IOException ex) {
-                        throw new ExceptionConverter(ex);
+                        processForm(stream, operands, handler, resources);
+                    } finally {
+                        handler.formXObjectsInProgress.remove(formKey);
                     }
-                    new PushGraphicsState().invoke(operands, handler, resources);
-                    handler.processContent(data, resources2);
-                    new PopGraphicsState().invoke(operands, handler, resources);
                 }
             }
+        }
+
+        private void processForm(PdfStream stream, List<PdfObject> operands, PdfContentStreamHandler handler,
+                PdfDictionary resources) {
+            PdfDictionary resources2 = stream.getAsDict(PdfName.RESOURCES);
+            if (resources2 == null) {
+                resources2 = resources;
+            }
+
+            byte[] data;
+            try {
+                data = handler.getContentBytesFromPdfObject(stream);
+            } catch (IOException ex) {
+                throw new ExceptionConverter(ex);
+            }
+            new PushGraphicsState().invoke(operands, handler, resources);
+            handler.processContent(data, resources2);
+            new PopGraphicsState().invoke(operands, handler, resources);
         }
     }
 }
