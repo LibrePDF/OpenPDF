@@ -166,9 +166,10 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         arrayIn = file.arrayIn;
         startOffset = file.startOffset;
         plainRandomAccess = file.plainRandomAccess;
-        // the copy does not share the open file handles nor the read position of the original
+        // the copy does not share the open file handles, the mappings nor the read position of the original
         rf = null;
         trf = null;
+        nioBufferArena = null;
         arrayInPtr = 0;
         back = 0;
     }
