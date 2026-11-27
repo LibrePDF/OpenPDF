@@ -9,9 +9,11 @@
 package org.openpdf.renderer.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 import java.awt.image.BufferedImage;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +62,33 @@ class OpenPdfCoreRendererFormRecursionTest {
         BufferedImage image = render(objects);
 
         assertThat(isRed(image.getRGB(25, 175))).isTrue();
+        assertThat(isRed(image.getRGB(125, 175))).isTrue();
+    }
+
+    @Test
+    void stopsAtFormsThatDrawEachOtherTooOften() {
+        // twelve forms that each draw the next one ten times: the last one would be drawn 10^11 times
+        int levels = 12;
+        List<String> objects = page("/F0 Do", "/F0 4 0 R");
+        for (int k = 0; k < levels; k++) {
+            boolean last = k == levels - 1;
+            objects.add(last ? form(RED_SQUARE, "") : form("/F0 Do ".repeat(10), "/F0 " + (5 + k) + " 0 R"));
+        }
+
+        BufferedImage image = assertTimeoutPreemptively(Duration.ofSeconds(60), () -> render(objects));
+
+        assertThat(redPixels(image)).isGreaterThan(100);
+    }
+
+    @Test
+    void drawsFormThatIsUsedManyTimes() throws Exception {
+        // 20,000 uses of one form, the last one in a different place
+        String content = "/F0 Do ".repeat(20_000) + "1 0 0 1 100 0 cm /F0 Do";
+        List<String> objects = page(content, "/F0 4 0 R");
+        objects.add(form(RED_SQUARE, ""));
+
+        BufferedImage image = render(objects);
+
         assertThat(isRed(image.getRGB(125, 175))).isTrue();
     }
 
