@@ -524,8 +524,7 @@ final class OpenPdfCorePageRenderer {
         if (components == 0) {
             return ImageIO.read(new ByteArrayInputStream(decoded));
         }
-        int rowBytes = width * components;
-        if (decoded.length < rowBytes * height) {
+        if (!holdsRaster(decoded, width, height, components)) {
             return null;
         }
         switch (components) {
@@ -1584,10 +1583,14 @@ final class OpenPdfCorePageRenderer {
         if (maskWidth <= 0 || maskHeight <= 0) {
             return base;
         }
-        byte[] maskGray = readSoftMaskGray(smaskStream, maskWidth, maskHeight);
-        if (maskGray == null) {
+        GrayRaster mask = readSoftMaskGray(smaskStream, maskWidth, maskHeight);
+        if (mask == null) {
             return base;
         }
+        // a JPEG encoded mask has the size that its data says, not the size that the dictionary says
+        maskWidth = mask.width();
+        maskHeight = mask.height();
+        byte[] maskGray = mask.data();
         int width = base.getWidth();
         int height = base.getHeight();
         BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -1608,11 +1611,17 @@ final class OpenPdfCorePageRenderer {
      * the same JPEG / Flate / uncompressed encodings as the base image raster path. Bit depths
      * other than 8 are rare for soft masks and not yet supported.
      */
-    private byte[] readSoftMaskGray(PRStream smaskStream, int width, int height) throws IOException {
+    private GrayRaster readSoftMaskGray(PRStream smaskStream, int width, int height) throws IOException {
         PdfObject filterObj = smaskStream.get(PdfName.FILTER);
         if (hasFilter(filterObj, PdfName.DCTDECODE) || hasFilter(filterObj, PdfName.JPXDECODE)) {
             BufferedImage decoded = decodeViaImageIO(smaskStream);
-            return decoded == null ? null : grayBytesFrom(decoded, width, height);
+            if (decoded == null) {
+                return null;
+            }
+            // The mask is scaled to the image it belongs to when it is applied. It is not scaled to the
+            // size in its dictionary first, which can be far larger than the data.
+            return new GrayRaster(grayBytesFrom(decoded, decoded.getWidth(), decoded.getHeight()),
+                    decoded.getWidth(), decoded.getHeight());
         }
         PdfNumber bpcN = smaskStream.getAsNumber(PdfName.BITSPERCOMPONENT);
         int bpc = bpcN == null ? 8 : bpcN.intValue();
@@ -1620,11 +1629,18 @@ final class OpenPdfCorePageRenderer {
             return null;
         }
         byte[] decoded = PdfReader.getStreamBytes(smaskStream);
-        int expected = width * height;
-        if (decoded.length < expected) {
+        if (!holdsRaster(decoded, width, height, 1)) {
             return null;
         }
-        return decoded.length == expected ? decoded : Arrays.copyOf(decoded, expected);
+        int expected = width * height;
+        return new GrayRaster(decoded.length == expected ? decoded : Arrays.copyOf(decoded, expected), width, height);
+    }
+
+    /**
+     * The pixels of a soft mask, one byte per pixel and row by row.
+     */
+    private record GrayRaster(byte[] data, int width, int height) {
+
     }
 
     /**
@@ -1686,14 +1702,15 @@ final class OpenPdfCorePageRenderer {
         }
         int baseComponents = imageComponents(indexedCs.getDirectObject(1));
         byte[] lookup = readIndexedLookup(indexedCs.getDirectObject(3));
-        if (baseComponents == 0 || lookup == null || lookup.length == 0) {
+        if ((baseComponents != 1 && baseComponents != 3 && baseComponents != 4)
+                || lookup == null || lookup.length == 0) {
             return null;
         }
         byte[] indices = PdfReader.getStreamBytes(stream);
-        int pixels = width * height;
-        if (indices.length < pixels) {
+        if (!holdsRaster(indices, width, height, 1)) {
             return null;
         }
+        int pixels = width * height;
         byte[] expanded = expandIndexedPalette(indices, lookup, pixels, baseComponents);
         return buildImageForBaseComponents(expanded, width, height, baseComponents);
     }
@@ -1710,7 +1727,7 @@ final class OpenPdfCorePageRenderer {
      * throwing &mdash; malformed PDFs do happen.
      */
     private static byte[] expandIndexedPalette(byte[] indices, byte[] lookup, int pixels, int baseComponents) {
-        byte[] expanded = new byte[pixels * baseComponents];
+        byte[] expanded = new byte[Math.multiplyExact(pixels, baseComponents)];
         int maxLookupIdx = Math.max(lookup.length - baseComponents, 0);
         for (int p = 0; p < pixels; p++) {
             int paletteOffset = Math.min((indices[p] & 0xFF) * baseComponents, maxLookupIdx);
@@ -1803,9 +1820,7 @@ final class OpenPdfCorePageRenderer {
                 return null;
             }
             byte[] decoded = PdfReader.getStreamBytes(stream);
-            int rowBytes = width * components;
-            int expected = rowBytes * height;
-            if (decoded.length < expected) {
+            if (!holdsRaster(decoded, width, height, components)) {
                 return null;
             }
             switch (components) {
@@ -1878,6 +1893,26 @@ final class OpenPdfCorePageRenderer {
         }
         PdfNumber n = params.getAsNumber(CS_N);
         return n == null ? 0 : n.intValue();
+    }
+
+    /**
+     * Checks that image data holds a raster of the size that the image declares. The size is
+     * calculated without overflow: the width and height come from the file, and their product
+     * does not have to fit in an {@code int}. An image is only created for a raster that passes
+     * this check, so that the memory for it is in proportion to the data that is there.
+     *
+     * @param data       the decoded image data, one byte per component
+     * @param width      the declared width in pixels
+     * @param height     the declared height in pixels
+     * @param components the number of components per pixel
+     * @return {@code true} if the data has at least {@code width * height * components} bytes
+     */
+    static boolean holdsRaster(byte[] data, int width, int height, int components) {
+        if (width <= 0 || height <= 0 || components <= 0 || components > 4) {
+            return false;
+        }
+        // the product of two int values fits in a long; multiplying it by the components might not
+        return (long) width * height <= data.length / components;
     }
 
     private static BufferedImage buildGrayImage(byte[] data, int width, int height) {
