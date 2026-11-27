@@ -262,7 +262,15 @@ public class Rectangle implements Element {
      * @param rect another <CODE>Rectangle</CODE>
      */
     public Rectangle(Rectangle rect) {
-        this(rect.llx, rect.lly, rect.urx, rect.ury);
+        if (rect == null) {
+            throw new IllegalArgumentException("The rectangle to copy must not be null.");
+        }
+        this.llx = rect.llx;
+        this.lly = rect.lly;
+        this.urx = rect.urx;
+        this.ury = rect.ury;
+        // the offset relative to a top is deliberately not copied
+        this.offsetToTop = 0;
         cloneNonPositionParameters(rect);
     }
 

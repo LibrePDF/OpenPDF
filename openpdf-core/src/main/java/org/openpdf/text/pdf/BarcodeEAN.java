@@ -228,6 +228,23 @@ public class BarcodeEAN extends Barcode {
     }
 
     /**
+     * Converts the code to digits. Rejects codes that would otherwise be silently truncated or misread.
+     *
+     * @param code   the code
+     * @param length the required number of digits
+     * @param type   the barcode type, used in the error message
+     * @return the digits
+     * @throws IllegalArgumentException if the code doesn't consist of exactly {@code length} digits
+     */
+    private static int[] toDigits(String code, int length, String type) {
+        if (code.length() != length || !code.chars().allMatch(c -> c >= '0' && c <= '9')) {
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage(
+                    "the.barcode.1.must.contain.exactly.2.digits.instead.of.3", type, length, code));
+        }
+        return code.chars().map(c -> c - '0').toArray();
+    }
+
+    /**
      * Calculates the EAN parity character.
      *
      * @param code the code
@@ -283,10 +300,7 @@ public class BarcodeEAN extends Barcode {
      * @return the barcode
      */
     public static byte[] getBarsEAN13(String _code) {
-        int[] code = new int[_code.length()];
-        for (int k = 0; k < code.length; ++k) {
-            code[k] = _code.charAt(k) - '0';
-        }
+        int[] code = toDigits(_code, 13, "EAN13");
         byte[] bars = new byte[TOTALBARS_EAN13];
         int pb = 0;
         bars[pb++] = 1;
@@ -328,16 +342,24 @@ public class BarcodeEAN extends Barcode {
     }
 
     /**
+     * Creates the bars for the barcode UPCA.
+     *
+     * @param code the text with 12 digits
+     * @return the barcode
+     */
+    private static byte[] getBarsUPCA(String code) {
+        toDigits(code, 12, "UPCA");
+        return getBarsEAN13("0" + code);
+    }
+
+    /**
      * Creates the bars for the barcode EAN8.
      *
      * @param _code the text with 8 digits
      * @return the barcode
      */
     public static byte[] getBarsEAN8(String _code) {
-        int[] code = new int[_code.length()];
-        for (int k = 0; k < code.length; ++k) {
-            code[k] = _code.charAt(k) - '0';
-        }
+        int[] code = toDigits(_code, 8, "EAN8");
         byte[] bars = new byte[TOTALBARS_EAN8];
         int pb = 0;
         bars[pb++] = 1;
@@ -377,9 +399,10 @@ public class BarcodeEAN extends Barcode {
      * @return the barcode
      */
     public static byte[] getBarsUPCE(String _code) {
-        int[] code = new int[_code.length()];
-        for (int k = 0; k < code.length; ++k) {
-            code[k] = _code.charAt(k) - '0';
+        int[] code = toDigits(_code, 8, "UPCE");
+        if (code[0] > 1) {
+            throw new IllegalArgumentException(
+                    MessageLocalization.getComposedMessage("the.upce.number.system.must.be.0.or.1.instead.of.1", _code));
         }
         byte[] bars = new byte[TOTALBARS_UPCE];
         boolean flip = (code[0] != 0);
@@ -419,10 +442,7 @@ public class BarcodeEAN extends Barcode {
      * @return the barcode
      */
     public static byte[] getBarsSupplemental2(String _code) {
-        int[] code = new int[2];
-        for (int k = 0; k < code.length; ++k) {
-            code[k] = _code.charAt(k) - '0';
-        }
+        int[] code = toDigits(_code, 2, "SUPP2");
         byte[] bars = new byte[TOTALBARS_SUPP2];
         int pb = 0;
         int parity = (code[0] * 10 + code[1]) % 4;
@@ -459,10 +479,7 @@ public class BarcodeEAN extends Barcode {
      * @return the barcode
      */
     public static byte[] getBarsSupplemental5(String _code) {
-        int[] code = new int[5];
-        for (int k = 0; k < code.length; ++k) {
-            code[k] = _code.charAt(k) - '0';
-        }
+        int[] code = toDigits(_code, 5, "SUPP5");
         byte[] bars = new byte[TOTALBARS_SUPP5];
         int pb = 0;
         int parity = (((code[0] + code[2] + code[4]) * 3) + ((code[1] + code[3]) * 9)) % 10;
@@ -614,7 +631,7 @@ public class BarcodeEAN extends Barcode {
                 guard = GUARD_EAN8;
                 break;
             case UPCA:
-                bars = getBarsEAN13("0" + code);
+                bars = getBarsUPCA(code);
                 guard = GUARD_UPCA;
                 break;
             case UPCE:
@@ -745,7 +762,7 @@ public class BarcodeEAN extends Barcode {
                 width = 11 + 8 * 7;
                 break;
             case UPCA:
-                bars = getBarsEAN13("0" + code);
+                bars = getBarsUPCA(code);
                 width = 11 + 12 * 7;
                 break;
             case UPCE:

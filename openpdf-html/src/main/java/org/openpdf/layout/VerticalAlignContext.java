@@ -59,6 +59,11 @@ public class VerticalAlignContext {
 
     public VerticalAlignContext(VerticalAlignContext parent) {
         _parent = parent;
+        // A child context tracks its own extents; nothing is taken over from the parent
+        _inlineTop = 0;
+        _inlineBottom = 0;
+        _paintingTop = 0;
+        _paintingBottom = 0;
     }
 
     public VerticalAlignContext(InlineBoxMeasurements initialMeasurements) {

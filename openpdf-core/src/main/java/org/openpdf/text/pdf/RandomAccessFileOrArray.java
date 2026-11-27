@@ -84,7 +84,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
     /**
      * Holds value of property startOffset.
      */
-    private int startOffset = 0;
+    private long startOffset = 0;
 
     public RandomAccessFileOrArray(String filename) throws IOException {
         this(filename, false, Document.plainRandomAccess);
@@ -159,6 +159,11 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         arrayIn = file.arrayIn;
         startOffset = file.startOffset;
         plainRandomAccess = file.plainRandomAccess;
+        // the copy does not share the open file handles nor the read position of the original
+        rf = null;
+        trf = null;
+        arrayInPtr = 0;
+        back = 0;
     }
 
     public static byte[] InputStreamToArray(InputStream is) throws IOException {
@@ -186,7 +191,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
             return back & 0xff;
         }
         if (arrayIn == null) {
-            return plainRandomAccess ? trf.read() : rf.read();
+            return plainRandomAccess ? openPlainFile().read() : openMappedFile().read();
         } else {
             if (arrayInPtr >= arrayIn.length) {
                 return -1;
@@ -212,7 +217,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
             }
         }
         if (arrayIn == null) {
-            return (plainRandomAccess ? trf.read(b, off, len) : rf.read(b, off, len)) + n;
+            return (plainRandomAccess ? openPlainFile().read(b, off, len) : openMappedFile().read(b, off, len)) + n;
         } else {
             if (arrayInPtr >= arrayIn.length) {
                 return -1;
@@ -246,10 +251,6 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
     }
 
     public long skip(long n) throws IOException {
-        return skipBytes((int) n);
-    }
-
-    public int skipBytes(int n) throws IOException {
         if (n <= 0) {
             return 0;
         }
@@ -263,9 +264,9 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
                 adj = 1;
             }
         }
-        int pos;
-        int len;
-        int newpos;
+        long pos;
+        long len;
+        long newpos;
 
         pos = getFilePointer();
         len = length();
@@ -277,6 +278,10 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
 
         /* return the actual number of bytes skipped */
         return newpos - pos + adj;
+    }
+
+    public int skipBytes(int n) throws IOException {
+        return (int) skip(n);
     }
 
     public void reOpen() throws IOException {
@@ -294,6 +299,36 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if (filename != null && rf == null && trf == null) {
             reOpen();
         }
+    }
+
+    /**
+     * Returns the open plain {@link RandomAccessFile} backing this object, reopening it if
+     * needed. Never returns {@code null}.
+     *
+     * @throws IOException if there is no backing file or it cannot be reopened
+     */
+    private RandomAccessFile openPlainFile() throws IOException {
+        insureOpen();
+        RandomAccessFile file = trf;
+        if (file == null) {
+            throw new IOException("RandomAccessFileOrArray: the backing file is not open");
+        }
+        return file;
+    }
+
+    /**
+     * Returns the open {@link MappedRandomAccessFile} backing this object, reopening it if
+     * needed. Never returns {@code null}.
+     *
+     * @throws IOException if there is no backing file or it cannot be reopened
+     */
+    private MappedRandomAccessFile openMappedFile() throws IOException {
+        insureOpen();
+        MappedRandomAccessFile file = rf;
+        if (file == null) {
+            throw new IOException("RandomAccessFileOrArray: the backing file is not open");
+        }
+        return file;
     }
 
     public boolean isOpen() {
@@ -315,39 +350,37 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         }
     }
 
-    public int length() throws IOException {
+    public long length() throws IOException {
         if (arrayIn == null) {
-            insureOpen();
-            return (int) (plainRandomAccess ? trf.length() : rf.length()) - startOffset;
+            return (plainRandomAccess ? openPlainFile().length() : openMappedFile().length()) - startOffset;
         } else {
             return arrayIn.length - startOffset;
         }
     }
 
     public void seek(int pos) throws IOException {
-        pos += startOffset;
-        isBack = false;
-        if (arrayIn == null) {
-            insureOpen();
-            if (plainRandomAccess) {
-                trf.seek(pos);
-            } else {
-                rf.seek(pos);
-            }
-        } else {
-            arrayInPtr = pos;
-        }
+        seek((long) pos);
     }
 
     public void seek(long pos) throws IOException {
-        seek((int) pos);
+        pos += startOffset;
+        isBack = false;
+        if (arrayIn == null) {
+            if (plainRandomAccess) {
+                openPlainFile().seek(pos);
+            } else {
+                openMappedFile().seek(pos);
+            }
+        } else {
+            arrayInPtr = (int) pos;
+        }
     }
 
-    public int getFilePointer() throws IOException {
-        insureOpen();
+    public long getFilePointer() throws IOException {
         int n = isBack ? 1 : 0;
         if (arrayIn == null) {
-            return (int) (plainRandomAccess ? trf.getFilePointer() : rf.getFilePointer()) - n - startOffset;
+            return (plainRandomAccess ? openPlainFile().getFilePointer() : openMappedFile().getFilePointer())
+                    - n - startOffset;
         } else {
             return arrayInPtr - n - startOffset;
         }
@@ -407,7 +440,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2) < 0) {
             throw new EOFException();
         }
-        return (short) ((ch2 << 8) + (ch1 << 0));
+        return (short) ((ch2 << 8) + ch1);
     }
 
     public int readUnsignedShort() throws IOException {
@@ -441,7 +474,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2) < 0) {
             throw new EOFException();
         }
-        return (ch2 << 8) + (ch1 << 0);
+        return (ch2 << 8) + ch1;
     }
 
     public char readChar() throws IOException {
@@ -475,7 +508,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2) < 0) {
             throw new EOFException();
         }
-        return (char) ((ch2 << 8) + (ch1 << 0));
+        return (char) ((ch2 << 8) + ch1);
     }
 
     public int readInt() throws IOException {
@@ -514,7 +547,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
         }
-        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
+        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + ch1);
     }
 
     /**
@@ -542,7 +575,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
         }
-        return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
+        return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + ch4);
     }
 
     public final long readUnsignedIntLE() throws IOException {
@@ -553,7 +586,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
         }
-        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + (ch1 << 0));
+        return ((ch4 << 24) + (ch3 << 16) + (ch2 << 8) + ch1);
     }
 
     public long readLong() throws IOException {
@@ -595,7 +628,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
                     break;
                 case '\r':
                     eol = true;
-                    int cur = getFilePointer();
+                    long cur = getFilePointer();
                     if ((read()) != '\n') {
                         seek(cur);
                     }
@@ -621,7 +654,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
      *
      * @return Value of property startOffset.
      */
-    public int getStartOffset() {
+    public long getStartOffset() {
         return this.startOffset;
     }
 
@@ -630,7 +663,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
      *
      * @param startOffset New value of property startOffset.
      */
-    public void setStartOffset(int startOffset) {
+    public void setStartOffset(long startOffset) {
         this.startOffset = startOffset;
     }
 
@@ -641,12 +674,7 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
      */
     public java.nio.ByteBuffer getNioByteBuffer() throws IOException {
         if (filename != null) {
-            FileChannel channel;
-            if (plainRandomAccess) {
-                channel = trf.getChannel();
-            } else {
-                channel = rf.getChannel();
-            }
+            FileChannel channel = plainRandomAccess ? openPlainFile().getChannel() : openMappedFile().getChannel();
             return channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
         }
         return java.nio.ByteBuffer.wrap(arrayIn);

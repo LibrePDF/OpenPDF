@@ -87,6 +87,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A <CODE>DocWriter</CODE> class for HTML.
@@ -115,6 +117,8 @@ import java.util.Stack;
 
 @Deprecated(since = "2.1.0")
 public class HtmlWriter extends DocWriter {
+
+    private static final Logger LOGGER = Logger.getLogger(HtmlWriter.class.getName());
 
     // static membervariables (tags)
 
@@ -609,7 +613,7 @@ public class HtmlWriter extends DocWriter {
                 try {
                     add(element);
                 } catch (DocumentException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "Could not add a marked element to the HTML document", e);
                 }
                 return;
             }

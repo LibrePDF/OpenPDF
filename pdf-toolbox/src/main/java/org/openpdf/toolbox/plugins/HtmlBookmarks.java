@@ -53,6 +53,8 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.openpdf.text.Anchor;
@@ -79,6 +81,8 @@ import org.openpdf.tools.Executable;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class HtmlBookmarks extends AbstractTool {
+
+    private static final Logger LOGGER = Logger.getLogger(HtmlBookmarks.class.getName());
 
     static {
         addVersion("$Id: HtmlBookmarks.java 3373 2008-05-12 16:21:24Z xlv $");
@@ -260,7 +264,7 @@ public class HtmlBookmarks extends AbstractTool {
             document.close();
             Executable.launchBrowser(html.getAbsolutePath());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not create the HTML bookmarks", e);
             JOptionPane.showMessageDialog(internalFrame,
                     e.getMessage(),
                     e.getClass().getName(),

@@ -480,6 +480,9 @@ class PdfStamperImp extends PdfWriter {
             return;
         }
         Rectangle page = reader.getPageSizeWithRotation(pageN);
+        if (page == null) {
+            return;
+        }
         int rotation = page.getRotation();
         switch (rotation) {
             case 90:
@@ -1167,6 +1170,9 @@ class PdfStamperImp extends PdfWriter {
             return;
         }
         PdfDictionary acrodic = (PdfDictionary) PdfReader.getPdfObject(acro);
+        if (acrodic == null) {
+            return;
+        }
         reader.killXref(acrodic.get(PdfName.XFA));
         acrodic.remove(PdfName.XFA);
         PdfObject iFields = acrodic.get(PdfName.FIELDS);
@@ -1740,7 +1746,7 @@ class PdfStamperImp extends PdfWriter {
             throw new PdfException(MessageLocalization.getComposedMessage("invalid.page.additional.action.type.1",
                     actionType.toString()));
         }
-        PdfDictionary pg = reader.getPageN(page);
+        PdfDictionary pg = getExistingPage(page);
         PdfDictionary aa = (PdfDictionary) PdfReader.getPdfObject(pg.get(PdfName.AA), pg);
         if (aa == null) {
             aa = new PdfDictionary();
@@ -1778,7 +1784,7 @@ class PdfStamperImp extends PdfWriter {
      * @param page    the page where the duration will be applied. The first page is 1
      */
     void setDuration(int seconds, int page) {
-        PdfDictionary pg = reader.getPageN(page);
+        PdfDictionary pg = getExistingPage(page);
         if (seconds < 0) {
             pg.remove(PdfName.DUR);
         } else {
@@ -1794,13 +1800,21 @@ class PdfStamperImp extends PdfWriter {
      * @param page       the page where the transition will be applied. The first page is 1
      */
     void setTransition(PdfTransition transition, int page) {
-        PdfDictionary pg = reader.getPageN(page);
+        PdfDictionary pg = getExistingPage(page);
         if (transition == null) {
             pg.remove(PdfName.TRANS);
         } else {
             pg.put(PdfName.TRANS, transition.getTransitionDictionary());
         }
         markUsed(pg);
+    }
+
+    private PdfDictionary getExistingPage(int page) {
+        PdfDictionary pg = reader.getPageN(page);
+        if (pg == null) {
+            throw new IllegalArgumentException(MessageLocalization.getComposedMessage("invalid.page.number.1", page));
+        }
+        return pg;
     }
 
     protected void markUsed(PdfObject obj) {
@@ -1892,7 +1906,7 @@ class PdfStamperImp extends PdfWriter {
     void setThumbnail(Image image, int page) throws DocumentException {
         PdfIndirectReference thumb = getImageReference(addDirectImageSimple(image));
         reader.resetReleasePage();
-        PdfDictionary dic = reader.getPageN(page);
+        PdfDictionary dic = getExistingPage(page);
         dic.put(PdfName.THUMB, thumb);
         reader.resetReleasePage();
     }

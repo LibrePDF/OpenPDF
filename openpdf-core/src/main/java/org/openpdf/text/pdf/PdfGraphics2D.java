@@ -109,6 +109,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -958,6 +960,8 @@ public class PdfGraphics2D extends Graphics2D {
     /**
      * @see Graphics2D#getStroke()
      */
+    // the stroke set by the caller is returned, the field "stroke" holds the transformed stroke
+    @SuppressWarnings("java:S4275")
     public Stroke getStroke() {
         return originalStroke;
     }
@@ -1735,7 +1739,8 @@ public class PdfGraphics2D extends Graphics2D {
         try {
             mediaTracker.waitForID(0);
         } catch (InterruptedException e) {
-            // empty on purpose
+            // keep the interrupted status for the caller
+            Thread.currentThread().interrupt();
         }
         mediaTracker.removeImage(image);
     }
@@ -1809,6 +1814,7 @@ public class PdfGraphics2D extends Graphics2D {
      */
     private static class CompositeFontDrawer {
 
+        private static final Logger LOGGER = Logger.getLogger(CompositeFontDrawer.class.getName());
         private static final String GET_MODULE_METHOD_NAME = "getModule";
         private static final String IS_OPEN_METHOD_NAME = "isOpen";
         private static final String ADD_OPENS_METHOD_NAME = "addOpens";
@@ -1911,7 +1917,7 @@ public class PdfGraphics2D extends Graphics2D {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "Could not open the font package for reflective access", e);
             }
         }
 
