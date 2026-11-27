@@ -39,6 +39,7 @@ import org.xml.sax.ext.EntityResolver2;
 import org.xml.sax.helpers.XMLFilterImpl;
 
 import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
@@ -64,6 +65,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Patrick Wright
  */
 public class XMLResource extends AbstractResource {
+    private static final String EXTERNAL_GENERAL_ENTITIES = "http://xml.org/sax/features/external-general-entities";
+    private static final String DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
     private static final XMLResourceBuilder XML_RESOURCE_BUILDER = new XMLResourceBuilder();
     private static final AtomicBoolean useConfiguredParser = new AtomicBoolean(true);
 
@@ -161,7 +164,7 @@ public class XMLResource extends AbstractResource {
                             "No value for system property 'org.xml.sax.driver'.");
                 }
                 */
-                xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+                xmlReader = newDefaultXMLReader();
             } catch (Exception ex) {
                 XRLog.general(ex.getMessage());
             }
@@ -169,8 +172,7 @@ public class XMLResource extends AbstractResource {
         if (xmlReader == null) {
             try {
                 XRLog.load(Level.WARNING, "falling back on the default parser");
-                SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-                xmlReader = parser.getXMLReader();
+                xmlReader = newDefaultXMLReader();
             } catch (Exception ex) {
                 XRLog.general(Level.WARNING, ex.getMessage(), ex);
             }
@@ -182,6 +184,39 @@ public class XMLResource extends AbstractResource {
         }
         XRLog.load("SAX XMLReader in use (parser): " + xmlReader.getClass().getName());
         return xmlReader;
+    }
+
+    /**
+     * Creates the JDK default reader, which is only used when no HTML parser can be loaded. Unlike the HTML
+     * parser it would process document type declarations, so it refuses a document that has one. It is also
+     * configured not to read external general entities and not to open external DTDs.
+     */
+    static XMLReader newDefaultXMLReader() throws ParserConfigurationException, SAXException {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setFeature(DISALLOW_DOCTYPE_DECL, true);
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        factory.setXIncludeAware(false);
+        setOptionalFeature(factory, EXTERNAL_GENERAL_ENTITIES);
+        SAXParser parser = factory.newSAXParser();
+        setOptionalProperty(parser, XMLConstants.ACCESS_EXTERNAL_DTD);
+        setOptionalProperty(parser, XMLConstants.ACCESS_EXTERNAL_SCHEMA);
+        return parser.getXMLReader();
+    }
+
+    private static void setOptionalFeature(SAXParserFactory factory, String feature) {
+        try {
+            factory.setFeature(feature, false);
+        } catch (ParserConfigurationException | SAXException e) {
+            XRLog.load(Level.WARNING, "SAX parser does not support the feature " + feature, e);
+        }
+    }
+
+    private static void setOptionalProperty(SAXParser parser, String property) {
+        try {
+            parser.setProperty(property, "");
+        } catch (SAXException e) {
+            XRLog.load(Level.WARNING, "SAX parser does not support the property " + property, e);
+        }
     }
 
     private static class XMLResourceBuilder {

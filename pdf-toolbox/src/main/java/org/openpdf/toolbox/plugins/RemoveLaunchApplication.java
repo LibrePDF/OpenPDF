@@ -36,6 +36,8 @@ package org.openpdf.toolbox.plugins;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import org.openpdf.text.pdf.PRIndirectReference;
 import org.openpdf.text.pdf.PdfDictionary;
@@ -56,6 +58,8 @@ import org.openpdf.toolbox.arguments.filters.PdfFilter;
  */
 public class RemoveLaunchApplication
         extends AbstractTool {
+
+    private static final Logger LOGGER = Logger.getLogger(RemoveLaunchApplication.class.getName());
 
     static {
         addVersion(
@@ -152,7 +156,7 @@ public class RemoveLaunchApplication
             PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(dest));
             stamper.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not remove the launch application actions", e);
         }
     }
 

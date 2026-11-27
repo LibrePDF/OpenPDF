@@ -81,10 +81,7 @@ public class ImgRaw extends Image {
     public ImgRaw(int width, int height, int components, int bpc, byte[] data) throws BadElementException {
         super((URL) null);
         type = IMGRAW;
-        scaledHeight = height;
-        setTop(scaledHeight);
-        scaledWidth = width;
-        setRight(scaledWidth);
+        setDimensions(width, height);
         if (components != 1 && components != 3 && components != 4) {
             throw new BadElementException(MessageLocalization.getComposedMessage("components.must.be.1.3.or.4"));
         }

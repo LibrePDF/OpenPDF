@@ -69,6 +69,19 @@ import java.util.Map;
 class TrueTypeFont extends BaseFont {
 
     /**
+     * The highest Unicode code point, the upper limit for the character codes of a 'cmap' format 12 group.
+     */
+    private static final int MAX_CODE_POINT = 0x10FFFF;
+    /**
+     * The maximum number of mappings accepted in one 'cmap' format 12 subtable.
+     */
+    private static final int MAX_FORMAT12_MAPPINGS = MAX_CODE_POINT + 1;
+    /**
+     * The size in bytes of one group of a 'cmap' format 12 subtable.
+     */
+    private static final int FORMAT12_GROUP_SIZE = 12;
+
+    /**
      * The code pages possible for a True Type font.
      */
     static final String[] codePages = {
@@ -365,6 +378,7 @@ class TrueTypeFont extends BaseFont {
         rf.seek(table_location[0] + 16);
         head.flags = rf.readUnsignedShort();
         head.unitsPerEm = rf.readUnsignedShort();
+        checkUnitsPerEm();
         rf.skipBytes(16);
         head.xMin = rf.readShort();
         head.yMin = rf.readShort();
@@ -516,7 +530,7 @@ class TrueTypeFont extends BaseFont {
             int length = rf.readUnsignedShort();
             int offset = rf.readUnsignedShort();
             if (nameID == id) {
-                int pos = rf.getFilePointer();
+                long pos = rf.getFilePointer();
                 rf.seek(table_location[0] + startOfStorage + offset);
                 String name;
                 if (platformID == 0 || platformID == 3 || (platformID == 2 && platformEncodingID == 1)) {
@@ -559,7 +573,7 @@ class TrueTypeFont extends BaseFont {
             int nameID = rf.readUnsignedShort();
             int length = rf.readUnsignedShort();
             int offset = rf.readUnsignedShort();
-            int pos = rf.getFilePointer();
+            long pos = rf.getFilePointer();
             rf.seek(table_location[0] + startOfStorage + offset);
             String name;
             if (platformID == 0 || platformID == 3 || (platformID == 2 && platformEncodingID == 1)) {
@@ -743,6 +757,7 @@ class TrueTypeFont extends BaseFont {
         if (tableLocation == null) {
             return;
         }
+        checkTableLocation("loca", tableLocation[0], tableLocation[1], rf.length(), fileName + style);
         rf.seek(tableLocation[0]);
         int[] locaTable;
         if (locaShortTable) {
@@ -764,7 +779,7 @@ class TrueTypeFont extends BaseFont {
                     MessageLocalization.getComposedMessage("table.1.does.not.exist.in.2", "glyf", fileName + style));
         }
         int tableGlyphOffset = tableLocation[0];
-        bboxes = new int[locaTable.length - 1][];
+        bboxes = new int[Math.max(locaTable.length - 1, 0)][];
         for (int glyph = 0; glyph < locaTable.length - 1; ++glyph) {
             int start = locaTable[glyph];
             if (start != locaTable[glyph + 1]) {
@@ -950,10 +965,13 @@ class TrueTypeFont extends BaseFont {
         rf.readInt();
         rf.skipBytes(4);
         int nGroups = rf.readInt();
+        checkFormat12GroupCount(nGroups, remainingTableLength("cmap"));
+        long mappings = 0;
         for (int k = 0; k < nGroups; k++) {
             int startCharCode = rf.readInt();
             int endCharCode = rf.readInt();
             int startGlyphID = rf.readInt();
+            mappings = addFormat12Group(mappings, startCharCode, endCharCode, startGlyphID);
             for (int i = startCharCode; i <= endCharCode; i++) {
                 int[] r = new int[2];
                 r[0] = startGlyphID;
@@ -963,6 +981,83 @@ class TrueTypeFont extends BaseFont {
             }
         }
         return h;
+    }
+
+    /**
+     * Checks the number of groups of a 'cmap' format 12 subtable against the data that is left for them.
+     *
+     * @param nGroups   the number of groups read from the subtable
+     * @param remaining the number of bytes left in the table
+     * @throws IOException the groups do not fit in the table
+     */
+    static void checkFormat12GroupCount(int nGroups, long remaining) throws IOException {
+        if (nGroups < 0 || (long) nGroups * FORMAT12_GROUP_SIZE > remaining) {
+            throw new IOException("Invalid cmap format 12 nGroups: " + nGroups);
+        }
+    }
+
+    /**
+     * Checks one group of a 'cmap' format 12 subtable and adds its size to the number of mappings read so far.
+     *
+     * @param mappings      the number of mappings in the groups read before this one
+     * @param startCharCode the first character code of the group
+     * @param endCharCode   the last character code of the group
+     * @param startGlyphID  the glyph of the first character code
+     * @return the number of mappings including this group
+     * @throws IOException the group is invalid or the subtable has too many mappings
+     */
+    static long addFormat12Group(long mappings, int startCharCode, int endCharCode, int startGlyphID)
+            throws IOException {
+        if (startCharCode < 0 || startCharCode > endCharCode || endCharCode > MAX_CODE_POINT || startGlyphID < 0) {
+            throw new IOException("Invalid cmap format 12 group: " + startCharCode + " to " + endCharCode
+                    + ", glyph " + startGlyphID);
+        }
+        long total = mappings + (endCharCode - startCharCode) + 1;
+        if (total > MAX_FORMAT12_MAPPINGS) {
+            throw new IOException("Too many mappings in cmap format 12: " + total);
+        }
+        return total;
+    }
+
+    /**
+     * Gets the number of bytes between the current position and the end of a table, or the end of the file when
+     * the table ends after it.
+     *
+     * @param table the name of the table that is being read
+     * @return the number of bytes left
+     * @throws IOException the font file could not be read
+     */
+    private long remainingTableLength(String table) throws IOException {
+        long end = rf.length();
+        int[] tableLocation = tables == null ? null : tables.get(table);
+        if (tableLocation != null && tableLocation[1] >= 0) {
+            end = Math.min(end, (long) tableLocation[0] + tableLocation[1]);
+        }
+        return Math.max(end - rf.getFilePointer(), 0);
+    }
+
+    /**
+     * Checks that a table lies inside the font file, so that its length can be used to size arrays.
+     *
+     * @param table      the name of the table
+     * @param offset     the offset of the table from the start of the file
+     * @param length     the length of the table
+     * @param fileLength the length of the font file
+     * @param fontName   the name of the font, for the message
+     * @throws DocumentException the table is not inside the file
+     */
+    static void checkTableLocation(String table, int offset, int length, long fileLength, String fontName)
+            throws DocumentException {
+        if (offset < 0 || length < 0 || (long) offset + length > fileLength) {
+            throw new DocumentException("The table '" + table + "' is outside the font file " + fontName + ".");
+        }
+    }
+
+    private void checkUnitsPerEm() throws DocumentException {
+        if (head.unitsPerEm == 0) {
+            throw new DocumentException("The unitsPerEm value in the table 'head' of " + fileName + style
+                    + " must not be 0.");
+        }
     }
 
     /**
@@ -1142,11 +1237,12 @@ class TrueTypeFont extends BaseFont {
         dic.put(PdfName.ASCENT, new PdfNumber(os_2.sTypoAscender * 1000 / head.unitsPerEm));
         dic.put(PdfName.CAPHEIGHT, new PdfNumber(os_2.sCapHeight * 1000 / head.unitsPerEm));
         dic.put(PdfName.DESCENT, new PdfNumber(os_2.sTypoDescender * 1000 / head.unitsPerEm));
-        dic.put(PdfName.FONTBBOX, new PdfRectangle(
-                head.xMin * 1000 / head.unitsPerEm,
-                head.yMin * 1000 / head.unitsPerEm,
-                head.xMax * 1000 / head.unitsPerEm,
-                head.yMax * 1000 / head.unitsPerEm));
+        // the bounding box values are intentionally truncated to integers
+        int llx = head.xMin * 1000 / head.unitsPerEm;
+        int lly = head.yMin * 1000 / head.unitsPerEm;
+        int urx = head.xMax * 1000 / head.unitsPerEm;
+        int ury = head.yMax * 1000 / head.unitsPerEm;
+        dic.put(PdfName.FONTBBOX, new PdfRectangle((float) llx, (float) lly, (float) urx, (float) ury));
         if (cidset != null) {
             dic.put(PdfName.CIDSET, cidset);
         }
@@ -1257,7 +1353,7 @@ class TrueTypeFont extends BaseFont {
         try {
             rf2 = new RandomAccessFileOrArray(rf);
             rf2.reOpen();
-            byte[] b = new byte[rf2.length()];
+            byte[] b = new byte[(int) rf2.length()];
             rf2.readFully(b);
             return b;
         } finally {
@@ -1459,8 +1555,11 @@ class TrueTypeFont extends BaseFont {
                 return fontSize * hhea.LineGap / head.unitsPerEm;
             case AWT_MAXADVANCE:
                 return fontSize * hhea.advanceWidthMax / head.unitsPerEm;
-            case UNDERLINE_POSITION:
-                return (underlinePosition - underlineThickness / 2) * fontSize / head.unitsPerEm;
+            case UNDERLINE_POSITION: {
+                // half of the thickness is intentionally truncated to an integer
+                int halfThickness = underlineThickness / 2;
+                return (underlinePosition - halfThickness) * fontSize / head.unitsPerEm;
+            }
             case UNDERLINE_THICKNESS:
                 return underlineThickness * fontSize / head.unitsPerEm;
             case STRIKETHROUGH_POSITION:

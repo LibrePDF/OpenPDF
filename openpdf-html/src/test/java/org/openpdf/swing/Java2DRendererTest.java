@@ -1,5 +1,7 @@
 package org.openpdf.swing;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
@@ -10,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 
 import static java.awt.Color.RED;
@@ -19,6 +23,7 @@ import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR_PRE;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB_PRE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class Java2DRendererTest {
   private static final Logger log = LoggerFactory.getLogger(Java2DRendererTest.class);
@@ -39,6 +44,33 @@ class Java2DRendererTest {
 
     assertEquals(RED.getRGB(), htmlAsImage.getRGB(75, 25));
     assertEquals(WHITE.getRGB(), htmlAsImage.getRGB(25, 25));
+  }
+
+  @Test
+  void convertHtmlToImageWithXhtmlDoctype() throws Exception {
+    String html = """
+            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+              "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+            <html xmlns="http://www.w3.org/1999/xhtml"><head><title>t</title></head><body>
+            <div style="width: 100px; height: 50px; background-color: red">&nbsp;</div></body></html>""";
+
+    BufferedImage htmlAsImage = Java2DRenderer.htmlAsImage(html, 100);
+
+    assertEquals(RED.getRGB(), htmlAsImage.getRGB(50, 25));
+  }
+
+  @Test
+  void convertHtmlToImageDoesNotReadExternalEntity(@TempDir Path tempDir) throws Exception {
+    Path file = tempDir.resolve("entity.txt");
+    Files.writeString(file, "<div style=\"width: 100px; height: 50px; background-color: red\">x</div>");
+    String html = """
+            <!DOCTYPE html [<!ENTITY x SYSTEM "%s">]>
+            <html><body style="margin: 0">&x;<div style="height: 50px">text</div></body></html>"""
+            .formatted(file.toUri());
+
+    BufferedImage htmlAsImage = Java2DRenderer.htmlAsImage(html, 100);
+
+    assertNotEquals(RED.getRGB(), htmlAsImage.getRGB(50, 25));
   }
 
   private static BufferedImage create2PixelImage(int imageType) {

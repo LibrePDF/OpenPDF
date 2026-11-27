@@ -50,6 +50,7 @@ package org.openpdf.text.pdf;
 
 import org.openpdf.text.BadElementException;
 import org.openpdf.text.Image;
+import org.openpdf.text.error_messages.MessageLocalization;
 import org.openpdf.text.pdf.codec.CCITTG4Encoder;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -722,9 +723,13 @@ public class BarcodeDatamatrix {
      * <CODE>DM_ERROR_TEXT_TOO_BIG</CODE> - the text is too big for the symbology capabilities.<br>
      * <CODE>DM_ERROR_INVALID_SQUARE</CODE> - the dimensions given for the symbol are illegal.<br>
      * <CODE>DM_ERROR_EXTENSION</CODE> - an error was while parsing an extension.
-     * @throws java.io.UnsupportedEncodingException on error
+     * @throws java.io.UnsupportedEncodingException if the text contains characters that cannot be encoded with ISO-8859-1
      */
     public int generate(String text) throws UnsupportedEncodingException {
+        if (!StandardCharsets.ISO_8859_1.newEncoder().canEncode(text)) {
+            throw new UnsupportedEncodingException(
+                    MessageLocalization.getComposedMessage("the.text.1.cannot.be.encoded.with.iso-8859-1", text));
+        }
         byte[] t = text.getBytes(StandardCharsets.ISO_8859_1);
         return generate(t, 0, t.length);
     }

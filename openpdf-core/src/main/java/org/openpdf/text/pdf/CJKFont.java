@@ -231,6 +231,9 @@ class CJKFont extends BaseFont {
         try {
             name = name + ".cmap";
             InputStream is = getResourceStream(RESOURCE_PATH + name);
+            if (is == null) {
+                return null;
+            }
             char[] c = new char[0x10000];
             for (int k = 0; k < 0x10000; ++k) {
                 c[k] = (char) ((is.read() << 8) + is.read());
@@ -413,6 +416,9 @@ class CJKFont extends BaseFont {
         try {
             name += ".properties";
             InputStream is = getResourceStream(RESOURCE_PATH + name);
+            if (is == null) {
+                return null;
+            }
             Properties p = new Properties();
             p.load(is);
             is.close();
@@ -560,6 +566,9 @@ class CJKFont extends BaseFont {
     @Override
     void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params)
             throws DocumentException, IOException {
+        if (params == null || params.length == 0) {
+            throw new DocumentException("The CJK tags are required to write a CJK font.");
+        }
         IntHashtable cjkTag = (IntHashtable) params[0];
         PdfIndirectReference ind_font = null;
         PdfObject pobj = null;

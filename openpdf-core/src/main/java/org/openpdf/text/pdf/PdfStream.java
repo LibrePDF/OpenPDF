@@ -247,10 +247,9 @@ public class PdfStream extends PdfDictionary {
                         "stream.could.not.be.compressed.filter.is.not.a.name.or.array"));
             }
         }
-        try {
+        try (Deflater deflater = new Deflater(compressionLevel)) {
             // compress
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            Deflater deflater = new Deflater(compressionLevel);
             DeflaterOutputStream zip = new DeflaterOutputStream(stream, deflater);
             if (streamBytes != null) {
                 streamBytes.writeTo(zip);
@@ -258,7 +257,6 @@ public class PdfStream extends PdfDictionary {
                 zip.write(bytes);
             }
             zip.close();
-            deflater.end();
             // update the object
             streamBytes = stream;
             bytes = null;
@@ -332,24 +330,24 @@ public class PdfStream extends PdfDictionary {
             if (crypto != null && !crypto.isEmbeddedFilesOnly()) {
                 fout = ose = crypto.getEncryptionStream(fout);
             }
-            Deflater deflater = null;
-            if (compressed) {
-                deflater = new Deflater(compressionLevel);
-                fout = def = new DeflaterOutputStream(fout, deflater, 0x8000);
-            }
-
-            byte[] buf = new byte[4192];
-            while (true) {
-                int n = inputStream.read(buf);
-                if (n <= 0) {
-                    break;
+            // the deflater is released when the block is left, also when reading or writing fails
+            try (Deflater deflater = compressed ? new Deflater(compressionLevel) : null) {
+                if (deflater != null) {
+                    fout = def = new DeflaterOutputStream(fout, deflater, 0x8000);
                 }
-                fout.write(buf, 0, n);
-                rawLength += n;
-            }
-            if (def != null) {
-                def.finish();
-                deflater.end();
+
+                byte[] buf = new byte[4192];
+                while (true) {
+                    int n = inputStream.read(buf);
+                    if (n <= 0) {
+                        break;
+                    }
+                    fout.write(buf, 0, n);
+                    rawLength += n;
+                }
+                if (def != null) {
+                    def.finish();
+                }
             }
             if (ose != null) {
                 ose.finish();

@@ -70,6 +70,11 @@ import org.openpdf.renderer.PDFParseException;
  */
 public class FunctionType3 extends PDFFunction {
     
+    /** how deeply stitching functions may be nested in each other */
+    private static final int MAX_NESTING = 32;
+    /** the number of stitching functions that the current thread is reading */
+    private static final ThreadLocal<Integer> NESTING = ThreadLocal.withInitial(() -> 0);
+
     private PDFFunction[] functions;
     private float[] bounds;
     private float[] encode;
@@ -77,6 +82,28 @@ public class FunctionType3 extends PDFFunction {
     /** Creates a new instance of FunctionType3 */
     protected FunctionType3() {
         super(TYPE_3);
+    }
+
+    /**
+     * Read one of the functions that this function is made of, unless the
+     * functions are nested deeper than the limit, like a function that is
+     * one of its own parts.
+     */
+    private static PDFFunction getSubFunction(PDFObject obj) throws IOException {
+        int depth = NESTING.get();
+        if (depth >= MAX_NESTING) {
+            throw new PDFParseException("Stitching functions are nested too deeply");
+        }
+        NESTING.set(depth + 1);
+        try {
+            return PDFFunction.getFunction(obj);
+        } finally {
+            if (depth == 0) {
+                NESTING.remove();
+            } else {
+                NESTING.set(depth);
+            }
+        }
     }
 
     /**
@@ -114,7 +141,7 @@ public class FunctionType3 extends PDFFunction {
         PDFObject[] functionsAry = functionsObj.getArray();
         functions = new PDFFunction[functionsAry.length];
         for (int i = 0; i < functionsAry.length; i++) {
-            functions[i] = PDFFunction.getFunction(functionsAry[i]);
+            functions[i] = getSubFunction(functionsAry[i]);
         }
         
         // read the Bounds array (required)

@@ -58,6 +58,7 @@ import org.openpdf.text.pdf.PdfContentByte;
 import java.awt.Color;
 import java.awt.Point;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -135,6 +136,8 @@ public class MetaDo {
     public static final int META_CREATEBRUSHINDIRECT = 0x02FC;
     public static final int META_CREATEREGION = 0x06FF;
 
+    private static final long BYTES_PER_POINT = 4;
+
     public PdfContentByte cb;
     public InputMeta in;
     int left;
@@ -143,6 +146,10 @@ public class MetaDo {
     int bottom;
     int inch;
     MetaState state = new MetaState();
+    /**
+     * The position in the input, as counted by {@link InputMeta#getLength()}, where the current record ends.
+     */
+    private long recordEnd;
 
     public MetaDo(InputStream in, PdfContentByte cb) {
         this.cb = cb;
@@ -257,6 +264,7 @@ public class MetaDo {
         right = in.readShort();
         bottom = in.readShort();
         inch = in.readWord();
+        checkInch();
         state.setScalingX((float) (right - left) / (float) inch * 72f);
         state.setScalingY((float) (bottom - top) / (float) inch * 72f);
         state.setOffsetWx(left);
@@ -273,10 +281,11 @@ public class MetaDo {
         cb.setLineJoin(1);
         for (; ; ) {
             int lenMarker = in.getLength();
-            tsize = in.readInt();
+            tsize = readRecordSize();
             if (tsize < 3) {
                 break;
             }
+            recordEnd = lenMarker + 2L * tsize;
             function = in.readWord();
             switch (function) {
                 case 0:
@@ -348,7 +357,7 @@ public class MetaDo {
                 }
                 case META_POLYLINE: {
                     state.setLineJoinPolygon(cb);
-                    int len = in.readWord();
+                    int len = readPointCount();
                     int x = in.readShort();
                     int y = in.readShort();
                     cb.moveTo(state.transformX(x), state.transformY(y));
@@ -364,7 +373,7 @@ public class MetaDo {
                     if (isNullStrokeFill(false)) {
                         break;
                     }
-                    int len = in.readWord();
+                    int len = readPointCount();
                     int sx = in.readShort();
                     int sy = in.readShort();
                     cb.moveTo(state.transformX(sx), state.transformY(sy));
@@ -382,10 +391,12 @@ public class MetaDo {
                         break;
                     }
                     int numPoly = in.readWord();
+                    checkRecordBytes(numPoly * 2L);
                     int[] lens = new int[numPoly];
                     for (int k = 0; k < lens.length; ++k) {
                         lens[k] = in.readWord();
                     }
+                    checkPointCounts(lens);
                     for (int len : lens) {
                         int sx = in.readShort();
                         int sy = in.readShort();
@@ -634,6 +645,55 @@ public class MetaDo {
             in.skip((tsize * 2) - (in.getLength() - lenMarker));
         }
         state.cleanup(cb);
+    }
+
+    private void checkInch() throws DocumentException {
+        if (inch == 0) {
+            throw new DocumentException("The number of units per inch of a Windows Metafile must not be 0.");
+        }
+    }
+
+    /**
+     * Reads the size of the next record. Data that ends where a record would start is taken as the end of the
+     * image, like an end of file record.
+     */
+    private int readRecordSize() throws IOException {
+        try {
+            return in.readInt();
+        } catch (EOFException e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Checks that a number of bytes is still left in the current record.
+     */
+    private void checkRecordBytes(long needed) throws DocumentException {
+        if (needed > recordEnd - in.getLength()) {
+            throw new DocumentException("A Windows Metafile record is too short for the data it declares.");
+        }
+    }
+
+    /**
+     * Reads the number of points of a polygon or polyline and checks that the points are in the record. At least
+     * one point is always read; every point is 2 words.
+     */
+    private int readPointCount() throws IOException, DocumentException {
+        int count = in.readWord();
+        checkRecordBytes(pointBytes(count));
+        return count;
+    }
+
+    private void checkPointCounts(int[] counts) throws DocumentException {
+        long needed = 0;
+        for (int count : counts) {
+            needed += pointBytes(count);
+        }
+        checkRecordBytes(needed);
+    }
+
+    private static long pointBytes(int count) {
+        return Math.max(count, 1) * BYTES_PER_POINT;
     }
 
     public void outputText(int x, int y, int flag, int x1, int y1, int x2, int y2, String text) {

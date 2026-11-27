@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import org.openpdf.text.pdf.PRStream;
 import org.openpdf.text.pdf.PdfArray;
@@ -60,6 +62,8 @@ import org.openpdf.toolbox.swing.PdfInformationPanel;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class ExtractAttachments extends AbstractTool {
+
+    private static final Logger LOGGER = Logger.getLogger(ExtractAttachments.class.getName());
 
     static {
         addVersion("$Id: ExtractAttachments.java 3712 2009-02-20 20:11:31Z xlv $");
@@ -191,7 +195,7 @@ public class ExtractAttachments extends AbstractTool {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not extract the attachments", e);
         }
     }
 
