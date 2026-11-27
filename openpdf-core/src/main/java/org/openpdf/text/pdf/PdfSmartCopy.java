@@ -150,9 +150,9 @@ public class PdfSmartCopy extends PdfCopy {
         private final int MAX_LEVELS = 100;
         private byte[] b;
         private int hash;
-        private MessageDigest md5;
 
         ByteStore(PRStream str) throws IOException {
+            MessageDigest md5;
             try {
                 md5 = MessageDigest.getInstance("MD5");
             } catch (Exception e) {
@@ -160,12 +160,11 @@ public class PdfSmartCopy extends PdfCopy {
             }
             ByteBuffer bb = new ByteBuffer();
             int level = MAX_LEVELS;
-            serObject(str, level, bb);
+            serObject(str, level, bb, md5);
             this.b = bb.toByteArray();
-            md5 = null;
         }
 
-        private void serObject(PdfObject obj, int level, ByteBuffer bb) throws IOException {
+        private void serObject(PdfObject obj, int level, ByteBuffer bb, MessageDigest md5) throws IOException {
             if (level <= 0) {
                 throw new IOException("Max level reached");
             }
@@ -176,13 +175,13 @@ public class PdfSmartCopy extends PdfCopy {
             obj = PdfReader.getPdfObject(obj);
             if (obj.isStream()) {
                 bb.append("$B");
-                serDic((PdfDictionary) obj, level - 1, bb);
+                serDic((PdfDictionary) obj, level - 1, bb, md5);
                 md5.reset();
                 bb.append(md5.digest(PdfReader.getStreamBytesRaw((PRStream) obj)));
             } else if (obj.isDictionary()) {
-                serDic((PdfDictionary) obj, level - 1, bb);
+                serDic((PdfDictionary) obj, level - 1, bb, md5);
             } else if (obj.isArray()) {
-                serArray((PdfArray) obj, level - 1, bb);
+                serArray((PdfArray) obj, level - 1, bb, md5);
             } else if (obj.isString()) {
                 bb.append("$S").append(obj.toString());
             } else if (obj.isName()) {
@@ -192,7 +191,7 @@ public class PdfSmartCopy extends PdfCopy {
             }
         }
 
-        private void serDic(PdfDictionary dic, int level, ByteBuffer bb) throws IOException {
+        private void serDic(PdfDictionary dic, int level, ByteBuffer bb, MessageDigest md5) throws IOException {
             bb.append("$D");
             if (level <= 0) {
                 throw new IOException("Max level reached");
@@ -200,18 +199,18 @@ public class PdfSmartCopy extends PdfCopy {
             Object[] keys = dic.getKeys().toArray();
             Arrays.sort(keys);
             for (Object key : keys) {
-                serObject((PdfObject) key, level, bb);
-                serObject(dic.get((PdfName) key), level, bb);
+                serObject((PdfObject) key, level, bb, md5);
+                serObject(dic.get((PdfName) key), level, bb, md5);
             }
         }
 
-        private void serArray(PdfArray array, int level, ByteBuffer bb) throws IOException {
+        private void serArray(PdfArray array, int level, ByteBuffer bb, MessageDigest md5) throws IOException {
             bb.append("$A");
             if (level <= 0) {
                 throw new IOException("Max level reached");
             }
             for (int k = 0; k < array.size(); ++k) {
-                serObject(array.getPdfObject(k), level, bb);
+                serObject(array.getPdfObject(k), level, bb, md5);
             }
         }
 
