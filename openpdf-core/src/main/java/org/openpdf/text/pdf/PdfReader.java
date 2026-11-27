@@ -603,10 +603,15 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (predictor == 2) {
             return decodeTiffPredictor(in, width, colors, bpc);
         }
+        long rowBytes = pngPredictorRowBytes(width, colors, bpc);
+        if (rowBytes >= in.length) {
+            // the input does not hold a filter type byte and a complete row: there is nothing to decode
+            return new byte[0];
+        }
         DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(in));
         ByteArrayOutputStream fout = new ByteArrayOutputStream(in.length);
-        int bytesPerPixel = (colors * bpc + 7) / 8;
-        int bytesPerRow = (colors * width * bpc + 7) / 8;
+        int bytesPerPixel = (int) (((long) colors * bpc + 7) / 8);
+        int bytesPerRow = (int) rowBytes;
         byte[] curr = new byte[bytesPerRow];
         byte[] prior = new byte[bytesPerRow];
 
@@ -688,6 +693,27 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             prior = curr;
             curr = tmp;
         }
+    }
+
+    /**
+     * Validates the parameters of a PNG predictor and works out the length of a row.
+     *
+     * @param columns the number of samples in a row, per colour component
+     * @param colors  the number of colour components per sample
+     * @param bits    the number of bits per colour component
+     * @return the number of bytes in a row, not counting the filter type byte; {@link Long#MAX_VALUE} if a row is
+     *         longer than any input can be
+     * @throws IllegalArgumentException if a parameter is not valid
+     */
+    private static long pngPredictorRowBytes(int columns, int colors, int bits) {
+        if (columns < 1 || colors < 1 || (bits != 1 && bits != 2 && bits != 4 && bits != 8 && bits != 16)) {
+            throw new IllegalArgumentException("Invalid PNG predictor parameters");
+        }
+        long samples = (long) columns * colors;
+        if (samples > Integer.MAX_VALUE) {
+            return Long.MAX_VALUE;
+        }
+        return (samples * bits + 7) / 8;
     }
 
     private static byte[] decodeTiffPredictor(byte[] input, int columns, int colors, int bits) {
