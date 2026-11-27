@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -40,7 +39,7 @@ class DocumentFontNameTest {
 
     @BeforeEach
     void startServer() throws IOException {
-        server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
+        server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext("/", exchange -> {
             requests.incrementAndGet();
             exchange.sendResponseHeaders(404, -1);
