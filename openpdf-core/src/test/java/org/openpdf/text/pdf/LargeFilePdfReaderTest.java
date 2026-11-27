@@ -36,6 +36,15 @@ class LargeFilePdfReaderTest {
 
     @Test
     void filePointerAndLengthBeyond2GB() throws Exception {
+        assertFilePointerAndLengthBeyond2GB(true);
+    }
+
+    @Test
+    void filePointerAndLengthBeyond2GBWithMappedFile() throws Exception {
+        assertFilePointerAndLengthBeyond2GB(false);
+    }
+
+    private void assertFilePointerAndLengthBeyond2GB(boolean plainRandomAccess) throws Exception {
         Path file = tempDir.resolve("large-raw.bin");
         long length = BASE + 16;
         try (SeekableByteChannel ch = open(file)) {
@@ -44,7 +53,7 @@ class LargeFilePdfReaderTest {
         }
         assumeSparse(file);
 
-        RandomAccessFileOrArray raf = new RandomAccessFileOrArray(file.toString(), false, true);
+        RandomAccessFileOrArray raf = new RandomAccessFileOrArray(file.toString(), false, plainRandomAccess);
         try {
             assertEquals(length, raf.length(), "length() must not overflow for files > 2 GB");
             raf.seek(length - 1);
@@ -58,6 +67,16 @@ class LargeFilePdfReaderTest {
 
     @Test
     void readPdfLargerThan2GB() throws Exception {
+        // Partial-read path, plain random access — the combination reported in the issue.
+        assertReadPdfLargerThan2GB(true);
+    }
+
+    @Test
+    void readPdfLargerThan2GBWithMappedFile() throws Exception {
+        assertReadPdfLargerThan2GB(false);
+    }
+
+    private void assertReadPdfLargerThan2GB(boolean plainRandomAccess) throws Exception {
         Path file = tempDir.resolve("large.pdf");
 
         String obj1 = "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
@@ -81,8 +100,8 @@ class LargeFilePdfReaderTest {
         }
         assumeSparse(file);
 
-        // Partial-read path, plain random access — the combination reported in the issue.
-        PdfReader reader = new PdfReader(new RandomAccessFileOrArray(file.toString(), false, true), new byte[0]);
+        PdfReader reader = new PdfReader(
+                new RandomAccessFileOrArray(file.toString(), false, plainRandomAccess), new byte[0]);
         try {
             assertEquals(1, reader.getNumberOfPages(), "Page count of a > 2 GB PDF");
             assertEquals(612, (int) reader.getPageSize(1).getWidth(), "Page width of a > 2 GB PDF");

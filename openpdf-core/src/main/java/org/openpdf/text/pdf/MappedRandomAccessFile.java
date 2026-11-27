@@ -89,6 +89,9 @@ public class MappedRandomAccessFile implements AutoCloseable {
 
     /**
      * initializes the channel and mapped bytebuffer
+     * <p>
+     * The file is not loaded into memory here. The operating system reads the pages that are accessed, so that
+     * opening a large file is cheap and only the parts that are read use memory.
      *
      * @param channel FileChannel
      * @param mapMode FileChannel.MapMode
@@ -100,7 +103,6 @@ public class MappedRandomAccessFile implements AutoCloseable {
         this.channel = channel;
         try {
             this.mappedByteBuffer = new LongMappedByteBuffer(channel, mapMode);
-            mappedByteBuffer.load();
         } catch (IOException | RuntimeException e) {
             // don't leak the file handle (and the mapping) if the file cannot be mapped
             try {
