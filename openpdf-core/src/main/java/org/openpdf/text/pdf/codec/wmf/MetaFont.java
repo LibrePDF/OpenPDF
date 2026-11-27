@@ -135,8 +135,9 @@ public class MetaFont extends MetaObject {
         if (font != null) {
             return font;
         }
-        Font ff2 = FontFactory.getFont(faceName, BaseFont.CP1252, true, 10,
-                ((italic != 0) ? Font.ITALIC : 0) | ((bold != 0) ? Font.BOLD : 0));
+        // the face name comes from the image, so it is only looked up as a font name, never as a file or URL
+        Font ff2 = FontFactory.getFontImp().getRegisteredFont(faceName, BaseFont.CP1252, true, 10,
+                ((italic != 0) ? Font.ITALIC : 0) | ((bold != 0) ? Font.BOLD : 0), null);
         font = ff2.getBaseFont();
         if (font != null) {
             return font;

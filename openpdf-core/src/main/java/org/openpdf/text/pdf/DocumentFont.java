@@ -57,6 +57,10 @@ import java.util.Objects;
  */
 public class DocumentFont extends BaseFont {
 
+    /**
+     * The largest CID of a Type0 font.
+     */
+    private static final int MAX_CID = 0xFFFF;
     private static final int[] stdEnc = {
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -214,12 +218,21 @@ public class DocumentFont extends BaseFont {
             } else {
                 int c2 = ((PdfNumber) obj).intValue();
                 int w = ((PdfNumber) PdfReader.getPdfObjectRelease(ws.getPdfObject(++k))).intValue();
-                for (; c1 <= c2; ++c1) {
-                    hh.put(c1, w);
-                }
+                putWidthRange(hh, c1, c2, w);
             }
         }
         return hh;
+    }
+
+    /**
+     * Stores the width of a range of CIDs. CIDs are two bytes long, so the part of a range that lies outside
+     * 0 to 65535 is ignored, as is a range that ends before it starts.
+     */
+    private static void putWidthRange(IntHashtable widths, int first, int last, int width) {
+        int end = Math.min(last, MAX_CID);
+        for (int cid = Math.max(first, 0); cid <= end; ++cid) {
+            widths.put(cid, width);
+        }
     }
 
     private String decodeString(PdfString ps) {

@@ -334,7 +334,7 @@ public class OcspClientBouncyCastle implements OcspClient {
         if (received != null && (sent == null || !sent.getExtnValue().equals(received.getExtnValue()))) {
             throw new IOException("The nonce of the OCSP response does not match the request");
         }
-        if (!isSignedByIssuerOrDelegate(basicResponse)) {
+        if (!isSignedByIssuerOrDelegate(basicResponse, rootCert)) {
             throw new IOException("The OCSP response is not signed by the issuer of the certificate"
                     + " or by a responder that the issuer authorised");
         }
@@ -344,24 +344,25 @@ public class OcspClientBouncyCastle implements OcspClient {
      * Checks the signature of a response. It has to be made by the issuer of the certificate, or with a certificate
      * that the issuer issued for signing OCSP responses.
      */
-    private boolean isSignedByIssuerOrDelegate(BasicOCSPResp basicResponse)
+    static boolean isSignedByIssuerOrDelegate(BasicOCSPResp basicResponse, X509Certificate issuer)
             throws OCSPException, OperatorCreationException, GeneralSecurityException {
         JcaContentVerifierProviderBuilder verifier = new JcaContentVerifierProviderBuilder();
-        if (basicResponse.isSignatureValid(verifier.build(rootCert))) {
+        if (basicResponse.isSignatureValid(verifier.build(issuer))) {
             return true;
         }
         for (X509CertificateHolder holder : basicResponse.getCerts()) {
             X509Certificate responder = new JcaX509CertificateConverter().getCertificate(holder);
-            if (isAuthorisedResponder(responder) && basicResponse.isSignatureValid(verifier.build(responder))) {
+            if (isAuthorisedResponder(responder, issuer)
+                    && basicResponse.isSignatureValid(verifier.build(responder))) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isAuthorisedResponder(X509Certificate responder) {
+    private static boolean isAuthorisedResponder(X509Certificate responder, X509Certificate issuer) {
         try {
-            responder.verify(rootCert.getPublicKey());
+            responder.verify(issuer.getPublicKey());
             responder.checkValidity();
             List<String> usage = responder.getExtendedKeyUsage();
             return usage != null && usage.contains(OCSP_SIGNING);

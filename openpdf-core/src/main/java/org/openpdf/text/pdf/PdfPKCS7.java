@@ -677,7 +677,11 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Verifies a single certificate.
+     * Verifies a single certificate: that it has no unsupported critical extension, that it is valid at the given
+     * date, and that it is not listed in the given certificate revocation lists.
+     * <p>
+     * The certificate revocation lists are used as they are. Their signatures, issuers and validity are not checked,
+     * so only pass lists from a trusted source, not lists that were embedded in the signature.
      *
      * @param cert     the certificate to verify
      * @param crls     the certificate revocation list or <CODE>null</CODE>
@@ -950,6 +954,11 @@ public class PdfPKCS7 {
     /**
      * Gets the timestamp date
      *
+     * <p>
+     * The date is read from the timestamp token as it is. The signature and the certificate of the timestamp
+     * authority are not verified by this class, so the date is only as trustworthy as the source of the document.
+     * {@link #verifyTimestampImprint()} only checks that the token belongs to this signature.
+     *
      * @return a date
      * @since 2.1.6
      */
@@ -1026,6 +1035,18 @@ public class PdfPKCS7 {
 
     /**
      * Verify the digest.
+     * <p>
+     * This only checks the integrity of the signed bytes: that they were signed with the private key of the
+     * certificate returned by {@link #getSigningCertificate()}. It says nothing about who holds that key. A signature
+     * made with a self-signed certificate verifies as well. To decide whether a signature can be trusted, also
+     * <ul>
+     * <li>verify the signing certificate against trusted certificates, see
+     * {@link #verifyCertificates(Certificate[], KeyStore, Collection, Calendar)},</li>
+     * <li>check that the signature covers the whole document, see
+     * {@link AcroFields#signatureCoversWholeDocument(String)},</li>
+     * <li>check that the digest algorithm, see {@link #getHashAlgorithm()}, is acceptable. Signatures made with MD2,
+     * MD5 or RIPEMD128 are verified by this method, but those algorithms are not collision resistant.</li>
+     * </ul>
      *
      * @return <CODE>true</CODE> if the signature checks out, <CODE>false</CODE>
      * otherwise
@@ -1269,7 +1290,13 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Checks if OCSP revocation refers to the document signing certificate.
+     * Checks the OCSP response that is embedded in the signature: it has to be about the document signing
+     * certificate, state that the certificate is good, and be signed by the issuer of the signing certificate or
+     * by a responder certificate that the issuer issued for OCSP signing.
+     * <p>
+     * The issuer is taken from the certificates of the signature. Whether the issuer can be trusted is a separate
+     * question, see {@link #verifyCertificates(Certificate[], KeyStore, Collection, Calendar)}. The response is not
+     * checked for its age.
      *
      * @return true if it checks false otherwise
      * @since 2.1.6
@@ -1291,13 +1318,19 @@ public class PdfPKCS7 {
             // Felix--------------------------------------------------
             // CertificateID tis = new CertificateID(CertificateID.HASH_SHA1, isscer,
             // sigcer.getSerialNumber());
-            DigestCalculatorProvider digCalcProv = new JcaDigestCalculatorProviderBuilder()
-                    .setProvider(provider).build();
+            JcaDigestCalculatorProviderBuilder digCalcProvBuilder = new JcaDigestCalculatorProviderBuilder();
+            if (provider != null) {
+                // without this check, the default provider (null) made every response invalid
+                digCalcProvBuilder.setProvider(provider);
+            }
+            DigestCalculatorProvider digCalcProv = digCalcProvBuilder.build();
             CertificateID id = new CertificateID(
                     digCalcProv.get(CertificateID.HASH_SHA1),
                     new JcaX509CertificateHolder(isscer), sigcer.getSerialNumber());
 
-            return id.equals(cid);
+            // a response without a status object says that the certificate is good
+            return id.equals(cid) && sr.getCertStatus() == null
+                    && OcspClientBouncyCastle.isSignedByIssuerOrDelegate(basicResp, isscer);
             // ******************************************************************************
         } catch (Exception ignored) {
         }
@@ -1672,6 +1705,9 @@ public class PdfPKCS7 {
 
     /**
      * Getter for property signDate.
+     *
+     * <p>
+     * The date is the one the signer wrote into the signature dictionary. It is not authenticated.
      *
      * @return Value of property signDate.
      */
