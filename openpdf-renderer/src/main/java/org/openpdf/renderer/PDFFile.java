@@ -24,9 +24,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.openpdf.renderer.action.GoToAction;
@@ -108,6 +110,11 @@ public class PDFFile {
      * encryption is expected, and thus the IdentityDecrypter is used.
      */
     private PDFDecrypter defaultDecrypter = IdentityDecrypter.getInstance();
+
+    /** the offsets of the cross reference tables that have been read */
+    private final Set<Integer> xrefTableOffsets = new HashSet<>();
+    /** the offsets of the cross reference streams that have been read */
+    private final Set<Integer> xrefStreamOffsets = new HashSet<>();
 
     /**
      * get a PDFFile from a .pdf file.  The file must me a random access file
@@ -1127,6 +1134,7 @@ public class PDFFile {
 
         // read a bunch of nested trailer tables
         while (true) {
+            checkXrefTableNotRead(this.buf.position());
             // make sure we are looking at an xref table
             if (!nextItemIs("xref")) {
                 this.buf.position(pos);
@@ -1177,6 +1185,7 @@ public class PDFFile {
                 }
 
                 // extend the objIdx table, if necessary
+                checkXrefSubsection(refstart, reflen, this.buf.remaining() / 20);
                 if (refstart + reflen >= this.objIdx.length) {
                     PDFXref[] nobjIdx = new PDFXref[refstart + reflen];
                     System.arraycopy(this.objIdx, 0, nobjIdx, 0, this.objIdx.length);
@@ -1250,7 +1259,7 @@ public class PDFFile {
             PDFObject xrefstmPos = trailerdict.getDictRef("XRefStm");
             if (xrefstmPos != null) {
                 int pos14 = this.buf.position(); 
-                this.buf.position(xrefstmPos.getIntValue());
+                seekXref(xrefstmPos.getIntValue());
                 readTrailer15(password);
                 this.buf.position(pos14);
             }
@@ -1258,7 +1267,7 @@ public class PDFFile {
             // read the location of the previous xref table
             PDFObject prevloc = trailerdict.getDictRef("Prev");
             if (prevloc != null) {
-                this.buf.position(prevloc.getIntValue());
+                seekXref(prevloc.getIntValue());
             } else {
                 break;
             }
@@ -1315,6 +1324,10 @@ public class PDFFile {
         PDFDecrypter newDefaultDecrypter = null;
         
         while (true) {
+            if (!this.xrefStreamOffsets.add(this.buf.position())) {
+                // this cross reference stream has been read already
+                break;
+            }
             PDFObject xrefObj = readObject(-1, -1, IdentityDecrypter.getInstance());
             if (xrefObj == null) {
                 break;
@@ -1357,6 +1370,7 @@ public class PDFFile {
                 int reflen = idxArray[idxPos++];
 
                 // extend the objIdx table, if necessary
+                checkXrefSubsection(refstart, reflen, xrefStreamEntries(strmbuf.length - strmPos, l1, l2, l3));
                 if (refstart + reflen >= this.objIdx.length) {
                     PDFXref[] nobjIdx = new PDFXref[refstart + reflen];
                     System.arraycopy(this.objIdx, 0, nobjIdx, 0, this.objIdx.length);
@@ -1429,7 +1443,7 @@ public class PDFFile {
             // read the location of the previous xref table
             PDFObject prevloc = trailerdict.get("Prev");
             if (prevloc != null) {
-                this.buf.position(prevloc.getIntValue());
+                seekXref(prevloc.getIntValue());
             } else {
                 break;
             }
@@ -1463,6 +1477,69 @@ public class PDFFile {
 
         // dereference the root object
         this.root.dereference();
+    }
+
+    /**
+     * Move to a cross reference table or stream.
+     *
+     * @param offset the offset given by startxref, /Prev or /XRefStm
+     * @throws PDFParseException if the offset is not inside the file
+     */
+    private void seekXref(int offset) throws PDFParseException {
+        if (offset < 0 || offset >= this.buf.limit()) {
+            throw new PDFParseException("Cross reference offset " + offset + " is outside the file");
+        }
+        this.buf.position(offset);
+    }
+
+    /**
+     * Remember the offset of a cross reference table, so that a chain of
+     * /Prev entries that leads back to a table that has been read is noticed.
+     *
+     * @param offset the offset of the table that is about to be read
+     * @throws PDFParseException if that table has been read before
+     */
+    private void checkXrefTableNotRead(int offset) throws PDFParseException {
+        if (!this.xrefTableOffsets.add(offset)) {
+            throw new PDFParseException("Cross reference table at " + offset + " is linked to itself");
+        }
+    }
+
+    /**
+     * Check that a cross reference subsection can exist in this file, before
+     * the table of objects is extended for it.
+     *
+     * @param refstart the number of the first object in the subsection
+     * @param reflen the number of entries in the subsection
+     * @param available the number of entries that the remaining data holds
+     * @throws PDFParseException if the subsection is larger than the data
+     *  it is read from, or numbers more objects than fit in the file
+     */
+    private void checkXrefSubsection(int refstart, int reflen, int available) throws PDFParseException {
+        if (refstart < 0 || reflen < 0 || reflen > available || refstart > this.buf.limit() - reflen) {
+            throw new PDFParseException("Invalid cross reference subsection " + refstart + " " + reflen);
+        }
+    }
+
+    /**
+     * Get the number of entries that the rest of a cross reference stream holds.
+     *
+     * @param remaining the number of bytes left in the stream
+     * @param l1 the width of the first field of an entry
+     * @param l2 the width of the second field of an entry
+     * @param l3 the width of the third field of an entry
+     * @return the number of entries
+     * @throws PDFParseException if a field width is negative
+     */
+    private int xrefStreamEntries(int remaining, int l1, int l2, int l3) throws PDFParseException {
+        if (l1 < 0 || l2 < 0 || l3 < 0) {
+            throw new PDFParseException("Invalid field widths in cross reference stream");
+        }
+        long width = (long) l1 + l2 + l3;
+        if (width == 0) {
+            return Integer.MAX_VALUE;
+        }
+        return (int) (remaining / width);
     }
 
     private int readNum(byte[] sbuf, int pos, int numBytes) {
@@ -1536,7 +1613,7 @@ public class PDFFile {
             loc++;
         }
         int xrefpos = Integer.parseInt(scans.substring(numstart, loc));
-        this.buf.position(xrefpos);
+        seekXref(xrefpos);
 
         try {
             readTrailer(password);
