@@ -51,6 +51,7 @@ package org.openpdf.text.pdf;
 
 import org.openpdf.text.error_messages.MessageLocalization;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -78,6 +79,15 @@ import org.bouncycastle.tsp.TimeStampToken;
  * @since 2.1.6
  */
 public class TSAClientBouncyCastle implements TSAClient {
+
+    /**
+     * Timeout for connecting to the TSA and for reading its response.
+     */
+    private static final int TIMEOUT_MILLIS = 30_000;
+    /**
+     * The largest TSA response that is accepted.
+     */
+    private static final int MAX_RESPONSE_SIZE = 1024 * 1024;
 
     /**
      * URL of the Time Stamp Authority
@@ -253,9 +263,15 @@ public class TSAClientBouncyCastle implements TSAClient {
     protected byte[] getTSAResponse(byte[] requestBytes) throws Exception {
         // Setup the TSA connection
         URL url = new URL(tsaURL);
+        String protocol = url.getProtocol();
+        if (!"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {
+            throw new IOException("The TSA URL has to be an http or https URL: " + protocol);
+        }
         URLConnection tsaConnection;
         Proxy tmpProxy = proxy == null ? Proxy.NO_PROXY : proxy;
         tsaConnection = url.openConnection(tmpProxy);
+        tsaConnection.setConnectTimeout(TIMEOUT_MILLIS);
+        tsaConnection.setReadTimeout(TIMEOUT_MILLIS);
 
         tsaConnection.setDoInput(true);
         tsaConnection.setDoOutput(true);
@@ -282,6 +298,10 @@ public class TSAClientBouncyCastle implements TSAClient {
         int bytesRead = 0;
         while ((bytesRead = inp.read(buffer, 0, buffer.length)) >= 0) {
             baos.write(buffer, 0, bytesRead);
+            if (baos.size() > MAX_RESPONSE_SIZE) {
+                inp.close();
+                throw new IOException("The TSA response is larger than " + MAX_RESPONSE_SIZE + " bytes");
+            }
         }
         byte[] respBytes = baos.toByteArray();
 
