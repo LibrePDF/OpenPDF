@@ -68,9 +68,8 @@ public class ZapfDingbatsNumberList extends List {
     public ZapfDingbatsNumberList(int type) {
         super(true);
         this.type = type;
-        float fontsize = symbol.getFont().getSize();
-        symbol.setFont(FontFactory.getFont(FontFactory.ZAPFDINGBATS, fontsize, Font.NORMAL));
-        postSymbol = " ";
+        setSymbolFont(FontFactory.ZAPFDINGBATS);
+        postSymbol = SYMBOL_SPACE_SUFFIX;
     }
 
     /**
@@ -82,9 +81,8 @@ public class ZapfDingbatsNumberList extends List {
     public ZapfDingbatsNumberList(int type, int symbolIndent) {
         super(true, symbolIndent);
         this.type = type;
-        float fontsize = symbol.getFont().getSize();
-        symbol.setFont(FontFactory.getFont(FontFactory.ZAPFDINGBATS, fontsize, Font.NORMAL));
-        postSymbol = " ";
+        setSymbolFont(FontFactory.ZAPFDINGBATS);
+        postSymbol = SYMBOL_SPACE_SUFFIX;
     }
 
     /**
@@ -113,44 +111,24 @@ public class ZapfDingbatsNumberList extends List {
      */
     @Override
     public boolean add(Element o) {
-        if (o instanceof ListItem) {
-            ListItem item = (ListItem) o;
-            Chunk chunk = new Chunk(preSymbol, symbol.getFont());
-            switch (type) {
-                case 0:
-                    chunk.append(String.valueOf((char) (first + list.size() + 171)));
-                    break;
-                case 1:
-                    chunk.append(String.valueOf((char) (first + list.size() + 181)));
-                    break;
-                case 2:
-                    chunk.append(String.valueOf((char) (first + list.size() + 191)));
-                    break;
-                default:
-                    chunk.append(String.valueOf((char) (first + list.size() + 201)));
-            }
-            chunk.append(postSymbol);
-            item.setListSymbol(chunk);
-            item.setIndentationLeft(symbolIndent, autoindent);
-            item.setIndentationRight(0);
-            list.add(item);
-        } else if (o instanceof List) {
-            List nested = (List) o;
-            nested.setIndentationLeft(nested.getIndentationLeft() + symbolIndent);
-            first--;
-            return list.add(nested);
+        if (o instanceof ListItem item) {
+            int itemNumber = first + list.size();
+            int baseCharOffset = getTypeBaseCharOffset();
+            char dingbatNumberChar = (char) (itemNumber + baseCharOffset);
+            Chunk chunk = createSymbolChunk(String.valueOf(dingbatNumberChar));
+            return configureAndAddItem(item, chunk);
+        } else if (o instanceof List nested) {
+            return add(nested);
         }
         return false;
     }
 
-    /**
-     * Adds a <CODE>String</CODE> to the <CODE>List</CODE>.
-     *
-     * @param s the string to add.
-     * @return true if adding the string succeeded
-     */
-    @Override
-    public boolean add(String s) {
-        return this.add(new ListItem(s));
+    private int getTypeBaseCharOffset() {
+        return switch (type) {
+            case 0 -> 171;
+            case 1 -> 181;
+            case 2 -> 191;
+            default -> 201;
+        };
     }
 }

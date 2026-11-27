@@ -2270,6 +2270,29 @@ public abstract class Image extends Rectangle {
         }
     }
 
+    /**
+     * Initializes both scaled dimensions and the corresponding bounding box top/right coordinates.
+     *
+     * @param width  the image width
+     * @param height the image height
+     */
+    void setDimensions(int width, int height) {
+        setDimensions((float) width, (float) height);
+    }
+
+    /**
+     * Initializes both scaled dimensions and the corresponding bounding box top/right coordinates.
+     *
+     * @param width  the image width
+     * @param height the image height
+     */
+    void setDimensions(float width, float height) {
+        scaledHeight = height;
+        setTop(scaledHeight);
+        scaledWidth = width;
+        setRight(scaledWidth);
+    }
+
     private static boolean isJBIG2(int[] array) {
         return array[0] == 0x97 && array[1] == 'J' && array[2] == 'B' && array[3] == '2' &&
                 array[4] == '\r' && array[5] == '\n' && array[6] == 0x1a && array[7] == '\n';

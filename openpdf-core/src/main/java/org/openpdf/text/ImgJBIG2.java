@@ -96,10 +96,7 @@ public class ImgJBIG2 extends Image {
         super((URL) null);
         type = JBIG2;
         originalType = ORIGINAL_JBIG2;
-        scaledHeight = height;
-        setTop(scaledHeight);
-        scaledWidth = width;
-        setRight(scaledWidth);
+        setDimensions(width, height);
         bpc = 1;
         colorspace = 1;
         rawData = data;
