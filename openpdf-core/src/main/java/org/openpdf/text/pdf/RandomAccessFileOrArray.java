@@ -62,6 +62,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.lang.foreign.Arena;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
@@ -85,6 +86,12 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
      * Holds value of property startOffset.
      */
     private long startOffset = 0;
+
+    /**
+     * Owns the mappings handed out by {@link #getNioByteBuffer()}. It is closed, and the file unmapped, in
+     * {@link #close()}.
+     */
+    private Arena nioBufferArena;
 
     public RandomAccessFileOrArray(String filename) throws IOException {
         this(filename, false, Document.plainRandomAccess);
@@ -159,9 +166,10 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         arrayIn = file.arrayIn;
         startOffset = file.startOffset;
         plainRandomAccess = file.plainRandomAccess;
-        // the copy does not share the open file handles nor the read position of the original
+        // the copy does not share the open file handles, the mappings nor the read position of the original
         rf = null;
         trf = null;
+        nioBufferArena = null;
         arrayInPtr = 0;
         back = 0;
     }
@@ -347,6 +355,15 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
         } else if (trf != null) {
             trf.close();
             trf = null;
+        }
+        closeNioBufferArena();
+    }
+
+    private void closeNioBufferArena() {
+        if (nioBufferArena != null) {
+            Arena arena = nioBufferArena;
+            nioBufferArena = null;
+            arena.close();
         }
     }
 
@@ -668,14 +685,31 @@ public class RandomAccessFileOrArray implements DataInput, Closeable {
     }
 
     /**
+     * Returns the content as a read-only {@link java.nio.ByteBuffer}.
+     * <p>
+     * For a file, the buffer is a memory mapping of the file that belongs to this object. It is valid until
+     * {@link #close()} is called. Closing unmaps the file immediately, so it can be deleted or moved afterwards, also
+     * on Windows. Accessing the buffer after that throws an {@link IllegalStateException}. Keep this object open for
+     * as long as the buffer is in use.
+     * <p>
+     * For content held in memory, the buffer wraps the byte array and is not affected by {@link #close()}.
+     *
      * @return a ByteBuffer
-     * @throws IOException on error
+     * @throws IOException on error, or if the file is larger than 2 GB
      * @since 2.0.8
      */
     public java.nio.ByteBuffer getNioByteBuffer() throws IOException {
         if (filename != null) {
             FileChannel channel = plainRandomAccess ? openPlainFile().getChannel() : openMappedFile().getChannel();
-            return channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+            long size = channel.size();
+            if (size > Integer.MAX_VALUE) {
+                throw new IOException("The file is too large for a ByteBuffer: " + size + " bytes");
+            }
+            if (nioBufferArena == null) {
+                // shared, because the buffer may be read in another thread than the one that created it
+                nioBufferArena = Arena.ofShared();
+            }
+            return channel.map(FileChannel.MapMode.READ_ONLY, 0, size, nioBufferArena).asByteBuffer();
         }
         return java.nio.ByteBuffer.wrap(arrayIn);
     }
