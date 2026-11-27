@@ -93,7 +93,7 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
         Element table = findTable(e);
         if (table != null) {
             s = getAttribute(table, "cellpadding");
-            if (s != null) {
+            if (AttributeValues.isLength(s)) {
                 style.append("padding: ");
                 style.append(convertToLength(s));
                 style.append(";");
@@ -104,20 +104,20 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
             }
         }
         s = getAttribute(e, "width");
-        if (s != null) {
+        if (AttributeValues.isLength(s)) {
             style.append("width: ");
             style.append(convertToLength(s));
             style.append(";");
         }
         s = getAttribute(e, "height");
-        if (s != null) {
+        if (AttributeValues.isLength(s)) {
             style.append("height: ");
             style.append(convertToLength(s));
             style.append(";");
         }
         applyTableContentAlign(e, style);
         s = getAttribute(e, "bgcolor");
-        if (s != null) {
+        if (AttributeValues.isColor(s)) {
             s = s.toLowerCase(ROOT);
             style.append("background-color: ");
             if (looksLikeAMangledColor(s)) {
@@ -130,9 +130,9 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
         }
         s = getAttribute(e, "background");
         if (s != null) {
-            style.append("background-image: url(");
-            style.append(s);
-            style.append(");");
+            style.append("background-image: ");
+            style.append(AttributeValues.cssUrl(s));
+            style.append(";");
         }
         return style.toString();
     }
@@ -141,25 +141,25 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
         StringBuilder style = new StringBuilder();
         String s;
         s = getAttribute(e, "width");
-        if (s != null) {
+        if (AttributeValues.isLength(s)) {
             style.append("width: ");
             style.append(convertToLength(s));
             style.append(";");
         }
         s = getAttribute(e, "border");
-        if (s != null) {
+        if (AttributeValues.isLength(s)) {
             style.append("border: ");
             style.append(convertToLength(s));
             style.append(" inset black;");
         }
         s = getAttribute(e, "cellspacing");
-        if (s != null) {
+        if (AttributeValues.isLength(s)) {
             style.append("border-collapse: separate; border-spacing: ");
             style.append(convertToLength(s));
             style.append(";");
         }
         s = getAttribute(e, "bgcolor");
-        if (s != null) {
+        if (AttributeValues.isColor(s)) {
             s = s.toLowerCase(ROOT);
             style.append("background-color: ");
             if (looksLikeAMangledColor(s)) {
@@ -172,9 +172,9 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
         }
         s = getAttribute(e, "background");
         if (s != null) {
-            style.append("background-image: url(");
-            style.append(s);
-            style.append(");");
+            style.append("background-image: ");
+            style.append(AttributeValues.cssUrl(s));
+            style.append(";");
         }
         applyFloatingAlign(e, style);
         return style.toString();
@@ -206,13 +206,13 @@ public class XhtmlNamespaceHandler extends XhtmlCssOnlyNamespaceHandler {
 
     private void applyTableContentAlign(Element e, StringBuilder style) {
         String s = getAttribute(e, "align");
-        if (s != null) {
+        if (AttributeValues.isTextAlign(s)) {
             style.append("text-align: ");
             style.append(s.toLowerCase(ROOT));
             style.append(";");
         }
         s = getAttribute(e, "valign");
-        if (s != null) {
+        if (AttributeValues.isVerticalAlign(s)) {
             style.append("vertical-align: ");
             style.append(s.toLowerCase(ROOT));
             style.append(";");

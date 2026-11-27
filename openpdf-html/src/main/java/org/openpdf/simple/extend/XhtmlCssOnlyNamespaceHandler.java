@@ -122,13 +122,13 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
             case "th": {
                 String s;
                 s = getAttribute(e, "colspan");
-                if (s != null) {
+                if (AttributeValues.isInteger(s)) {
                     style.append("-fs-table-cell-colspan: ");
                     style.append(s);
                     style.append(";");
                 }
                 s = getAttribute(e, "rowspan");
-                if (s != null) {
+                if (AttributeValues.isInteger(s)) {
                     style.append("-fs-table-cell-rowspan: ");
                     style.append(s);
                     style.append(";");
@@ -138,13 +138,13 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
             case "img": {
                 String s;
                 s = getAttribute(e, "width");
-                if (s != null) {
+                if (AttributeValues.isLength(s)) {
                     style.append("width: ");
                     style.append(convertToLength(s));
                     style.append(";");
                 }
                 s = getAttribute(e, "height");
-                if (s != null) {
+                if (AttributeValues.isLength(s)) {
                     style.append("height: ");
                     style.append(convertToLength(s));
                     style.append(";");
@@ -155,13 +155,13 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
             case "col": {
                 String s;
                 s = getAttribute(e, "span");
-                if (s != null) {
+                if (AttributeValues.isInteger(s)) {
                     style.append("-fs-table-cell-colspan: ");
                     style.append(s);
                     style.append(";");
                 }
                 s = getAttribute(e, "width");
-                if (s != null) {
+                if (AttributeValues.isLength(s)) {
                     style.append("width: ");
                     style.append(convertToLength(s));
                     style.append(";");
