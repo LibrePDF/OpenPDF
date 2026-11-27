@@ -17,6 +17,7 @@ import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -30,16 +31,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import org.openpdf.text.pdf.CMapAwareDocumentFont;
 import org.openpdf.text.pdf.PRIndirectReference;
@@ -78,10 +85,12 @@ import org.openpdf.text.pdf.PdfString;
  *   <li>Clipping: {@code W}, {@code W*}</li>
  *   <li>Colors (DeviceGray / DeviceRGB / DeviceCMYK): {@code g}, {@code G},
  *       {@code rg}, {@code RG}, {@code k}, {@code K}, plus color-space-aware
- *       {@code cs}, {@code CS}, {@code sc}, {@code SC}, {@code scn}, {@code SCN}</li>
+ *       {@code cs}, {@code CS}, {@code sc}, {@code SC}, {@code scn}, {@code SCN}, which also
+ *       resolve a named {@code /ColorSpace} resource (ICCBased, CalGray, CalRGB, Lab)</li>
  *   <li>Text state: {@code BT}, {@code ET}, {@code Tf}, {@code Tc}, {@code Tw},
  *       {@code TL}, {@code Tz}, {@code Td}, {@code TD}, {@code Tm}, {@code T*},
- *       {@code Ts} (text rise)</li>
+ *       {@code Ts} (text rise), {@code Tr} (text rendering mode: fill / stroke /
+ *       invisible; clipping modes 4-7 fall back to their non-clipping counterpart)</li>
  *   <li>Text showing: {@code Tj}, {@code TJ}, {@code '}, {@code "}</li>
  *   <li>Marked content / compatibility (no-op): {@code BMC}, {@code BDC},
  *       {@code EMC}, {@code MP}, {@code DP}, {@code BX}, {@code EX}</li>
@@ -90,7 +99,9 @@ import org.openpdf.text.pdf.PdfString;
  *       (JPEG via {@code DCTDecode}, JPEG2000 via {@code JPXDecode} when
  *       supported by {@code ImageIO}, uncompressed / Flate-decoded 8-bit
  *       DeviceGray / DeviceRGB / DeviceCMYK images, and 8-bit Indexed
- *       images expanded through the palette into their base color space).</li>
+ *       images expanded through the palette into their base color space).
+ *       An image's {@code /SMask} (soft mask), if present, is decoded as an
+ *       8-bit DeviceGray alpha channel and composited onto it.</li>
  * </ul>
  *
  * <p>Inline images ({@code BI}/{@code ID}/{@code EI}) are promoted out of the
@@ -100,6 +111,14 @@ import org.openpdf.text.pdf.PdfString;
  * pattern / shading colors and type 3 font glyph operators are silently
  * ignored. Pages that rely heavily on those features may render with missing
  * content.</p>
+ *
+ * <h2>Annotations</h2>
+ * <p>After the page content stream, each {@code /Annots} entry's normal
+ * appearance stream ({@code /AP /N}, resolving an {@code /AS} state name when
+ * {@code /N} is a sub-dictionary of states) is rendered at its {@code /Rect}
+ * per the PDF §12.5.5 placement algorithm. Hidden/NoView-flagged and Popup
+ * annotations, and annotations with no usable appearance stream, are
+ * skipped &mdash; no default appearance is synthesized.</p>
  *
  * <h2>Text rendering</h2>
  * <p>For each {@code Tf}-selected font, the renderer pulls the embedded font
@@ -143,7 +162,7 @@ final class OpenPdfCorePageRenderer {
     private static final List<PdfName> EMBEDDED_FONT_KEYS = List.of(
             PdfName.FONTFILE2, PdfName.FONTFILE3, PdfName.FONTFILE);
 
-    // Color-space identifiers used by imageComponents().
+    // Color-space identifiers used by imageComponents() and colorSpaceFromName().
     private static final PdfName CS_ICC_BASED = new PdfName("ICCBased");
     private static final PdfName CS_CAL_GRAY = new PdfName("CalGray");
     private static final PdfName CS_CAL_RGB = new PdfName("CalRGB");
@@ -157,6 +176,17 @@ final class OpenPdfCorePageRenderer {
     private static final Set<PdfName> DEVICE_CMYK_NAMES = Set.of(
             PdfName.DEVICECMYK, new PdfName("CMYK"));
 
+    private static final int ANNOTATION_FLAG_HIDDEN = 1 << 1; // PDF §12.5.3, bit position 2
+    private static final int ANNOTATION_FLAG_NOVIEW = 1 << 5; // PDF §12.5.3, bit position 6
+    // Sentinel for "no explicit Lab /WhitePoint" -- callers fall back to a default D50 white
+    // point. Using an empty array rather than null avoids null-array returns/fields.
+    private static final float[] NO_LAB_WHITE_POINT = new float[0];
+    // D50, the reference white point PDF's Lab color space conventionally assumes when a
+    // /Lab color space definition omits /WhitePoint (which is technically required, but not
+    // every PDF producer bothers to include it).
+    private static final float[] DEFAULT_LAB_WHITE_POINT = {0.9642f, 1.0f, 0.8249f};
+    private static final ColorSpace CIE_SRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+
     /**
      * Synthetic XObject-name prefix used for inline images that have been promoted out
      * of the content stream into {@link #inlineImages}. Keeping a clearly distinctive
@@ -164,20 +194,56 @@ final class OpenPdfCorePageRenderer {
      */
     private static final String INLINE_IMAGE_PREFIX = "__inline_image__";
 
+    /**
+     * The number of Form XObjects that can be drawn inside each other. Real documents nest a few
+     * levels deep; the limit keeps a long chain of forms from overflowing the stack.
+     */
+    private static final int MAX_FORM_DEPTH = 32;
+
+    /**
+     * The amount of work that is spent on one page: an operator counts as one unit and drawing
+     * a Form XObject as {@link #FORM_WORK} units. Forms can draw each other many times, so that
+     * a few small forms describe more work than any computer can do. Rendering of a page stops
+     * when the limit is reached. A page of a real document stays far below it.
+     */
+    static final long MAX_PAGE_WORK = 20_000_000L;
+
+    /**
+     * The work that drawing a Form XObject counts for, on top of the operators in it.
+     */
+    private static final int FORM_WORK = 64;
+
+    /**
+     * The largest JPEG or JPEG 2000 image that is decoded, in pixels. The size of such an image
+     * is in its own header, and a file of a few hundred bytes can announce any size. 100 million
+     * pixels is a scan of an A3 page at 600 dpi with room to spare, and takes 300 MB as an RGB image.
+     */
+    static final long MAX_ENCODED_IMAGE_PIXELS = 100_000_000L;
+
     private final Graphics2D g2;
     private final PdfDictionary resources;
     private final Map<String, CMapAwareDocumentFont> fontCache = new HashMap<>();
     /**
      * Embedded-font program cache keyed by the FontDescriptor's identity. Re-parsing a
      * TrueType program for every {@code Tj} call would be wasteful; a single page can
-     * reference the same font hundreds of times.
+     * reference the same font hundreds of times. Shared with the nested renderers.
      */
-    private final Map<PdfDictionary, Font> awtFontCache = new HashMap<>();
+    private final Map<PdfDictionary, Font> awtFontCache;
     /**
      * Decoded inline images, keyed by the synthetic XObject name we substitute into
      * the content stream in place of the original {@code BI...EI} block.
      */
     private final Map<String, BufferedImage> inlineImages = new HashMap<>();
+    /**
+     * The Form XObjects and appearance streams that are being drawn right now, from the page
+     * down to this renderer. Shared with the nested renderers, so that a form that draws itself,
+     * directly or through other forms, is not entered again.
+     */
+    private final Set<PRStream> formsInProgress;
+    /**
+     * What the renderer of a page and the renderers of its forms have in common.
+     */
+    private final PageState page;
 
     private final Deque<GState> stateStack = new ArrayDeque<>();
     private final Deque<AffineTransform> ctmStack = new ArrayDeque<>();
@@ -204,9 +270,49 @@ final class OpenPdfCorePageRenderer {
     private AffineTransform textLineMatrix;
 
     private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources) {
+        this(g2, resources, new PageState());
+    }
+
+    private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources, PageState page) {
         this.g2 = g2;
         this.resources = resources;
+        this.page = page;
+        this.formsInProgress = page.formsInProgress;
+        this.awtFontCache = page.awtFonts;
         this.state = new GState();
+    }
+
+    /**
+     * The state that the renderer of a page shares with the renderers of the forms on it.
+     */
+    private static final class PageState {
+
+        private final Set<PRStream> formsInProgress = Collections.newSetFromMap(new IdentityHashMap<>());
+        private final Map<PdfDictionary, Font> awtFonts = new HashMap<>();
+        /**
+         * The fonts of the page and its forms by object number, {@code null} for a font that cannot be read.
+         */
+        private final Map<Integer, CMapAwareDocumentFont> fonts = new HashMap<>();
+        private long work;
+
+        /**
+         * Counts work against the limit of the page.
+         *
+         * @param units the amount of work that is about to be done
+         * @return {@code false} if the page has used up its work and rendering has to stop
+         */
+        private boolean spend(int units) {
+            if (work > MAX_PAGE_WORK) {
+                return false;
+            }
+            work += units;
+            if (work > MAX_PAGE_WORK) {
+                LOG.log(Level.WARNING, "Stopped rendering a page that needs more than {0} operations",
+                        MAX_PAGE_WORK);
+                return false;
+            }
+            return true;
+        }
     }
 
     /**
@@ -245,6 +351,9 @@ final class OpenPdfCorePageRenderer {
         // Map PDF user space (origin bottom-left, Y up) to image pixels (origin top-left, Y down),
         // applying page rotation and DPI scaling.
         org.openpdf.text.Rectangle pageSize = reader.getPageSizeWithRotation(pageNumber);
+        if (pageSize == null) {
+            throw new IOException("Cannot determine the size of page " + pageNumber + ": page does not exist");
+        }
         float scale = dpi / PDF_USER_SPACE_DPI;
         int rotation = reader.getPageRotation(pageNumber) % 360;
         if (rotation < 0) {
@@ -281,6 +390,14 @@ final class OpenPdfCorePageRenderer {
 
         OpenPdfCorePageRenderer renderer = new OpenPdfCorePageRenderer(g2, resources);
         renderer.processContent(reader.getPageContent(pageNumber));
+
+        // Annotation /Rect coordinates are defined in the same page space "initial" maps to
+        // device space. A malformed content stream with unbalanced q/Q (or a top-level cm) can
+        // leave g2's transform/clip in an arbitrary state after processContent returns, so reset
+        // both explicitly rather than assuming the content stream cleaned up after itself.
+        g2.setTransform(initial);
+        g2.setClip(null);
+        renderer.renderAnnotations(pageDict);
     }
 
     private void processContent(byte[] contentBytes) throws IOException {
@@ -297,7 +414,7 @@ final class OpenPdfCorePageRenderer {
                 LOG.log(Level.FINE, "Aborting content stream early due to: {0}", e);
                 return;
             }
-            if (parsed.isEmpty()) {
+            if (parsed.isEmpty() || !page.spend(1)) {
                 return;
             }
             PdfLiteral op = (PdfLiteral) parsed.get(parsed.size() - 1);
@@ -416,10 +533,9 @@ final class OpenPdfCorePageRenderer {
             throws IOException {
         // Synthetic JPEG path: hdr told us to defer to ImageIO.
         if (components == 0) {
-            return ImageIO.read(new ByteArrayInputStream(decoded));
+            return readEncodedImage(decoded);
         }
-        int rowBytes = width * components;
-        if (decoded.length < rowBytes * height) {
+        if (!holdsRaster(decoded, width, height, components)) {
             return null;
         }
         switch (components) {
@@ -738,21 +854,30 @@ final class OpenPdfCorePageRenderer {
                         cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3)),
                         state.strokeAlpha);
                 break;
-            case "cs":
-                state.fillColorSpace = colorSpaceFromName(operands.get(0));
+            case "cs": {
+                ColorSpaceInfo info = colorSpaceFromName(operands.get(0));
+                state.fillColorSpace = info.kind();
+                state.fillLabWhitePoint = info.labWhitePoint();
                 state.fillColor = applyAlpha(defaultColorFor(state.fillColorSpace), state.fillAlpha);
                 break;
-            case "CS":
-                state.strokeColorSpace = colorSpaceFromName(operands.get(0));
+            }
+            case "CS": {
+                ColorSpaceInfo info = colorSpaceFromName(operands.get(0));
+                state.strokeColorSpace = info.kind();
+                state.strokeLabWhitePoint = info.labWhitePoint();
                 state.strokeColor = applyAlpha(defaultColorFor(state.strokeColorSpace), state.strokeAlpha);
                 break;
+            }
             case "sc":
             case "scn":
-                state.fillColor = applyAlpha(colorFromOperands(state.fillColorSpace, operands), state.fillAlpha);
+                state.fillColor = applyAlpha(
+                        colorFromOperands(state.fillColorSpace, state.fillLabWhitePoint, operands), state.fillAlpha);
                 break;
             case "SC":
             case "SCN":
-                state.strokeColor = applyAlpha(colorFromOperands(state.strokeColorSpace, operands), state.strokeAlpha);
+                state.strokeColor = applyAlpha(
+                        colorFromOperands(state.strokeColorSpace, state.strokeLabWhitePoint, operands),
+                        state.strokeAlpha);
                 break;
 
             // --- Path construction ---
@@ -899,6 +1024,9 @@ final class OpenPdfCorePageRenderer {
                 break;
             case "Ts":
                 state.textRise = num(operands, 0);
+                break;
+            case "Tr":
+                state.renderMode = (int) num(operands, 0);
                 break;
             case "Td":
                 textMoveTo(num(operands, 0), num(operands, 1));
@@ -1163,21 +1291,24 @@ final class OpenPdfCorePageRenderer {
      * {@code /Matrix} entry applied on top of the current CTM. The current
      * graphics state and CTM are saved and restored around the call so the
      * form's content can't leak out.
+     *
+     * <p>A form that is already being drawn is skipped, and so is a form that is nested more
+     * than {@link #MAX_FORM_DEPTH} levels deep. A form that draws itself would never end.</p>
      */
     private void renderForm(PRStream form) {
+        if (!page.spend(FORM_WORK)) {
+            return;
+        }
+        if (formsInProgress.size() >= MAX_FORM_DEPTH || !formsInProgress.add(form)) {
+            LOG.log(Level.FINE, "Skipping Form XObject that draws itself or is nested too deeply");
+            return;
+        }
         AffineTransform savedTx = g2.getTransform();
         Shape savedClip = g2.getClip();
         GState savedState = state;
         try {
             state = new GState(state);
-            PdfArray matrix = form.getAsArray(PdfName.MATRIX);
-            if (matrix != null && matrix.size() >= 6) {
-                AffineTransform m = new AffineTransform(
-                        floatAt(matrix, 0), floatAt(matrix, 1),
-                        floatAt(matrix, 2), floatAt(matrix, 3),
-                        floatAt(matrix, 4), floatAt(matrix, 5));
-                g2.transform(m);
-            }
+            g2.transform(formMatrixOf(form));
             PdfArray bbox = form.getAsArray(PdfName.BBOX);
             if (bbox != null && bbox.size() >= 4) {
                 float x = floatAt(bbox, 0);
@@ -1190,17 +1321,167 @@ final class OpenPdfCorePageRenderer {
             }
             PdfDictionary formResources = form.getAsDict(PdfName.RESOURCES);
             PdfDictionary effective = formResources != null ? formResources : resources;
-            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective);
+            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective, page);
             nested.state = state;
             byte[] body = PdfReader.getStreamBytes(form);
             nested.processContent(body);
         } catch (IOException | RuntimeException e) {
             LOG.log(Level.FINE, "Skipping Form XObject due to: {0}", e);
         } finally {
+            formsInProgress.remove(form);
             state = savedState;
             g2.setTransform(savedTx);
             g2.setClip(savedClip);
         }
+    }
+
+    /**
+     * Reads a stream's {@code /Matrix} entry (a Form XObject or annotation appearance stream),
+     * or the identity transform if absent/malformed.
+     */
+    private static AffineTransform formMatrixOf(PRStream form) {
+        PdfArray matrix = form.getAsArray(PdfName.MATRIX);
+        if (matrix == null || matrix.size() < 6) {
+            return new AffineTransform();
+        }
+        return new AffineTransform(
+                floatAt(matrix, 0), floatAt(matrix, 1),
+                floatAt(matrix, 2), floatAt(matrix, 3),
+                floatAt(matrix, 4), floatAt(matrix, 5));
+    }
+
+    // ---------- Annotation appearance streams ----------
+
+    /**
+     * Renders each page annotation's normal appearance stream ({@code /AP /N}), positioned per
+     * PDF §12.5.5's Rect/BBox/Matrix algorithm. Annotations without a usable appearance stream
+     * (no {@code /AP}, or a missing {@code /AS} into a sub-dictionary of states) are skipped
+     * rather than synthesized &mdash; e.g. a checkbox's "Off" vs "Yes" appearance, or a Link's
+     * usually-invisible default border, are exactly what {@code /AP} is meant to capture, so
+     * there's no reasonable fallback to draw when it's absent.
+     */
+    private void renderAnnotations(PdfDictionary pageDict) {
+        PdfArray annots = pageDict == null ? null : pageDict.getAsArray(PdfName.ANNOTS);
+        if (annots == null) {
+            return;
+        }
+        for (PdfObject annotObj : annots.getElements()) {
+            PdfObject direct = annotObj instanceof PRIndirectReference ref
+                    ? PdfReader.getPdfObject(ref) : annotObj;
+            if (direct instanceof PdfDictionary annotDict) {
+                renderAnnotation(annotDict);
+            }
+        }
+    }
+
+    private void renderAnnotation(PdfDictionary annot) {
+        if (isHiddenOrNoView(annot) || PdfName.POPUP.equals(annot.getAsName(PdfName.SUBTYPE))) {
+            return;
+        }
+        PRStream appearance = normalAppearanceOf(annot);
+        if (appearance == null) {
+            return;
+        }
+        PdfArray rect = annot.getAsArray(PdfName.RECT);
+        if (rect == null || rect.size() < 4) {
+            return;
+        }
+        AffineTransform placement = appearancePlacementTransform(appearance, rect);
+        if (placement == null) {
+            return;
+        }
+        AffineTransform savedTx = g2.getTransform();
+        Shape savedClip = g2.getClip();
+        try {
+            g2.transform(placement);
+            renderForm(appearance);
+        } catch (RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping annotation appearance due to: {0}", e);
+        } finally {
+            g2.setTransform(savedTx);
+            g2.setClip(savedClip);
+        }
+    }
+
+    private static boolean isHiddenOrNoView(PdfDictionary annot) {
+        PdfNumber flags = annot.getAsNumber(PdfName.F);
+        if (flags == null) {
+            return false;
+        }
+        int f = flags.intValue();
+        return (f & ANNOTATION_FLAG_HIDDEN) != 0 || (f & ANNOTATION_FLAG_NOVIEW) != 0;
+    }
+
+    /**
+     * Resolves an annotation's {@code /AP /N} entry to a concrete appearance stream. {@code /N}
+     * is either directly a stream (the common case) or a sub-dictionary of named appearance
+     * states (e.g. a checkbox's {@code /Yes} / {@code /Off}), selected by the annotation's
+     * {@code /AS} name.
+     */
+    private static PRStream normalAppearanceOf(PdfDictionary annot) {
+        PdfDictionary apDict = annot.getAsDict(PdfName.AP);
+        if (apDict == null) {
+            return null;
+        }
+        PdfObject direct = resolveIndirect(apDict.get(PdfName.N));
+        if (direct instanceof PRStream stream) {
+            return stream;
+        }
+        if (!(direct instanceof PdfDictionary states)) {
+            return null;
+        }
+        PdfName stateName = annot.getAsName(PdfName.AS);
+        if (stateName == null) {
+            return null;
+        }
+        PdfObject state = resolveIndirect(states.get(stateName));
+        return state instanceof PRStream stream ? stream : null;
+    }
+
+    private static PdfObject resolveIndirect(PdfObject obj) {
+        return obj instanceof PRIndirectReference ref ? PdfReader.getPdfObject(ref) : obj;
+    }
+
+    /**
+     * Computes the transform that positions an annotation's appearance stream per PDF §12.5.5:
+     * the stream's own {@code /BBox} corners are mapped through its {@code /Matrix} and reduced
+     * to their axis-aligned bounding box, which is then scaled/translated (independently in X
+     * and Y, no rotation) to align with the annotation's {@code /Rect}. {@link #renderForm}
+     * applies {@code /Matrix} itself when it subsequently renders the stream, so this transform
+     * only supplies that alignment step, not {@code /Matrix} again.
+     *
+     * @return the placement transform, or {@code null} if the stream has no usable {@code /BBox}
+     */
+    private static AffineTransform appearancePlacementTransform(PRStream appearance, PdfArray rect) {
+        PdfArray bbox = appearance.getAsArray(PdfName.BBOX);
+        if (bbox == null || bbox.size() < 4) {
+            return null;
+        }
+        double[] corners = {
+                floatAt(bbox, 0), floatAt(bbox, 1),
+                floatAt(bbox, 2), floatAt(bbox, 1),
+                floatAt(bbox, 2), floatAt(bbox, 3),
+                floatAt(bbox, 0), floatAt(bbox, 3),
+        };
+        formMatrixOf(appearance).transform(corners, 0, corners, 0, 4);
+        double tx0 = Math.min(Math.min(corners[0], corners[2]), Math.min(corners[4], corners[6]));
+        double tx1 = Math.max(Math.max(corners[0], corners[2]), Math.max(corners[4], corners[6]));
+        double ty0 = Math.min(Math.min(corners[1], corners[3]), Math.min(corners[5], corners[7]));
+        double ty1 = Math.max(Math.max(corners[1], corners[3]), Math.max(corners[5], corners[7]));
+
+        float rx0 = Math.min(floatAt(rect, 0), floatAt(rect, 2));
+        float ry0 = Math.min(floatAt(rect, 1), floatAt(rect, 3));
+        float rx1 = Math.max(floatAt(rect, 0), floatAt(rect, 2));
+        float ry1 = Math.max(floatAt(rect, 1), floatAt(rect, 3));
+
+        double sx = tx1 != tx0 ? (rx1 - rx0) / (tx1 - tx0) : 1;
+        double sy = ty1 != ty0 ? (ry1 - ry0) / (ty1 - ty0) : 1;
+
+        AffineTransform placement = new AffineTransform();
+        placement.translate(rx0, ry0);
+        placement.scale(sx, sy);
+        placement.translate(-tx0, -ty0);
+        return placement;
     }
 
     /**
@@ -1256,6 +1537,14 @@ final class OpenPdfCorePageRenderer {
         if (width <= 0 || height <= 0) {
             return null;
         }
+        BufferedImage base = decodeBaseImage(stream, width, height);
+        if (base == null) {
+            return null;
+        }
+        return applySoftMask(base, stream);
+    }
+
+    private BufferedImage decodeBaseImage(PRStream stream, int width, int height) {
         PdfObject filterObj = stream.get(PdfName.FILTER);
         if (hasFilter(filterObj, PdfName.DCTDECODE) || hasFilter(filterObj, PdfName.JPXDECODE)) {
             return decodeViaImageIO(stream);
@@ -1265,6 +1554,146 @@ final class OpenPdfCorePageRenderer {
             return decodeIndexedImage(stream, width, height, indexedCs);
         }
         return decodeRawRaster(stream, width, height);
+    }
+
+    /**
+     * If {@code imageStream} declares a {@code /SMask} (PDF §11.6.5.3 soft mask &mdash; the
+     * mechanism behind transparent PNGs / logos embedded in a PDF), decodes it as an 8-bit
+     * DeviceGray alpha channel and composites it onto {@code base}. Falls back to returning
+     * {@code base} unchanged when there is no soft mask, or it can't be decoded.
+     */
+    private BufferedImage applySoftMask(BufferedImage base, PRStream imageStream) {
+        PdfObject smaskObj = imageStream.get(PdfName.SMASK);
+        PdfObject direct = smaskObj instanceof PRIndirectReference ref
+                ? PdfReader.getPdfObject(ref) : smaskObj;
+        if (!(direct instanceof PRStream smaskStream)) {
+            return base;
+        }
+        try {
+            return compositeSoftMask(base, smaskStream);
+        } catch (IOException | RuntimeException e) {
+            LOG.log(Level.FINE, "Skipping SMask due to: {0}", e);
+            return base;
+        }
+    }
+
+    /**
+     * Combines {@code base} with the alpha channel decoded from {@code smaskStream}, producing a
+     * new {@link BufferedImage#TYPE_INT_ARGB} image. The soft mask's own {@code /Width}/{@code
+     * /Height} need not match the base image (PDF §11.6.5.3); a mismatch is handled with nearest-
+     * neighbor resampling to the base image's dimensions.
+     */
+    private BufferedImage compositeSoftMask(BufferedImage base, PRStream smaskStream) throws IOException {
+        PdfNumber maskWidthN = smaskStream.getAsNumber(PdfName.WIDTH);
+        PdfNumber maskHeightN = smaskStream.getAsNumber(PdfName.HEIGHT);
+        if (maskWidthN == null || maskHeightN == null) {
+            return base;
+        }
+        int maskWidth = maskWidthN.intValue();
+        int maskHeight = maskHeightN.intValue();
+        if (maskWidth <= 0 || maskHeight <= 0) {
+            return base;
+        }
+        GrayRaster mask = readSoftMaskGray(smaskStream, maskWidth, maskHeight);
+        if (mask == null) {
+            return base;
+        }
+        // a JPEG encoded mask has the size that its data says, not the size that the dictionary says
+        maskWidth = mask.width();
+        maskHeight = mask.height();
+        byte[] maskGray = mask.data();
+        int width = base.getWidth();
+        int height = base.getHeight();
+        BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < height; y++) {
+            int my = maskHeight == height ? y : y * maskHeight / height;
+            for (int x = 0; x < width; x++) {
+                int mx = maskWidth == width ? x : x * maskWidth / width;
+                int alpha = maskGray[my * maskWidth + mx] & 0xFF;
+                out.setRGB(x, y, (alpha << 24) | (base.getRGB(x, y) & 0x00FFFFFF));
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Decodes a soft-mask stream's pixel data into a flat 8-bit gray byte array (one byte per
+     * pixel, row-major). Soft masks are DeviceGray by definition (PDF §11.6.5.3); this supports
+     * the same JPEG / Flate / uncompressed encodings as the base image raster path. Bit depths
+     * other than 8 are rare for soft masks and not yet supported.
+     */
+    private GrayRaster readSoftMaskGray(PRStream smaskStream, int width, int height) throws IOException {
+        PdfObject filterObj = smaskStream.get(PdfName.FILTER);
+        if (hasFilter(filterObj, PdfName.DCTDECODE) || hasFilter(filterObj, PdfName.JPXDECODE)) {
+            BufferedImage decoded = decodeViaImageIO(smaskStream);
+            if (decoded == null) {
+                return null;
+            }
+            // The mask is scaled to the image it belongs to when it is applied. It is not scaled to the
+            // size in its dictionary first, which can be far larger than the data.
+            return new GrayRaster(grayBytesFrom(decoded, decoded.getWidth(), decoded.getHeight()),
+                    decoded.getWidth(), decoded.getHeight());
+        }
+        PdfNumber bpcN = smaskStream.getAsNumber(PdfName.BITSPERCOMPONENT);
+        int bpc = bpcN == null ? 8 : bpcN.intValue();
+        if (bpc != 8) {
+            return null;
+        }
+        byte[] decoded = PdfReader.getStreamBytes(smaskStream);
+        if (!holdsRaster(decoded, width, height, 1)) {
+            return null;
+        }
+        int expected = width * height;
+        return new GrayRaster(decoded.length == expected ? decoded : Arrays.copyOf(decoded, expected), width, height);
+    }
+
+    /**
+     * The pixels of a soft mask, one byte per pixel and row by row.
+     */
+    private static final class GrayRaster {
+
+        private final byte[] data;
+        private final int width;
+        private final int height;
+
+        private GrayRaster(byte[] data, int width, int height) {
+            this.data = data;
+            this.width = width;
+            this.height = height;
+        }
+
+        private byte[] data() {
+            return data;
+        }
+
+        private int width() {
+            return width;
+        }
+
+        private int height() {
+            return height;
+        }
+    }
+
+    /**
+     * Resamples {@code img} to {@code width x height} (nearest-neighbor) and reduces it to a flat
+     * 8-bit gray byte array, used when a soft mask is JPEG/JPX-encoded and its decoded size
+     * doesn't already match the request.
+     */
+    private static byte[] grayBytesFrom(BufferedImage img, int width, int height) {
+        byte[] out = new byte[width * height];
+        for (int y = 0; y < height; y++) {
+            int sy = img.getHeight() == height ? y : y * img.getHeight() / height;
+            for (int x = 0; x < width; x++) {
+                int sx = img.getWidth() == width ? x : x * img.getWidth() / width;
+                int rgb = img.getRGB(sx, sy);
+                int r = (rgb >> 16) & 0xFF;
+                int g = (rgb >> 8) & 0xFF;
+                int b = rgb & 0xFF;
+                out[y * width + x] = (byte) ((r + g + b) / 3);
+            }
+        }
+        return out;
     }
 
     /**
@@ -1305,14 +1734,15 @@ final class OpenPdfCorePageRenderer {
         }
         int baseComponents = imageComponents(indexedCs.getDirectObject(1));
         byte[] lookup = readIndexedLookup(indexedCs.getDirectObject(3));
-        if (baseComponents == 0 || lookup == null || lookup.length == 0) {
+        if ((baseComponents != 1 && baseComponents != 3 && baseComponents != 4)
+                || lookup == null || lookup.length == 0) {
             return null;
         }
         byte[] indices = PdfReader.getStreamBytes(stream);
-        int pixels = width * height;
-        if (indices.length < pixels) {
+        if (!holdsRaster(indices, width, height, 1)) {
             return null;
         }
+        int pixels = width * height;
         byte[] expanded = expandIndexedPalette(indices, lookup, pixels, baseComponents);
         return buildImageForBaseComponents(expanded, width, height, baseComponents);
     }
@@ -1329,7 +1759,7 @@ final class OpenPdfCorePageRenderer {
      * throwing &mdash; malformed PDFs do happen.
      */
     private static byte[] expandIndexedPalette(byte[] indices, byte[] lookup, int pixels, int baseComponents) {
-        byte[] expanded = new byte[pixels * baseComponents];
+        byte[] expanded = new byte[Math.multiplyExact(pixels, baseComponents)];
         int maxLookupIdx = Math.max(lookup.length - baseComponents, 0);
         for (int p = 0; p < pixels; p++) {
             int paletteOffset = Math.min((indices[p] & 0xFF) * baseComponents, maxLookupIdx);
@@ -1392,15 +1822,55 @@ final class OpenPdfCorePageRenderer {
     private BufferedImage decodeViaImageIO(PRStream stream) {
         try {
             byte[] raw = PdfReader.getStreamBytesRaw(stream);
-            BufferedImage img = ImageIO.read(new ByteArrayInputStream(raw));
+            BufferedImage img = readEncodedImage(raw);
             if (img != null) {
                 return img;
             }
             // Some PDFs apply additional filters before DCTDecode; fall back to fully decoded bytes.
             byte[] decoded = PdfReader.getStreamBytes(stream);
-            return ImageIO.read(new ByteArrayInputStream(decoded));
+            return readEncodedImage(decoded);
         } catch (IOException | RuntimeException e) {
             LOG.log(Level.FINE, "Skipping JPEG/JPX image XObject due to: {0}", e);
+            return null;
+        }
+    }
+
+    /**
+     * Decodes the data of a DCT or JPX encoded image. Unlike {@link ImageIO#read(java.io.InputStream)},
+     * this only uses a reader for JPEG or JPEG 2000, whatever the data looks like, and it reads
+     * the size from the header of the image before it decodes it. The memory for the decoded
+     * image is reserved for that size, so an image that announces more than
+     * {@link #MAX_ENCODED_IMAGE_PIXELS} pixels is not decoded.
+     *
+     * @param data the encoded image
+     * @return the image, or {@code null} if the data is not a JPEG or JPEG 2000 image that can be decoded
+     * @throws IOException if the image is too large or cannot be read
+     */
+    static BufferedImage readEncodedImage(byte[] data) throws IOException {
+        try (ImageInputStream input = ImageIO.createImageInputStream(new ByteArrayInputStream(data))) {
+            if (input == null) {
+                return null;
+            }
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
+            while (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                String format = reader.getFormatName().toLowerCase(Locale.ROOT);
+                if (!format.contains("jpeg") && !format.contains("jp2")) {
+                    reader.dispose();
+                    continue;
+                }
+                try {
+                    reader.setInput(input, true, true);
+                    long pixels = (long) reader.getWidth(0) * reader.getHeight(0);
+                    if (pixels > MAX_ENCODED_IMAGE_PIXELS) {
+                        throw new IOException("The image has " + pixels + " pixels, more than the "
+                                + MAX_ENCODED_IMAGE_PIXELS + " that are decoded");
+                    }
+                    return reader.read(0);
+                } finally {
+                    reader.dispose();
+                }
+            }
             return null;
         }
     }
@@ -1422,9 +1892,7 @@ final class OpenPdfCorePageRenderer {
                 return null;
             }
             byte[] decoded = PdfReader.getStreamBytes(stream);
-            int rowBytes = width * components;
-            int expected = rowBytes * height;
-            if (decoded.length < expected) {
+            if (!holdsRaster(decoded, width, height, components)) {
                 return null;
             }
             switch (components) {
@@ -1499,6 +1967,26 @@ final class OpenPdfCorePageRenderer {
         return n == null ? 0 : n.intValue();
     }
 
+    /**
+     * Checks that image data holds a raster of the size that the image declares. The size is
+     * calculated without overflow: the width and height come from the file, and their product
+     * does not have to fit in an {@code int}. An image is only created for a raster that passes
+     * this check, so that the memory for it is in proportion to the data that is there.
+     *
+     * @param data       the decoded image data, one byte per component
+     * @param width      the declared width in pixels
+     * @param height     the declared height in pixels
+     * @param components the number of components per pixel
+     * @return {@code true} if the data has at least {@code width * height * components} bytes
+     */
+    static boolean holdsRaster(byte[] data, int width, int height, int components) {
+        if (width <= 0 || height <= 0 || components <= 0 || components > 4) {
+            return false;
+        }
+        // the product of two int values fits in a long; multiplying it by the components might not
+        return (long) width * height <= data.length / components;
+    }
+
     private static BufferedImage buildGrayImage(byte[] data, int width, int height) {
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
         byte[] target = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
@@ -1561,23 +2049,21 @@ final class OpenPdfCorePageRenderer {
         if (!inTextObject || text == null || text.isEmpty()) {
             return;
         }
-        Font awtFont = mapFont(state.font, state.fontSize);
-        g2.setFont(awtFont);
-        g2.setColor(state.fillColor);
-
-        AffineTransform saved = g2.getTransform();
-        try {
-            // Text matrix maps text-space to user space; we then need a Y-flip
-            // because Graphics2D's font baseline is drawn in image-Y orientation.
-            g2.transform(textMatrix);
-            g2.scale(state.horizontalScaling, 1.0);
-            if (state.textRise != 0f) {
-                g2.translate(0, state.textRise);
+        if (!isInvisibleRenderMode(state.renderMode)) {
+            AffineTransform saved = g2.getTransform();
+            try {
+                // Text matrix maps text-space to user space; we then need a Y-flip
+                // because Graphics2D's font baseline is drawn in image-Y orientation.
+                g2.transform(textMatrix);
+                g2.scale(state.horizontalScaling, 1.0);
+                if (state.textRise != 0f) {
+                    g2.translate(0, state.textRise);
+                }
+                g2.scale(1, -1);
+                drawGlyphs(text);
+            } finally {
+                g2.setTransform(saved);
             }
-            g2.scale(1, -1);
-            g2.drawString(text, 0f, 0f);
-        } finally {
-            g2.setTransform(saved);
         }
 
         // Advance text matrix using actual PDF font widths + char/word spacing.
@@ -1585,6 +2071,57 @@ final class OpenPdfCorePageRenderer {
         AffineTransform adv = new AffineTransform(textMatrix);
         adv.translate(advance, 0);
         textMatrix = adv;
+    }
+
+    /**
+     * Draws {@code text} at the origin of the (already positioned) current transform,
+     * honoring the active PDF §9.3.3 text rendering mode ({@code Tr}).
+     *
+     * <p>Fill-only text (the common case, mode 0) uses {@link Graphics2D#drawString}
+     * directly. Stroke modes (1, 2, 5, 6) need the glyph outlines so they can be
+     * stroked with the current line width / dash / join settings, so those go through
+     * {@link Font#createGlyphVector}. Modes 4-7 (add to clipping path) fall back to
+     * their non-clipping counterpart since text clipping isn't implemented.</p>
+     */
+    private void drawGlyphs(String text) {
+        boolean fill = fillsRenderMode(state.renderMode);
+        boolean stroke = strokesRenderMode(state.renderMode);
+        Font awtFont = mapFont(state.font, state.fontSize);
+        if (fill && !stroke) {
+            g2.setFont(awtFont);
+            g2.setColor(state.fillColor);
+            g2.drawString(text, 0f, 0f);
+            return;
+        }
+        Shape outline = awtFont.createGlyphVector(g2.getFontRenderContext(), text).getOutline(0f, 0f);
+        if (fill) {
+            g2.setColor(state.fillColor);
+            g2.fill(outline);
+        }
+        if (stroke) {
+            g2.setColor(state.strokeColor);
+            g2.setStroke(new BasicStroke(
+                    effectiveLineWidth(),
+                    state.lineCap, state.lineJoin, state.miterLimit,
+                    state.dashPattern, state.dashPhase));
+            g2.draw(outline);
+        }
+    }
+
+    /**
+     * PDF §9.3.3 text rendering modes 3 and 7 render nothing (7 only adds the glyphs to
+     * the clipping path, which we don't implement, so it degrades to fully invisible).
+     */
+    private static boolean isInvisibleRenderMode(int mode) {
+        return mode == 3 || mode == 7;
+    }
+
+    private static boolean fillsRenderMode(int mode) {
+        return mode == 0 || mode == 2 || mode == 4 || mode == 6;
+    }
+
+    private static boolean strokesRenderMode(int mode) {
+        return mode == 1 || mode == 2 || mode == 5 || mode == 6;
     }
 
     private void showTextArray(PdfArray array) {
@@ -1745,11 +2282,21 @@ final class OpenPdfCorePageRenderer {
         if (!(ref instanceof PRIndirectReference indirect)) {
             return null;
         }
+        // a form that is drawn many times gets a new renderer every time, so the fonts are kept for the page
+        if (page.fonts.containsKey(indirect.getNumber())) {
+            CMapAwareDocumentFont known = page.fonts.get(indirect.getNumber());
+            if (known != null) {
+                fontCache.put(name, known);
+            }
+            return known;
+        }
         try {
             CMapAwareDocumentFont font = new CMapAwareDocumentFont(indirect);
+            page.fonts.put(indirect.getNumber(), font);
             fontCache.put(name, font);
             return font;
         } catch (RuntimeException ignored) {
+            page.fonts.put(indirect.getNumber(), null);
             return null;
         }
     }
@@ -1791,26 +2338,108 @@ final class OpenPdfCorePageRenderer {
         return new Color(color.getRed(), color.getGreen(), color.getBlue(), a);
     }
 
-    private static ColorSpaceKind colorSpaceFromName(PdfObject operand) {
+    /**
+     * Classifies a {@code cs}/{@code CS} color-space operand. Literal device names
+     * ({@code /DeviceGray}, {@code /DeviceRGB}, {@code /DeviceCMYK} and their abbreviations)
+     * resolve directly; anything else is looked up by name in the page's {@code /ColorSpace}
+     * resource dictionary (PDF §8.6.3) and classified from its definition &mdash; the common
+     * case being a named {@code ICCBased} color space (classified by its stream's {@code /N}
+     * component count), {@code CalGray}, {@code CalRGB} or {@code Lab}. Color spaces this
+     * renderer doesn't specifically understand (Separation, DeviceN, Indexed, Pattern, ...)
+     * come back as {@link ColorSpaceKind#UNKNOWN}, in which case {@link #colorFromOperands}
+     * falls back to inferring gray/RGB/CMYK from the {@code sc}/{@code scn} operand count.
+     */
+    private ColorSpaceInfo colorSpaceFromName(PdfObject operand) {
         if (!(operand instanceof PdfName name)) {
-            return ColorSpaceKind.UNKNOWN;
+            return ColorSpaceInfo.UNKNOWN;
         }
-        String n = name.toString();
+        ColorSpaceKind literal = literalDeviceColorSpace(name);
+        if (literal != ColorSpaceKind.UNKNOWN) {
+            return new ColorSpaceInfo(literal, NO_LAB_WHITE_POINT);
+        }
+        return classifyColorSpaceDefinition(resolveColorSpaceResource(name));
+    }
+
+    private static ColorSpaceKind literalDeviceColorSpace(PdfName name) {
+        if (DEVICE_GRAY_NAMES.contains(name)) {
+            return ColorSpaceKind.GRAY;
+        }
+        if (DEVICE_RGB_NAMES.contains(name)) {
+            return ColorSpaceKind.RGB;
+        }
+        if (DEVICE_CMYK_NAMES.contains(name)) {
+            return ColorSpaceKind.CMYK;
+        }
+        return ColorSpaceKind.UNKNOWN;
+    }
+
+    /**
+     * Resolves a {@code cs}/{@code CS} name operand through the page's {@code /ColorSpace}
+     * resource dictionary, following one level of indirection. Returns {@code null} if there
+     * are no resources, no {@code /ColorSpace} dictionary, or no entry under {@code name}.
+     */
+    private PdfObject resolveColorSpaceResource(PdfName name) {
+        if (resources == null) {
+            return null;
+        }
+        PdfDictionary csResources = resources.getAsDict(PdfName.COLORSPACE);
+        if (csResources == null) {
+            return null;
+        }
+        PdfObject obj = csResources.get(name);
+        return obj instanceof PRIndirectReference ref ? PdfReader.getPdfObject(ref) : obj;
+    }
+
+    private static ColorSpaceInfo classifyColorSpaceDefinition(PdfObject direct) {
+        if (direct instanceof PdfName name) {
+            return new ColorSpaceInfo(literalDeviceColorSpace(name), NO_LAB_WHITE_POINT);
+        }
+        if (!(direct instanceof PdfArray arr) || arr.size() < 1) {
+            return ColorSpaceInfo.UNKNOWN;
+        }
+        PdfObject head = arr.getDirectObject(0);
+        if (CS_ICC_BASED.equals(head)) {
+            return new ColorSpaceInfo(kindForComponentCount(iccBasedComponents(arr)), NO_LAB_WHITE_POINT);
+        }
+        if (CS_CAL_GRAY.equals(head)) {
+            return new ColorSpaceInfo(ColorSpaceKind.GRAY, NO_LAB_WHITE_POINT);
+        }
+        if (CS_CAL_RGB.equals(head)) {
+            return new ColorSpaceInfo(ColorSpaceKind.RGB, NO_LAB_WHITE_POINT);
+        }
+        if (CS_LAB.equals(head)) {
+            return new ColorSpaceInfo(ColorSpaceKind.LAB, labWhitePointFrom(arr));
+        }
+        return ColorSpaceInfo.UNKNOWN;
+    }
+
+    private static ColorSpaceKind kindForComponentCount(int n) {
         switch (n) {
-            case "/DeviceGray":
-            case "/G":
-            case "/CalGray":
+            case 1:
                 return ColorSpaceKind.GRAY;
-            case "/DeviceRGB":
-            case "/RGB":
-            case "/CalRGB":
+            case 3:
                 return ColorSpaceKind.RGB;
-            case "/DeviceCMYK":
-            case "/CMYK":
+            case 4:
                 return ColorSpaceKind.CMYK;
             default:
                 return ColorSpaceKind.UNKNOWN;
         }
+    }
+
+    /**
+     * Reads the {@code /WhitePoint} of a {@code [/Lab dict]} color-space array, or
+     * {@link #NO_LAB_WHITE_POINT} if absent/malformed (callers fall back to a default D50 white
+     * point).
+     */
+    private static float[] labWhitePointFrom(PdfArray labArray) {
+        if (labArray.size() < 2 || !(labArray.getDirectObject(1) instanceof PdfDictionary dict)) {
+            return NO_LAB_WHITE_POINT;
+        }
+        PdfArray wp = dict.getAsArray(PdfName.WHITEPOINT);
+        if (wp == null || wp.size() < 3) {
+            return NO_LAB_WHITE_POINT;
+        }
+        return new float[]{floatAt(wp, 0), floatAt(wp, 1), floatAt(wp, 2)};
     }
 
     private static Color defaultColorFor(ColorSpaceKind kind) {
@@ -1820,43 +2449,74 @@ final class OpenPdfCorePageRenderer {
     /**
      * Picks numeric operands matching the active color space; non-numeric operands (e.g. pattern names) yield default.
      */
-    private static Color colorFromOperands(ColorSpaceKind kind, List<PdfObject> operands) {
+    private static Color colorFromOperands(ColorSpaceKind kind, float[] labWhitePoint, List<PdfObject> operands) {
+        int numericCount = countNumericOperands(operands);
+        switch (kind) {
+            case GRAY:
+                return numericCount >= 1 ? gray(num(operands, 0)) : defaultColorFor(kind);
+            case RGB:
+                return numericCount >= 3
+                        ? rgb(num(operands, 0), num(operands, 1), num(operands, 2)) : defaultColorFor(kind);
+            case CMYK:
+                return numericCount >= 4
+                        ? cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3))
+                        : defaultColorFor(kind);
+            case LAB:
+                return numericCount >= 3
+                        ? labToRgb(labWhitePoint, num(operands, 0), num(operands, 1), num(operands, 2))
+                        : defaultColorFor(kind);
+            default:
+                // Color space is unknown / unsupported: infer from operand count instead.
+                return colorFromOperandCountOnly(numericCount, operands);
+        }
+    }
+
+    private static int countNumericOperands(List<PdfObject> operands) {
         int numericCount = 0;
         for (int i = 0; i < operands.size() - 1; i++) {
             if (operands.get(i) instanceof PdfNumber) {
                 numericCount++;
             }
         }
-        switch (kind) {
-            case GRAY:
-                if (numericCount >= 1) {
-                    return gray(num(operands, 0));
-                }
-                break;
-            case RGB:
-                if (numericCount >= 3) {
-                    return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
-                }
-                break;
-            case CMYK:
-                if (numericCount >= 4) {
-                    return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
-                }
-                break;
-            default:
-                // Fall through: infer from operand count when color space is unknown / unsupported.
-                if (numericCount >= 4) {
-                    return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
-                }
-                if (numericCount == 3) {
-                    return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
-                }
-                if (numericCount == 1) {
-                    return gray(num(operands, 0));
-                }
-                break;
+        return numericCount;
+    }
+
+    private static Color colorFromOperandCountOnly(int numericCount, List<PdfObject> operands) {
+        if (numericCount >= 4) {
+            return cmyk(num(operands, 0), num(operands, 1), num(operands, 2), num(operands, 3));
         }
-        return defaultColorFor(kind);
+        if (numericCount == 3) {
+            return rgb(num(operands, 0), num(operands, 1), num(operands, 2));
+        }
+        if (numericCount == 1) {
+            return gray(num(operands, 0));
+        }
+        return defaultColorFor(ColorSpaceKind.UNKNOWN);
+    }
+
+    /**
+     * Converts a CIE L*a*b* color (PDF §8.6.5.4) to sRGB via CIEXYZ, using {@code whitePoint}
+     * (fewer than 3 elements, e.g. {@link #NO_LAB_WHITE_POINT}, defaults to D50). Lab components
+     * are not directly comparable to RGB/gray (L is 0-100, a and b are roughly -100..100), so
+     * treating them as raw RGB &mdash; the previous fallback behavior for an unrecognized color
+     * space &mdash; produced wrong colors; this does the standard inverse Lab transform instead.
+     */
+    private static Color labToRgb(float[] whitePoint, float lStar, float aStar, float bStar) {
+        float[] white = whitePoint.length >= 3 ? whitePoint : DEFAULT_LAB_WHITE_POINT;
+        float fy = (lStar + 16f) / 116f;
+        float fx = fy + aStar / 500f;
+        float fz = fy - bStar / 200f;
+        float[] xyz = {
+                white[0] * labInverseF(fx),
+                white[1] * labInverseF(fy),
+                white[2] * labInverseF(fz)
+        };
+        float[] srgb = CIE_SRGB.fromCIEXYZ(xyz);
+        return rgb(clamp01(srgb[0]), clamp01(srgb[1]), clamp01(srgb[2]));
+    }
+
+    private static float labInverseF(float t) {
+        return t >= 6f / 29f ? t * t * t : 3f * (6f / 29f) * (6f / 29f) * (t - 4f / 29f);
     }
 
     private static float clamp01(float v) {
@@ -1869,7 +2529,40 @@ final class OpenPdfCorePageRenderer {
         return v;
     }
 
-    private enum ColorSpaceKind { GRAY, RGB, CMYK, UNKNOWN }
+    private enum ColorSpaceKind { GRAY, RGB, CMYK, LAB, UNKNOWN }
+
+    /**
+     * Result of resolving a {@code cs}/{@code CS} operand: the classified {@link ColorSpaceKind}
+     * plus, for {@link ColorSpaceKind#LAB}, the color space's {@code /WhitePoint} (or an empty
+     * array to use the default) needed to later convert {@code sc}/{@code scn} operands.
+     */
+    private record ColorSpaceInfo(ColorSpaceKind kind, float[] labWhitePoint) {
+        static final ColorSpaceInfo UNKNOWN = new ColorSpaceInfo(ColorSpaceKind.UNKNOWN, NO_LAB_WHITE_POINT);
+
+        // Records generate equals()/hashCode()/toString() from component identity by default,
+        // which for an array component compares references rather than content; override
+        // explicitly so two infos with equal white points compare equal.
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof ColorSpaceInfo other)) {
+                return false;
+            }
+            return kind == other.kind && Arrays.equals(labWhitePoint, other.labWhitePoint);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * kind.hashCode() + Arrays.hashCode(labWhitePoint);
+        }
+
+        @Override
+        public String toString() {
+            return "ColorSpaceInfo[kind=" + kind + ", labWhitePoint=" + Arrays.toString(labWhitePoint) + "]";
+        }
+    }
 
     /**
      * Mutable per-graphics-state snapshot. Not thread-safe.
@@ -1880,6 +2573,11 @@ final class OpenPdfCorePageRenderer {
         Color strokeColor = Color.BLACK;
         ColorSpaceKind fillColorSpace = ColorSpaceKind.GRAY;
         ColorSpaceKind strokeColorSpace = ColorSpaceKind.GRAY;
+        // Set alongside fillColorSpace/strokeColorSpace whenever a `cs`/`CS` resolves to a Lab
+        // color space; NO_LAB_WHITE_POINT (default D50) otherwise. Only meaningful when the
+        // paired ColorSpaceKind is LAB.
+        float[] fillLabWhitePoint = NO_LAB_WHITE_POINT;
+        float[] strokeLabWhitePoint = NO_LAB_WHITE_POINT;
         float fillAlpha = 1.0f;
         float strokeAlpha = 1.0f;
 
@@ -1904,6 +2602,11 @@ final class OpenPdfCorePageRenderer {
         float leading;
         float horizontalScaling = 1.0f;
         float textRise;
+        // PDF §9.3.3 text rendering mode (Tr): 0=fill, 1=stroke, 2=fill+stroke, 3=invisible,
+        // 4-7 add the glyphs to the clipping path in addition to the 0-3 behavior. Clipping
+        // is not implemented; modes 4-7 fall back to their 0-3 counterpart (see
+        // fillsRenderMode/strokesRenderMode/isInvisibleRenderMode).
+        int renderMode;
 
         GState() {
         }
@@ -1913,6 +2616,8 @@ final class OpenPdfCorePageRenderer {
             this.strokeColor = other.strokeColor;
             this.fillColorSpace = other.fillColorSpace;
             this.strokeColorSpace = other.strokeColorSpace;
+            this.fillLabWhitePoint = other.fillLabWhitePoint;
+            this.strokeLabWhitePoint = other.strokeLabWhitePoint;
             this.fillAlpha = other.fillAlpha;
             this.strokeAlpha = other.strokeAlpha;
             this.lineWidth = other.lineWidth;
@@ -1929,8 +2634,10 @@ final class OpenPdfCorePageRenderer {
             this.leading = other.leading;
             this.horizontalScaling = other.horizontalScaling;
             this.textRise = other.textRise;
+            this.renderMode = other.renderMode;
             // hasPendingClip / pendingClipRule are intentionally not copied:
             // the W / W* operators apply to the current path before any q/Q boundary.
+            this.hasPendingClip = false;
         }
     }
 }

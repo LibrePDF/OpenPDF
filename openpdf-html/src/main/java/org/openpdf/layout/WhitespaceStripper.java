@@ -32,10 +32,22 @@ import java.util.regex.Pattern;
  * @author Torbjoern Gannholm
  */
 public class WhitespaceStripper {
+    /**
+     * The largest number of spaces a tab character is replaced with. A larger tab-size is reduced to it.
+     */
+    private static final int MAX_TAB_SIZE = 64;
+
     public final static String SPACE = " ";
     public final static String EOL = "\n";
     public final static char EOLC = '\n';
 
+    /**
+     * Matches a line feed with white space on both sides.
+     *
+     * @deprecated no longer used: the time this pattern needs grows with the square of the length of a run of
+     *         white space. The white space around line feeds is collapsed without a pattern now.
+     */
+    @Deprecated(since = "3.0.7")
     public final static Pattern linefeed_space_collapse = Pattern.compile("\\s+\\n\\s+"); //Pattern is thread-safe
     public final static Pattern linefeed_to_space = Pattern.compile("\\n");
     public final static Pattern tab_to_space = Pattern.compile("\\t");
@@ -129,9 +141,16 @@ public class WhitespaceStripper {
         return text.isEmpty() ? collapseLeading : collapseNext;
     }
 
+    private static String tabReplacement(InlineBox iB) {
+        int tabSize = Math.min((int) iB.getStyle().asFloat(CSSName.TAB_SIZE), MAX_TAB_SIZE);
+        char[] tabs = new char[Math.max(tabSize, 0)];
+        Arrays.fill(tabs, ' ');
+        return new String(tabs);
+    }
+
     private static String collapseWhitespace(InlineBox iB, IdentValue whitespace, String text, boolean collapseLeading) {
         if (whitespace == IdentValue.NORMAL || whitespace == IdentValue.NOWRAP) {
-            text = linefeed_space_collapse.matcher(text).replaceAll(EOL);
+            text = collapseAroundLinefeeds(text);
         } else if (whitespace == IdentValue.PRE) {
             text = space_before_linefeed_collapse.matcher(text).replaceAll(EOL);
         }
@@ -141,10 +160,7 @@ public class WhitespaceStripper {
             text = tab_to_space.matcher(text).replaceAll(SPACE);
             text = space_collapse.matcher(text).replaceAll(SPACE);
         } else if (whitespace == IdentValue.PRE || whitespace == IdentValue.PRE_WRAP) {
-            int tabSize = (int) iB.getStyle().asFloat(CSSName.TAB_SIZE);
-            char[] tabs = new char[tabSize];
-            Arrays.fill(tabs, ' ');
-            text = tab_to_space.matcher(text).replaceAll(new String(tabs));
+            text = tab_to_space.matcher(text).replaceAll(tabReplacement(iB));
         } else if (whitespace == IdentValue.PRE_LINE) {
             text = tab_to_space.matcher(text).replaceAll(SPACE);
             text = space_collapse.matcher(text).replaceAll(SPACE);
@@ -159,6 +175,55 @@ public class WhitespaceStripper {
         }
 
         return text;
+    }
+
+    /**
+     * Replaces every run of white space that has a line feed with white space on both sides of it by a single
+     * line feed. This is what replacing the pattern {@link #linefeed_space_collapse} does, in time that is in
+     * proportion to the length of the text.
+     *
+     * @param text the text
+     * @return the text with the white space around line feeds collapsed
+     */
+    static String collapseAroundLinefeeds(String text) {
+        if (text.indexOf(EOLC) < 0) {
+            return text;
+        }
+        StringBuilder collapsed = new StringBuilder(text.length());
+        int length = text.length();
+        int position = 0;
+        while (position < length) {
+            if (!isPatternWhitespace(text.charAt(position))) {
+                collapsed.append(text.charAt(position));
+                position++;
+                continue;
+            }
+            int end = position + 1;
+            // the position of a line feed in the run that is not its first character, if there is one
+            int linefeed = -1;
+            while (end < length && isPatternWhitespace(text.charAt(end))) {
+                if (linefeed < 0 && text.charAt(end) == EOLC) {
+                    linefeed = end;
+                }
+                end++;
+            }
+            // the line feed must not be the last character of the run either
+            if (linefeed >= 0 && linefeed < end - 1) {
+                collapsed.append(EOLC);
+            } else {
+                collapsed.append(text, position, end);
+            }
+            position = end;
+        }
+        return collapsed.toString();
+    }
+
+    /**
+     * Tells if a character is white space for a pattern: space, tab, line feed, vertical tab, form feed and
+     * carriage return.
+     */
+    private static boolean isPatternWhitespace(char c) {
+        return c == ' ' || c == '\t' || c == '\n' || c == 0x0B || c == '\f' || c == '\r';
     }
 }
 

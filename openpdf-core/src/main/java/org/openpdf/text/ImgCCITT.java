@@ -91,10 +91,7 @@ public class ImgCCITT extends Image {
             throw new BadElementException("Reversing bits is not supported");
         }
         type = IMGRAW;
-        scaledHeight = height;
-        setTop(scaledHeight);
-        scaledWidth = width;
-        setRight(scaledWidth);
+        setDimensions(width, height);
         colorspace = parameters;
         bpc = typeCCITT;
         rawData = data;

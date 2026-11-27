@@ -35,6 +35,8 @@
 package org.openpdf.toolbox.swing;
 
 import java.awt.Toolkit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -48,6 +50,8 @@ import javax.swing.text.PlainDocument;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class CustomDialog {
+
+    private static final Logger LOGGER = Logger.getLogger(CustomDialog.class.getName());
 
     JDialog dialog = null;
     JPanel jPanel1 = new JPanel();
@@ -64,7 +68,7 @@ public class CustomDialog {
         try {
             jbInit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not initialize the dialog", ex);
         }
     }
 

@@ -140,24 +140,24 @@ public class PdfEFStream extends PdfStream {
             if (crypto != null) {
                 fout = ose = crypto.getEncryptionStream(fout);
             }
-            Deflater deflater = null;
-            if (compressed) {
-                deflater = new Deflater(compressionLevel);
-                fout = def = new DeflaterOutputStream(fout, deflater, 0x8000);
-            }
-
-            byte[] buf = new byte[4192];
-            while (true) {
-                int n = inputStream.read(buf);
-                if (n <= 0) {
-                    break;
+            // the deflater is released when the block is left, also when reading or writing fails
+            try (Deflater deflater = compressed ? new Deflater(compressionLevel) : null) {
+                if (deflater != null) {
+                    fout = def = new DeflaterOutputStream(fout, deflater, 0x8000);
                 }
-                fout.write(buf, 0, n);
-                rawLength += n;
-            }
-            if (def != null) {
-                def.finish();
-                deflater.end();
+
+                byte[] buf = new byte[4192];
+                while (true) {
+                    int n = inputStream.read(buf);
+                    if (n <= 0) {
+                        break;
+                    }
+                    fout.write(buf, 0, n);
+                    rawLength += n;
+                }
+                if (def != null) {
+                    def.finish();
+                }
             }
             if (ose != null) {
                 ose.finish();

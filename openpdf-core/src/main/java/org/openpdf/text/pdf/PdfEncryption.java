@@ -121,10 +121,6 @@ public class PdfEncryption {
      */
     byte[] extra = new byte[5];
     /**
-     * The message digest algorithm MD5
-     */
-    MessageDigest md5;
-    /**
      * The encryption key for the owner
      */
     byte[] ownerKey = new byte[32];
@@ -160,12 +156,22 @@ public class PdfEncryption {
 
     private int cryptoMode;
 
-    public PdfEncryption() {
+    /**
+     * Creates a new MD5 message digest. A digest is stateful and not thread safe, so each computation uses its own
+     * instance. MD5 is mandated by the standard security handler of the PDF specification.
+     */
+    @SuppressWarnings("java:S4790")
+    private static MessageDigest newMd5() {
+        MessageDigest md5;
         try {
             md5 = MessageDigest.getInstance("MD5");
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
+        return md5;
+    }
+
+    public PdfEncryption() {
         publicKeyHandler = new PdfPublicKeySecurityHandler();
     }
 
@@ -184,6 +190,7 @@ public class PdfEncryption {
         keyLength = enc.keyLength;
         encryptMetadata = enc.encryptMetadata;
         embeddedFilesOnly = enc.embeddedFilesOnly;
+        cryptoMode = enc.cryptoMode;
         publicKeyHandler = enc.publicKeyHandler;
         if (enc.ueKey != null) {
             ueKey = enc.ueKey.clone();
@@ -297,7 +304,7 @@ public class PdfEncryption {
     public void setCryptoMode(int mode, int kl) {
         cryptoMode = mode;
         encryptMetadata = (mode & PdfWriter.DO_NOT_ENCRYPT_METADATA) == 0;
-        embeddedFilesOnly = (mode & PdfWriter.EMBEDDED_FILES_ONLY) != 0;
+        embeddedFilesOnly = (mode & PdfWriter.EMBEDDED_FILES_ONLY) == PdfWriter.EMBEDDED_FILES_ONLY;
         mode &= PdfWriter.ENCRYPTION_MASK;
         switch (mode) {
             case PdfWriter.STANDARD_ENCRYPTION_40:
@@ -372,6 +379,7 @@ public class PdfEncryption {
     private byte[] computeOwnerKey(byte[] userPad, byte[] ownerPad) {
         byte[] ownerKey = new byte[32];
 
+        MessageDigest md5 = newMd5();
         byte[] digest = md5.digest(ownerPad);
         if (revision == STANDARD_ENCRYPTION_128 || revision == AES_128) {
             byte[] mkey = new byte[keyLength / 8];
@@ -407,7 +415,7 @@ public class PdfEncryption {
         mkey = new byte[keyLength / 8];
 
         // fixed by ujihara in order to follow PDF reference
-        md5.reset();
+        MessageDigest md5 = newMd5();
         md5.update(userPad);
         md5.update(ownerKey);
 
@@ -443,6 +451,7 @@ public class PdfEncryption {
     // use the revision to choose the setup method
     private void setupUserKey() {
         if (revision == STANDARD_ENCRYPTION_128 || revision == AES_128) {
+            MessageDigest md5 = newMd5();
             md5.update(pad);
             byte[] digest = md5.digest(documentID);
             System.arraycopy(digest, 0, userKey, 0, 16);
@@ -467,6 +476,7 @@ public class PdfEncryption {
     public void setupAllKeys(byte[] userPassword, byte[] ownerPassword,
             int permissions) {
         if (ownerPassword == null || ownerPassword.length == 0) {
+            MessageDigest md5 = newMd5();
             ownerPassword = md5.digest(createDocumentId());
         }
         permissions |=
@@ -550,7 +560,7 @@ public class PdfEncryption {
             return;
         }
 
-        md5.reset(); // added by ujihara
+        MessageDigest md5 = newMd5(); // added by ujihara
         extra[0] = (byte) number;
         extra[1] = (byte) (number >> 8);
         extra[2] = (byte) (number >> 16);
@@ -568,6 +578,8 @@ public class PdfEncryption {
         }
     }
 
+    // SHA-1 is required by the PDF public-key security handler
+    @SuppressWarnings("java:S4790")
     public PdfDictionary getEncryptionDictionary() {
         PdfDictionary dic = new PdfDictionary();
 

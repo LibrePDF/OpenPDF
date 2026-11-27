@@ -89,6 +89,9 @@ public class MappedRandomAccessFile implements AutoCloseable {
 
     /**
      * initializes the channel and mapped bytebuffer
+     * <p>
+     * The file is not loaded into memory here. The operating system reads the pages that are accessed, so that
+     * opening a large file is cheap and only the parts that are read use memory.
      *
      * @param channel FileChannel
      * @param mapMode FileChannel.MapMode
@@ -97,11 +100,18 @@ public class MappedRandomAccessFile implements AutoCloseable {
     private void init(FileChannel channel, FileChannel.MapMode mapMode)
             throws IOException {
 
-
         this.channel = channel;
-        this.mappedByteBuffer = new LongMappedByteBuffer(channel, mapMode);
-
-        mappedByteBuffer.load();
+        try {
+            this.mappedByteBuffer = new LongMappedByteBuffer(channel, mapMode);
+        } catch (IOException | RuntimeException e) {
+            // don't leak the file handle (and the mapping) if the file cannot be mapped
+            try {
+                close();
+            } catch (IOException suppressed) {
+                e.addSuppressed(suppressed);
+            }
+            throw e;
+        }
     }
 
     /**
@@ -194,17 +204,26 @@ public class MappedRandomAccessFile implements AutoCloseable {
     }
 
     /**
-     * Cleans the mapped bytebuffer and closes the channel
+     * Cleans the mapped bytebuffer and closes the channel.
+     * <p>
+     * The mapping is released immediately, so the file can be deleted or moved right after this call, also on
+     * Windows.
      *
      * @throws IOException on error
      * @see java.io.RandomAccessFile#close()
      */
     public void close() throws IOException {
-        mappedByteBuffer = null;
-        if (channel != null) {
-            channel.close();
+        try {
+            if (mappedByteBuffer != null) {
+                mappedByteBuffer.close();
+            }
+        } finally {
+            mappedByteBuffer = null;
+            if (channel != null) {
+                channel.close();
+            }
+            channel = null;
         }
-        channel = null;
     }
 
 }

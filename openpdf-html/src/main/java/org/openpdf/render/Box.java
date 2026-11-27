@@ -761,7 +761,11 @@ public abstract class Box implements Styleable {
     }
 
     protected RectPropertySet getStyleMargin(CssContext cssContext) {
-        return getStyle().getMarginRect(getContainingBlockWidth(), cssContext, true);
+        CalculatedStyle style = getStyle();
+        if (style == null) {
+            throw new IllegalStateException("Cannot resolve the margin of a box that has no style");
+        }
+        return style.getMarginRect((float) getContainingBlockWidth(), cssContext, true);
     }
 
     protected RectPropertySet getStyleMarginNoCache(CssContext cssContext) {
