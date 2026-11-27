@@ -129,6 +129,9 @@ public class ImgWMF extends Image {
         try {
             String errorID;
             if (rawData == null) {
+                if (url == null) {
+                    throw new BadElementException("The Windows Metafile has neither data nor a URL to read from.");
+                }
                 is = url.openStream();
                 errorID = url.toString();
             } else {
