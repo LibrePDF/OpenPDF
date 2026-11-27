@@ -1650,8 +1650,29 @@ final class OpenPdfCorePageRenderer {
     /**
      * The pixels of a soft mask, one byte per pixel and row by row.
      */
-    private record GrayRaster(byte[] data, int width, int height) {
+    private static final class GrayRaster {
 
+        private final byte[] data;
+        private final int width;
+        private final int height;
+
+        private GrayRaster(byte[] data, int width, int height) {
+            this.data = data;
+            this.width = width;
+            this.height = height;
+        }
+
+        private byte[] data() {
+            return data;
+        }
+
+        private int width() {
+            return width;
+        }
+
+        private int height() {
+            return height;
+        }
     }
 
     /**
