@@ -90,6 +90,13 @@ public abstract class PdfContentStreamHandler {
      */
     protected Stack<GraphicsState> gsStack;
     /**
+     * Fonts already parsed by this handler, keyed by the object number of their font dictionary.
+     * Constructing a {@link CMapAwareDocumentFont} parses the embedded font program and the
+     * ToUnicode CMap, which is far too expensive to repeat for every Tf operator in the content
+     * stream (issue #1268: a page selecting fonts hundreds of times used gigabytes of memory).
+     */
+    private final Map<Integer, CMapAwareDocumentFont> documentFontCache = new HashMap<>();
+    /**
      * Text matrix.
      */
     protected Matrix textMatrix;
@@ -122,6 +129,18 @@ public abstract class PdfContentStreamHandler {
      * @param operator the operator that will receive notification when the operator is encountered
      * @since 2.1.7
      */
+    /**
+     * Returns the parsed font for the given font dictionary reference, reusing a previously
+     * parsed instance when the same font is selected more than once by this content stream.
+     *
+     * @param fontRef indirect reference to the font dictionary
+     * @return the parsed font
+     */
+    protected CMapAwareDocumentFont getFont(PRIndirectReference fontRef) {
+        return documentFontCache.computeIfAbsent(fontRef.getNumber(),
+                n -> new CMapAwareDocumentFont(fontRef));
+    }
+
     public void registerContentOperator(ContentOperator operator) {
         String operatorString = operator.getOperatorName();
         if (operators.containsKey(operatorString)) {
@@ -203,10 +222,6 @@ public abstract class PdfContentStreamHandler {
                 .ifPresent(contentOperator -> contentOperator.invoke(operands, this, resources));
     }
 
-    abstract void popContext();
-
-    abstract void pushContext(String newContextName);
-
     /**
      * Returns the current graphics state.
      *
@@ -216,7 +231,14 @@ public abstract class PdfContentStreamHandler {
         return gsStack.peek();
     }
 
-    public abstract void reset();
+    public void reset() {
+        if (gsStack == null || gsStack.isEmpty()) {
+            gsStack = new Stack<>();
+        }
+        gsStack.add(new GraphicsState());
+        textMatrix = null;
+        textLineMatrix = null;
+    }
 
     /**
      * Returns the current text matrix.
@@ -256,11 +278,28 @@ public abstract class PdfContentStreamHandler {
     }
 
     /**
+     * Custom context creation function.
+     */
+    abstract void pushContext(String newContextName);
+
+    /**
+     * Custom context assembler function when finalized parsing the current context.
+     */
+    abstract void popContext();
+
+    /**
      * Displays text.
      *
      * @param string the text to display
      */
-    abstract void displayPdfString(PdfString string);
+    void parsePdfString(PdfString string) {
+        ParsedText renderInfo = ParsedText.create(string, graphicsState(), textMatrix);
+        if (contextNames.peek() != null) {
+            textFragments.add(renderInfo);
+        }
+        textMatrix = new Matrix(renderInfo.getUnscaledTextWidth(graphicsState()), 0)
+                .multiply(textMatrix);
+    }
 
     /**
      * @return result text
@@ -285,7 +324,7 @@ public abstract class PdfContentStreamHandler {
             PdfArray array = (PdfArray) operands.get(0);
             for (PdfObject entryObj : array.getElements()) {
                 if (entryObj instanceof PdfString) {
-                    handler.displayPdfString((PdfString) entryObj);
+                    handler.parsePdfString((PdfString) entryObj);
                 } else {
                     float tj = ((PdfNumber) entryObj).floatValue();
                     handler.applyTextAdjust(tj);
@@ -487,7 +526,6 @@ public abstract class PdfContentStreamHandler {
                 PdfObject pdfObject = fontParameter.getPdfObject(0);
                 CMapAwareDocumentFont font = new CMapAwareDocumentFont((PRIndirectReference) pdfObject);
                 float size = fontParameter.getAsNumber(1).floatValue();
-
                 handler.graphicsState().setFont(font);
                 handler.graphicsState().setFontSize(size);
             }
@@ -555,7 +593,7 @@ public abstract class PdfContentStreamHandler {
 
             PdfDictionary fontsDictionary = resources.getAsDict(PdfName.FONT);
             PdfObject pdfObject = fontsDictionary.get(fontResourceName);
-            CMapAwareDocumentFont font = new CMapAwareDocumentFont((PRIndirectReference) pdfObject);
+            CMapAwareDocumentFont font = handler.getFont((PRIndirectReference) pdfObject);
 
             handler.graphicsState().setFont(font);
             handler.graphicsState().setFontSize(size);
@@ -633,7 +671,7 @@ public abstract class PdfContentStreamHandler {
         @Override
         public void invoke(List<PdfObject> operands, PdfContentStreamHandler handler, PdfDictionary resources) {
             PdfString string = (PdfString) operands.get(0);
-            handler.displayPdfString(string);
+            handler.parsePdfString(string);
         }
     }
 

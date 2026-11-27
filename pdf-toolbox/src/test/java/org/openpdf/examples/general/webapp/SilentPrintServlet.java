@@ -124,8 +124,8 @@ public class SilentPrintServlet extends HttpServlet {
 
     private void formular(ServletOutputStream out, HttpServletRequest requ,
             int sub) throws IOException {
+        // The links are relative to the current URL, so the request URI is never echoed into the page.
         out.print("<form method='post' action='");
-        out.print(requ.getRequestURI());
         out.print("?action=");
         out.print(ACT_INIT);
         out.print("&sub=");
@@ -143,7 +143,6 @@ public class SilentPrintServlet extends HttpServlet {
             if (requ.getParameter("preview") != null) {
                 out.println("<script language='JavaScript'>");
                 out.print("w = window.open(\"");
-                out.print(requ.getRequestURI());
                 out.print("?action=");
                 out.print(sub);
                 out.print(
@@ -151,7 +150,6 @@ public class SilentPrintServlet extends HttpServlet {
                 out.println("</script>");
             } else {
                 out.print("<iframe src='");
-                out.print(requ.getRequestURI());
                 out.print("?action=");
                 out.print(sub);
                 out.println("' width='10' height='10' name='pdf_box'>");

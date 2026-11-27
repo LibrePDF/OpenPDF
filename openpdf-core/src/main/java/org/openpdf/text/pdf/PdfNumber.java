@@ -136,19 +136,25 @@ public class PdfNumber extends PdfObject implements Comparable<PdfNumber> {
     /**
      * Returns the primitive <CODE>int</CODE> value of this object.
      * <p>
-     * Some PDF producers write 32-bit values that are meant to be interpreted as a two's-complement
-     * signed integer (for example the {@code /P} entry of an encryption dictionary) using their
-     * equivalent unsigned decimal representation instead of the negative signed value, e.g.
-     * {@code 4294965956} instead of {@code -1340}. A plain {@code (int) value} narrowing cast on the
-     * underlying <CODE>double</CODE> would clamp such an out-of-range value to
-     * {@link Integer#MAX_VALUE} rather than wrapping it, silently corrupting values like that. Going
-     * through <CODE>long</CODE> first reproduces the C-style truncation to the low-order 32 bits that
-     * PDF producers/consumers expect.
+     * The conversion goes through <CODE>long</CODE> to preserve two's complement semantics for
+     * values written as unsigned 32-bit integers. Some PDF producers (e.g. mPDF) store the
+     * <CODE>/P</CODE> permissions entry as an unsigned value such as 4294963412 instead of the
+     * signed -3884 required by ISO 32000; a direct double-to-int cast would clamp such values to
+     * <CODE>Integer.MAX_VALUE</CODE> (JLS 5.1.3) and break the encryption key derivation.
      *
      * @return The value as <CODE>int</CODE>
      */
     public int intValue() {
         return (int) (long) value;
+    }
+
+    /**
+     * Returns the primitive <CODE>long</CODE> value of this object.
+     *
+     * @return The value as <CODE>long</CODE>
+     */
+    public long longValue() {
+        return (long) value;
     }
 
     /**

@@ -872,6 +872,7 @@ public class PdfDocument extends Document {
         if (isPageEmpty()) {
             setNewPageSizeAndMargins();
             resetText(true);
+            initPage();
             return false;
         }
         if (!open || close) {

@@ -1,13 +1,22 @@
 package org.openpdf.text.pdf;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.Test;
+import org.openpdf.text.Document;
 import org.openpdf.text.Element;
+import org.openpdf.text.Font;
+import org.openpdf.text.HeaderFooter;
+import org.openpdf.text.PageSize;
 import org.openpdf.text.Paragraph;
+import java.io.FileOutputStream;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
+import org.openpdf.text.Phrase;
 
 class PdfDocumentTest {
 
@@ -57,4 +66,36 @@ class PdfDocumentTest {
         return firstCell.getColumn().compositeElements;
     }
 
+    @Test
+    void createPdfFileWithAutoPageBreak() throws Exception {
+        Path output = Path.of("openpdf-test.pdf");
+        Document document = new Document(PageSize.A4);
+        PdfWriter writer = PdfWriter.getInstance(
+                document,
+                new FileOutputStream(output.toFile())
+        );
+        document.setHeader(new HeaderFooter(false, new Phrase("Header")));
+        document.setFooter(new HeaderFooter(false, new Phrase("Footer")));
+        document.open();
+        Font font = new Font(Font.HELVETICA, 12);
+
+        for (int i = 0; i < 50; i++) {
+            if (i == 37) {
+                document.newPage();
+            }
+            var pdf = writer.getPdfDocument();
+            var headerFielt = PdfDocument.class.getDeclaredField("text");
+            headerFielt.setAccessible(true);
+            var text = (PdfContentByte) headerFielt.get(pdf);
+            assertTrue(String.valueOf(text.getInternalBuffer()).contains("Header"),
+                    "Header not found: %d".formatted(i));
+            assertTrue(String.valueOf(text.getInternalBuffer()).contains("Footer"),
+                    "Footer not found: %d".formatted(i));
+            document.add(new Paragraph(
+                    "This is line " + i + " of a long text to force automatic page breaks.",
+                    font
+            ));
+        }
+        document.close();
+    }
 }

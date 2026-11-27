@@ -38,6 +38,9 @@ import org.openpdf.renderer.PDFObject;
  */
 public class Type1CFont extends OutlineFont {
 
+    /** shared source for the Type 2 charstring "random" operator */
+    private static final java.security.SecureRandom RANDOM = new java.security.SecureRandom();
+
     String[] chr2name = new String[256];
 
     byte[] data;
@@ -938,6 +941,7 @@ public class Type1CFont extends OutlineFont {
                     break;
                 case 30: // vhcurveto
                     hold = 4;
+                    //fallthru
                 case 31: // hvcurveto
                     for (i = 0; i < this.stackptr;) {
                         boolean hv = (((i + hold) & 4) == 0);
@@ -1021,7 +1025,7 @@ public class Type1CFont extends OutlineFont {
                     this.stackptr -= 3;
                     break;
                 case 1023: // random
-                    this.stack[this.stackptr++] = new java.security.SecureRandom().nextFloat();
+                    this.stack[this.stackptr++] = RANDOM.nextFloat();
                     break;
                 case 1024: // mul
                     x1 = this.stack[--this.stackptr];

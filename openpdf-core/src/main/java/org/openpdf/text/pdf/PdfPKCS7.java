@@ -57,6 +57,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.MessageDigest;
@@ -66,8 +67,16 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CRL;
+import java.security.cert.CertPathBuilder;
+import java.security.cert.CertPathBuilderException;
+import java.security.cert.CertStore;
 import java.security.cert.Certificate;
+import java.security.cert.CollectionCertStoreParameters;
+import java.security.cert.PKIXBuilderParameters;
+import java.security.cert.PKIXCertPathBuilderResult;
+import java.security.cert.TrustAnchor;
 import java.security.cert.X509CRL;
+import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,6 +149,8 @@ public class PdfPKCS7 {
     private static final String ID_MESSAGE_DIGEST = "1.2.840.113549.1.9.4";
     private static final String ID_SIGNING_TIME = "1.2.840.113549.1.9.5";
     private static final String ID_ADBE_REVOCATION = "1.2.840.113583.1.1.8";
+    private static final String CANNOT_BE_VERIFIED =
+            "Cannot be verified against the KeyStore or the certificate chain";
     private static final String DIGEST_SHA3_256 = "SHA3-256";
     private static final String DIGEST_SHA3_512 = "SHA3-512";
     private static final Map<String, String> digestNames = new HashMap<>();
@@ -243,6 +254,9 @@ public class PdfPKCS7 {
     private List<Certificate> signCerts;
     private X509Certificate signCert;
     private byte[] digest;
+    // The digest accumulates the signed content across successive update() calls, exactly like the Signature below,
+    // so it has to live as long as this object. Instances of this class are not meant to be shared between threads.
+    @SuppressWarnings("java:S9428")
     private MessageDigest messageDigest;
     private String digestAlgorithm, digestEncryptionAlgorithm;
     private Signature sig;
@@ -278,7 +292,8 @@ public class PdfPKCS7 {
      * @param certsKey    the /Cert key
      * @param provider    the provider or <code>null</code> for the default provider
      */
-    @SuppressWarnings("unchecked")
+    // SHA-1 is required by the PDF signature sub-filter adbe.x509.rsa_sha1
+    @SuppressWarnings({"unchecked", "java:S4790"})
     public PdfPKCS7(byte[] contentsKey, byte[] certsKey, String provider) {
         try {
             this.provider = provider;
@@ -662,7 +677,11 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Verifies a single certificate.
+     * Verifies a single certificate: that it has no unsupported critical extension, that it is valid at the given
+     * date, and that it is not listed in the given certificate revocation lists.
+     * <p>
+     * The certificate revocation lists are used as they are. Their signatures, issuers and validity are not checked,
+     * so only pass lists from a trusted source, not lists that were embedded in the signature.
      *
      * @param cert     the certificate to verify
      * @param crls     the certificate revocation list or <CODE>null</CODE>
@@ -694,10 +713,19 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Verifies a certificate chain against a KeyStore.
+     * Verifies a certificate against a KeyStore.
+     * <p>
+     * The first certificate of <CODE>certs</CODE> is the one that is verified, which is the signing certificate for
+     * the arrays returned by {@link #getSignCertificateChain()} and {@link #getCertificates()}. It is accepted when
+     * it is one of the trusted certificates of the KeyStore, or when a certification path leads from it to one of
+     * them. The other certificates of <CODE>certs</CODE> are only used as intermediate certificates of that path.
+     * <p>
+     * The path is validated with the PKIX algorithm: every certificate has to be issued by the next one, and the
+     * issuing certificates have to be certification authorities. Revocation is only checked against the given
+     * certificate revocation lists.
      *
-     * @param certs    the certificate chain
-     * @param keystore the <CODE>KeyStore</CODE>
+     * @param certs    the certificate to verify, followed by the other certificates of its chain
+     * @param keystore the <CODE>KeyStore</CODE> with the trusted certificates
      * @param crls     the certificate revocation list or <CODE>null</CODE>
      * @param calendar the date or <CODE>null</CODE> for the current date
      * @return <CODE>null</CODE> if the certificate chain could be validated or a
@@ -709,54 +737,76 @@ public class PdfPKCS7 {
         if (calendar == null) {
             calendar = new GregorianCalendar();
         }
-        for (int k = 0; k < certs.length; ++k) {
-            X509Certificate cert = (X509Certificate) certs[k];
-            String err = verifyCertificate(cert, crls, calendar);
-            if (err != null) {
-                return new Object[]{cert, err};
-            }
-            try {
-                for (Enumeration aliases = keystore.aliases(); aliases
-                        .hasMoreElements(); ) {
-                    try {
-                        String alias = (String) aliases.nextElement();
-                        if (!keystore.isCertificateEntry(alias)) {
-                            continue;
-                        }
-                        X509Certificate certStoreX509 = (X509Certificate) keystore
-                                .getCertificate(alias);
-                        if (verifyCertificate(certStoreX509, crls, calendar) != null) {
-                            continue;
-                        }
-                        try {
-                            cert.verify(certStoreX509.getPublicKey());
-                            return null;
-                        } catch (Exception ignored) {
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
-            } catch (Exception ignored) {
-            }
-            int j;
-            for (j = 0; j < certs.length; ++j) {
-                if (j == k) {
-                    continue;
-                }
-                X509Certificate certNext = (X509Certificate) certs[j];
-                try {
-                    cert.verify(certNext.getPublicKey());
-                    break;
-                } catch (Exception ignored) {
+        if (certs == null || certs.length == 0) {
+            return new Object[]{null, "There is no certificate to verify"};
+        }
+        X509Certificate cert = (X509Certificate) certs[0];
+        String err = verifyCertificate(cert, crls, calendar);
+        if (err != null) {
+            return new Object[]{cert, err};
+        }
+        try {
+            Set<TrustAnchor> anchors = getTrustAnchors(keystore, crls, calendar);
+            for (TrustAnchor anchor : anchors) {
+                if (cert.equals(anchor.getTrustedCert())) {
+                    return null;
                 }
             }
-            if (j == certs.length) {
-                return new Object[]{cert,
-                        "Cannot be verified against the KeyStore or the certificate chain"};
+            if (anchors.isEmpty()) {
+                return new Object[]{cert, CANNOT_BE_VERIFIED};
+            }
+            return verifyCertificationPath(cert, certs, anchors, crls, calendar);
+        } catch (CertPathBuilderException e) {
+            return new Object[]{cert, CANNOT_BE_VERIFIED};
+        } catch (GeneralSecurityException e) {
+            return new Object[]{cert, CANNOT_BE_VERIFIED + ": " + e.getMessage()};
+        }
+    }
+
+    /**
+     * Gets the certificates of a KeyStore that are trusted and valid at the given date.
+     */
+    private static Set<TrustAnchor> getTrustAnchors(KeyStore keystore, Collection crls, Calendar calendar)
+            throws GeneralSecurityException {
+        Set<TrustAnchor> anchors = new HashSet<>();
+        for (Enumeration<String> aliases = keystore.aliases(); aliases.hasMoreElements(); ) {
+            String alias = aliases.nextElement();
+            if (!keystore.isCertificateEntry(alias)
+                    || !(keystore.getCertificate(alias) instanceof X509Certificate trusted)) {
+                continue;
+            }
+            if (verifyCertificate(trusted, crls, calendar) == null) {
+                anchors.add(new TrustAnchor(trusted, null));
             }
         }
-        return new Object[]{null,
-                "Invalid state. Possible circular certificate chain"};
+        return anchors;
+    }
+
+    /**
+     * Builds and validates the certification path from a certificate to one of the trust anchors.
+     *
+     * @return <CODE>null</CODE> if the path is valid or the failed certificate and the error message
+     * @throws CertPathBuilderException if there is no valid path
+     */
+    private static Object[] verifyCertificationPath(X509Certificate cert, Certificate[] certs,
+            Set<TrustAnchor> anchors, Collection crls, Calendar calendar) throws GeneralSecurityException {
+        X509CertSelector target = new X509CertSelector();
+        target.setCertificate(cert);
+        PKIXBuilderParameters parameters = new PKIXBuilderParameters(anchors, target);
+        parameters.addCertStore(CertStore.getInstance("Collection",
+                new CollectionCertStoreParameters(Arrays.asList(certs))));
+        parameters.setDate(calendar.getTime());
+        // revocation is checked below, against the certificate revocation lists that were passed in
+        parameters.setRevocationEnabled(false);
+        PKIXCertPathBuilderResult result =
+                (PKIXCertPathBuilderResult) CertPathBuilder.getInstance("PKIX").build(parameters);
+        for (Certificate intermediate : result.getCertPath().getCertificates()) {
+            String err = verifyCertificate((X509Certificate) intermediate, crls, calendar);
+            if (err != null) {
+                return new Object[]{intermediate, err};
+            }
+        }
+        return null;
     }
 
     /**
@@ -904,6 +954,11 @@ public class PdfPKCS7 {
     /**
      * Gets the timestamp date
      *
+     * <p>
+     * The date is read from the timestamp token as it is. The signature and the certificate of the timestamp
+     * authority are not verified by this class, so the date is only as trustworthy as the source of the document.
+     * {@link #verifyTimestampImprint()} only checks that the token belongs to this signature.
+     *
      * @return a date
      * @since 2.1.6
      */
@@ -980,6 +1035,18 @@ public class PdfPKCS7 {
 
     /**
      * Verify the digest.
+     * <p>
+     * This only checks the integrity of the signed bytes: that they were signed with the private key of the
+     * certificate returned by {@link #getSigningCertificate()}. It says nothing about who holds that key. A signature
+     * made with a self-signed certificate verifies as well. To decide whether a signature can be trusted, also
+     * <ul>
+     * <li>verify the signing certificate against trusted certificates, see
+     * {@link #verifyCertificates(Certificate[], KeyStore, Collection, Calendar)},</li>
+     * <li>check that the signature covers the whole document, see
+     * {@link AcroFields#signatureCoversWholeDocument(String)},</li>
+     * <li>check that the digest algorithm, see {@link #getHashAlgorithm()}, is acceptable. Signatures made with MD2,
+     * MD5 or RIPEMD128 are verified by this method, but those algorithms are not collision resistant.</li>
+     * </ul>
      *
      * @return <CODE>true</CODE> if the signature checks out, <CODE>false</CODE>
      * otherwise
@@ -1028,13 +1095,17 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Get all the X.509 certificates associated with this PKCS#7 object in no particular order. Other certificates,
-     * from OCSP for example, will also be included.
+     * Get all the X.509 certificates associated with this PKCS#7 object. The signing certificate comes first, the
+     * others follow in no particular order. Other certificates, from OCSP for example, will also be included.
      *
      * @return the X.509 certificates associated with this PKCS#7 object
      */
     public Certificate[] getCertificates() {
-        return certs.toArray(new Certificate[0]);
+        List<Certificate> all = new ArrayList<>(certs);
+        if (signCert != null && all.remove(signCert)) {
+            all.add(0, signCert);
+        }
+        return all.toArray(new Certificate[0]);
     }
 
     // OJO... Modificacion de
@@ -1202,7 +1273,7 @@ public class PdfPKCS7 {
         // ML-DSA (NIST FIPS 204) is a single-shot signature scheme whose JCE
         // service name (e.g. "ML-DSA-65") is not combined with a separate
         // message-digest algorithm.
-        if (dea.startsWith("ML-DSA")) {
+        if (dea != null && dea.startsWith("ML-DSA")) {
             return dea;
         }
 
@@ -1622,6 +1693,9 @@ public class PdfPKCS7 {
 
     /**
      * Getter for property signDate.
+     *
+     * <p>
+     * The date is the one the signer wrote into the signature dictionary. It is not authenticated.
      *
      * @return Value of property signDate.
      */

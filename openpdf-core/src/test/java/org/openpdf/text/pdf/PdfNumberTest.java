@@ -4,28 +4,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for issue #1585: some PDF producers (e.g. mPDF) write the /P permissions entry of the
+ * encryption dictionary as an unsigned 32-bit integer (4294963412) instead of the signed value
+ * required by ISO 32000 (-3884). {@link PdfNumber#intValue()} used a direct double-to-int cast,
+ * which clamps values above {@code Integer.MAX_VALUE} (JLS 5.1.3) instead of preserving the bit
+ * pattern, so the RC4/AES key derivation used a wrong /P and threw BadPasswordException even for
+ * documents with an empty user password.
+ */
 class PdfNumberTest {
 
-    /**
-     * Some PDF producers write the encryption dictionary's {@code /P} (permissions) entry using its
-     * equivalent unsigned 32-bit decimal representation instead of the negative signed value, e.g.
-     * {@code 4294965956} instead of {@code -1340}. {@link PdfNumber#intValue()} must truncate such a
-     * value to its low-order 32 bits rather than clamping it to {@link Integer#MAX_VALUE}, otherwise
-     * the permission bits used to derive the decryption key no longer match the value the producer
-     * used, and a document with an empty user password is wrongly reported as requiring a password.
-     */
     @Test
-    void intValueTruncatesOutOfRangeUnsignedRepresentationInsteadOfClamping() {
-        assertEquals(-1340, new PdfNumber("4294965956").intValue());
-        assertEquals(-1, new PdfNumber("4294967295").intValue());
-        assertEquals(Integer.MIN_VALUE, new PdfNumber(String.valueOf(1L << 31)).intValue());
+    void intValueWrapsUnsignedInt32() {
+        // 4294963412 == 0xFFFFF0D4 == -3884 as signed int32 (the mPDF example from the issue)
+        assertEquals(-3884, new PdfNumber("4294963412").intValue(),
+                "Unsigned int32 must wrap to its two's complement value, not clamp to Integer.MAX_VALUE");
+        assertEquals(-4, new PdfNumber("4294967292").intValue());
+        assertEquals(Integer.MIN_VALUE, new PdfNumber("2147483648").intValue());
     }
 
     @Test
-    void intValueRoundTripsValuesWithinIntRange() {
-        assertEquals(-1340, new PdfNumber("-1340").intValue());
+    void intValueUnchangedForSignedRange() {
+        assertEquals(-3884, new PdfNumber("-3884").intValue());
         assertEquals(0, new PdfNumber("0").intValue());
-        assertEquals(Integer.MAX_VALUE, new PdfNumber(String.valueOf(Integer.MAX_VALUE)).intValue());
-        assertEquals(Integer.MIN_VALUE, new PdfNumber(String.valueOf(Integer.MIN_VALUE)).intValue());
+        assertEquals(42, new PdfNumber(42).intValue());
+        assertEquals(Integer.MAX_VALUE, new PdfNumber(Integer.MAX_VALUE).intValue());
+        assertEquals(Integer.MIN_VALUE, new PdfNumber(Integer.MIN_VALUE).intValue());
+        assertEquals(3, new PdfNumber(3.9).intValue(), "Fractional values still truncate toward zero");
+        assertEquals(-3, new PdfNumber(-3.9).intValue(), "Fractional values still truncate toward zero");
     }
 }

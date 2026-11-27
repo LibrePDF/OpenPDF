@@ -338,6 +338,9 @@ public class PdfAction extends PdfDictionary {
      * @return the JavaScript action
      */
     public static PdfAction javaScript(String code, PdfWriter writer, boolean unicode) {
+        if (code == null) {
+            throw new IllegalArgumentException("The JavaScript code must not be null.");
+        }
         PdfAction js = new PdfAction();
         js.put(PdfName.S, PdfName.JAVASCRIPT);
         if (unicode && code.length() < 50) {

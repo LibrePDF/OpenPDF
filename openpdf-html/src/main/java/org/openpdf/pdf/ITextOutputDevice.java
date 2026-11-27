@@ -164,8 +164,36 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
 
     private final Set<String> _linkTargetAreas = new HashSet<>();
 
+    private boolean _onclickJavaScriptEnabled;
+
     public ITextOutputDevice(float dotsPerPoint) {
         _dotsPerPoint = dotsPerPoint;
+    }
+
+    /**
+     * Returns whether the <code>onclick</code> attribute of a link to an anchor in the same document is
+     * written to the PDF as a JavaScript action.
+     *
+     * @return true if the attribute is used, false (the default) if it is ignored
+     * @see #setOnclickJavaScriptEnabled(boolean)
+     */
+    public boolean isOnclickJavaScriptEnabled() {
+        return _onclickJavaScriptEnabled;
+    }
+
+    /**
+     * Sets whether the <code>onclick</code> attribute of a link to an anchor in the same document
+     * (<code>&lt;a href="#name" onclick="..."&gt;</code>) is written to the PDF as a JavaScript action
+     * instead of the action that goes to the anchor. The script runs in PDF viewers that support JavaScript
+     * when the link is clicked.
+     *
+     * <p>This is off by default, because the script comes from the document being rendered. Only enable
+     * it for documents from a trusted source.
+     *
+     * @param onclickJavaScriptEnabled true to write the attribute as a JavaScript action
+     */
+    public void setOnclickJavaScriptEnabled(boolean onclickJavaScriptEnabled) {
+        _onclickJavaScriptEnabled = onclickJavaScriptEnabled;
     }
 
     public void setWriter(PdfWriter writer) {
@@ -280,9 +308,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                         PdfDestination dest = createDestination(c, target);
 
                         if (dest != null) {
-                            PdfAction action = handler.getAttributeValue(elem, "onclick").isEmpty() ?
-                                    gotoDestination(dest) :
-                                    PdfAction.javaScript(handler.getAttributeValue(elem, "onclick"), _writer);
+                            PdfAction action = internalLinkAction(handler.getAttributeValue(elem, "onclick"), dest);
 
                             checkLinkArea(c, box).ifPresent(targetArea -> {
                                 targetArea.setBorder(0);
@@ -300,6 +326,13 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                 }
             }
         }
+    }
+
+    private PdfAction internalLinkAction(@Nullable String onclick, PdfDestination dest) {
+        if (_onclickJavaScriptEnabled && onclick != null && !onclick.isEmpty()) {
+            return PdfAction.javaScript(onclick, _writer);
+        }
+        return gotoDestination(dest);
     }
 
     private static PdfAction gotoDestination(PdfDestination dest) {
@@ -739,19 +772,19 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
         if (newStroke == oldStroke) {
             return;
         }
-        if (!(newStroke instanceof BasicStroke nStroke)) {
+        if (!(newStroke instanceof BasicStroke newBasicStroke)) {
             return;
         }
         boolean oldOk = (oldStroke instanceof BasicStroke);
-        BasicStroke oStroke = null;
+        BasicStroke oldBasicStroke = null;
         if (oldOk) {
-            oStroke = (BasicStroke) oldStroke;
+            oldBasicStroke = (BasicStroke) oldStroke;
         }
-        if (!oldOk || nStroke.getLineWidth() != oStroke.getLineWidth()) {
-            cb.setLineWidth(nStroke.getLineWidth());
+        if (!oldOk || newBasicStroke.getLineWidth() != oldBasicStroke.getLineWidth()) {
+            cb.setLineWidth(newBasicStroke.getLineWidth());
         }
-        if (!oldOk || nStroke.getEndCap() != oStroke.getEndCap()) {
-            switch (nStroke.getEndCap()) {
+        if (!oldOk || newBasicStroke.getEndCap() != oldBasicStroke.getEndCap()) {
+            switch (newBasicStroke.getEndCap()) {
             case BasicStroke.CAP_BUTT:
                 cb.setLineCap(0);
                 break;
@@ -762,8 +795,8 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                 cb.setLineCap(1);
             }
         }
-        if (!oldOk || nStroke.getLineJoin() != oStroke.getLineJoin()) {
-            switch (nStroke.getLineJoin()) {
+        if (!oldOk || newBasicStroke.getLineJoin() != oldBasicStroke.getLineJoin()) {
+            switch (newBasicStroke.getLineJoin()) {
             case BasicStroke.JOIN_MITER:
                 cb.setLineJoin(0);
                 break;
@@ -774,12 +807,12 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                 cb.setLineJoin(1);
             }
         }
-        if (!oldOk || nStroke.getMiterLimit() != oStroke.getMiterLimit()) {
-            cb.setMiterLimit(nStroke.getMiterLimit());
+        if (!oldOk || newBasicStroke.getMiterLimit() != oldBasicStroke.getMiterLimit()) {
+            cb.setMiterLimit(newBasicStroke.getMiterLimit());
         }
-        boolean makeDash = isMakeDash(oldOk, nStroke, oStroke);
+        boolean makeDash = isMakeDash(oldOk, newBasicStroke, oldBasicStroke);
         if (makeDash) {
-            float[] dash = nStroke.getDashArray();
+            float[] dash = newBasicStroke.getDashArray();
             if (dash == null) {
                 cb.setLiteral("[]0 d\n");
             } else {
@@ -789,7 +822,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                     cb.setLiteral(' ');
                 }
                 cb.setLiteral(']');
-                cb.setLiteral(nStroke.getDashPhase());
+                cb.setLiteral(newBasicStroke.getDashPhase());
                 cb.setLiteral(" d\n");
             }
         }

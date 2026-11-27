@@ -102,7 +102,9 @@ public class PostTable extends TrueTypeTable {
         buf.putInt(getMaxMemType1());
         
         // now write the table
-        buf.put(this.nameMap.getData());
+        if (this.nameMap != null) {
+            buf.put(this.nameMap.getData());
+        }
         
         // reset the start pointer
         buf.flip();
