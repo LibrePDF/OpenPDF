@@ -212,8 +212,8 @@ public class ArabicLigaturizer {
         return ((s >= 0x064B) && (s <= 0x0655)) || (s == 0x0670);
     }
 
-    static char charshape(char s, int which)
-        /* which 0=isolated 1=final 2=initial 3=medial */ {
+    /* which 0=isolated 1=final 2=initial 3=medial */
+    static char charshape(char s, int which) {
         int l, r, m;
         if ((s >= 0x0621) && (s <= 0x06D3)) {
             l = 0;
@@ -403,8 +403,8 @@ public class ArabicLigaturizer {
     }
 
     // return len
-    static void doublelig(StringBuffer string, int level)
-    /* Ok. We have presentation ligatures in our font. */ {
+    /* Ok. We have presentation ligatures in our font. */
+    static void doublelig(StringBuffer string, int level) {
         int len;
         int olen = len = string.length();
         int j = 0, si = 1;
