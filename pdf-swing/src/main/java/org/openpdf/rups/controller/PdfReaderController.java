@@ -241,13 +241,11 @@ public class PdfReaderController extends Observable implements Observer {
      * @param pageNumber the page number that needs to be selected
      */
     public void gotoPage(int pageNumber) {
-        pageNumber--;
-        if (pages == null || pages.getSelectedRow() == pageNumber) {
+        int row = pageNumber - 1;
+        if (pages == null || row < 0 || row >= pages.getRowCount() || pages.getSelectedRow() == row) {
             return;
         }
-        if (pageNumber < pages.getRowCount()) {
-            pages.setRowSelectionInterval(pageNumber, pageNumber);
-        }
+        pages.setRowSelectionInterval(row, row);
     }
 
     /**
