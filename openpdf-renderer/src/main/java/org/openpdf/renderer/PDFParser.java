@@ -29,7 +29,10 @@ import java.nio.ByteBuffer;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Set;
 import java.util.Stack;
 
 import org.openpdf.renderer.colorspace.PDFColorSpace;
@@ -56,6 +59,9 @@ import org.openpdf.renderer.colorspace.PatternSpace;
 */
 @Deprecated
 public class PDFParser extends BaseWatchable {
+    /** the form XObjects that the current thread is parsing */
+    private static final ThreadLocal<Set<PDFObject>> FORMS_IN_PROGRESS =
+            ThreadLocal.withInitial(() -> Collections.newSetFromMap(new IdentityHashMap<>()));
     private int mDebugCommandIndex;
     // ---- parsing variables
     private Stack<Object> stack; // stack of Object
@@ -955,14 +961,28 @@ public class PDFParser extends BaseWatchable {
     */
     @Override
     public void cleanup() {
-        this.state.textFormat.flush();
-        this.cmds.finish();
+        try {
+            this.state.textFormat.flush();
+        } finally {
+            finishPage();
+        }
         this.stack = null;
         this.parserStates = null;
         this.state = null;
         this.path = null;
         this.cmds = null;
         this.tok = null;
+    }
+
+    /**
+    * Mark the page as finished, whatever happened while it was parsed, so
+    * that nobody keeps waiting for it.
+    */
+    private void finishPage() {
+        PDFPage page = this.cmds != null ? this.cmds : this.pageRef.get();
+        if (page != null) {
+            page.finish();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////
@@ -1006,7 +1026,7 @@ public class PDFParser extends BaseWatchable {
         if (type.equals("Image")) {
             doImage(obj);
         } else if (type.equals("Form")) {
-            doForm(obj);
+            doFormOnce(obj);
         } else {
             throw new PDFParseException("Unknown XObject subtype: " + type);
         }
@@ -1031,6 +1051,31 @@ public class PDFParser extends BaseWatchable {
                 }
             }
             this.cmds.addImage(PDFImage.createImage(obj, this.resources, false));
+        }
+    }
+
+    /**
+    * Inject a form, unless the current thread is parsing that form at the
+    * moment: a form that draws itself, directly or through another form,
+    * has no end.
+    *
+    * @param obj
+    * the form
+    */
+    private void doFormOnce(PDFObject obj) throws IOException {
+        PDFObject form = obj.dereference();
+        Set<PDFObject> inProgress = FORMS_IN_PROGRESS.get();
+        if (!inProgress.add(form)) {
+            PDFDebugger.debug("Ignoring a form XObject that draws itself");
+            return;
+        }
+        try {
+            doForm(obj);
+        } finally {
+            inProgress.remove(form);
+            if (inProgress.isEmpty()) {
+                FORMS_IN_PROGRESS.remove();
+            }
         }
     }
 

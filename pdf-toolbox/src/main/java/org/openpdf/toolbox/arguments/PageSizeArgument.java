@@ -38,6 +38,8 @@ package org.openpdf.toolbox.arguments;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Field;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import org.openpdf.text.PageSize;
@@ -49,6 +51,8 @@ import org.openpdf.toolbox.AbstractTool;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class PageSizeArgument extends OptionArgument {
+
+    private static final Logger LOGGER = Logger.getLogger(PageSizeArgument.class.getName());
 
     private TreeMap<String, String> options = new TreeMap<>();
 
@@ -68,7 +72,7 @@ public class PageSizeArgument extends OptionArgument {
                 addOption(size.getName(), size.get(null));
             }
         } catch (IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not read the page sizes", e);
         }
     }
 

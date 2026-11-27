@@ -116,9 +116,10 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     private SimpleBookmark() {
     }
 
-    private static List<Map<String, Object>> bookmarkDepth(PdfDictionary outline,
-            IntHashtable pages) {
+    private static List<Map<String, Object>> bookmarkDepth(PdfDictionary firstOutline,
+            IntHashtable pages, PdfTraversalGuard guard) {
         List<Map<String, Object>> list = new ArrayList<>();
+        PdfDictionary outline = firstOutline;
         while (outline != null) {
             Map<String, Object> map = new HashMap<>();
             PdfString title = (PdfString) PdfReader.getPdfObjectRelease(outline.get(PdfName.TITLE));
@@ -222,14 +223,32 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
             } catch (Exception e) {
                 //empty on purpose
             }
-            PdfDictionary first = (PdfDictionary) PdfReader.getPdfObjectRelease(outline.get(PdfName.FIRST));
-            if (first != null) {
-                map.put("Kids", bookmarkDepth(first, pages));
+            PdfDictionary first = linkedOutline(outline, PdfName.FIRST, guard);
+            if (first != null && guard.enter()) {
+                map.put("Kids", bookmarkDepth(first, pages, guard));
+                guard.leave();
             }
             list.add(map);
-            outline = (PdfDictionary) PdfReader.getPdfObjectRelease(outline.get(PdfName.NEXT));
+            outline = linkedOutline(outline, PdfName.NEXT, guard);
         }
         return list;
+    }
+
+    /**
+     * Follows a link from one outline item to another.
+     *
+     * @param outline the outline item, or the root of the outlines
+     * @param key     the link to follow, {@link PdfName#FIRST} or {@link PdfName#NEXT}
+     * @param guard   the guard of this walk through the outlines
+     * @return the linked item, or {@code null} if there is none or if the link leads to an item that was already
+     *         read
+     */
+    private static PdfDictionary linkedOutline(PdfDictionary outline, PdfName key, PdfTraversalGuard guard) {
+        PdfObject link = outline.get(key);
+        if (!guard.visit(link)) {
+            return null;
+        }
+        return (PdfDictionary) PdfReader.getPdfObjectRelease(link);
     }
 
     private static void mapGotoBookmark(Map<String, Object> map, PdfObject dest, IntHashtable pages) {
@@ -268,11 +287,17 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @param indirect 2004-06-13
      */
     private static int getNumber(PdfIndirectReference indirect) {
+        if (indirect == null) {
+            throw new IllegalArgumentException("Illegal bookmark destination");
+        }
         PdfDictionary pdfObj = (PdfDictionary) PdfReader.getPdfObjectRelease(indirect);
-        if (pdfObj.contains(PdfName.TYPE) && pdfObj.get(PdfName.TYPE).equals(PdfName.PAGES) && pdfObj.contains(
-                PdfName.KIDS)) {
+        if (pdfObj != null && pdfObj.contains(PdfName.TYPE) && pdfObj.get(PdfName.TYPE).equals(PdfName.PAGES)
+                && pdfObj.contains(PdfName.KIDS)) {
             PdfArray kids = (PdfArray) pdfObj.get(PdfName.KIDS);
-            indirect = (PdfIndirectReference) kids.getPdfObject(0);
+            PdfIndirectReference firstKid = (PdfIndirectReference) kids.getPdfObject(0);
+            if (firstKid != null) {
+                return firstKid.getNumber();
+            }
         }
         return indirect.getNumber();
     }
@@ -297,8 +322,8 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
             pages.put(reader.getPageOrigRef(k).getNumber(), k);
             reader.releasePage(k);
         }
-        return bookmarkDepth(
-                (PdfDictionary) PdfReader.getPdfObjectRelease(outlines.get(PdfName.FIRST)), pages);
+        PdfTraversalGuard guard = new PdfTraversalGuard();
+        return bookmarkDepth(linkedOutline(outlines, PdfName.FIRST, guard), pages, guard);
     }
 
     /**

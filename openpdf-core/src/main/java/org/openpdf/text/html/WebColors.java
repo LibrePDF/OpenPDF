@@ -325,7 +325,7 @@ public class WebColors extends HashMap<String, int[]> {
     private static int getFromPercent(String v, int max) {
         double percent = Double.parseDouble(v.substring(0, v.length() - 1));
         double result = percent * max / 100;
-        return Double.valueOf(result).intValue();
+        return (int) result;
     }
 
 
@@ -366,7 +366,7 @@ public class WebColors extends HashMap<String, int[]> {
                 || !lightness.endsWith("%")) {
             throw new IllegalArgumentException("Not a valid hsl color:" + colorName);
         }
-        float hueDegrees = Double.valueOf(toDegrees(hue)).floatValue();
+        float hueDegrees = (float) toDegrees(hue);
         float sat = Float.parseFloat(saturation.substring(0, saturation.length() - 1));
         float light = Float.parseFloat(lightness.substring(0, lightness.length() - 1));
         int alp = 255;

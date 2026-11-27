@@ -73,6 +73,7 @@ class EnumerateTTC extends TrueTypeFont {
      */
     private static final int TRUE_TYPE_SFNT_VERSION = 0x00010000;
     private static final int CFF_DATA_SFNT_VERSION = 0x4F54544F; //'OTTO'
+    private static final int TTC_OFFSET_SIZE = 4;
 
     protected String[] names;
 
@@ -101,8 +102,9 @@ class EnumerateTTC extends TrueTypeFont {
             rf.skipBytes(2);
 
             int dirCount = rf.readInt();
+            checkDirCount(dirCount, rf.length());
             names = new String[dirCount];
-            int dirPos = rf.getFilePointer();
+            long dirPos = rf.getFilePointer();
             for (int dirIdx = 0; dirIdx < dirCount; ++dirIdx) {
                 tables.clear();
                 rf.seek(dirPos);
@@ -133,6 +135,20 @@ class EnumerateTTC extends TrueTypeFont {
             if (rf != null) {
                 rf.close();
             }
+        }
+    }
+
+    /**
+     * Checks the number of fonts of the collection against the size of the file: every font has a 4 byte offset in
+     * the header.
+     *
+     * @param dirCount   the number of fonts read from the header
+     * @param fileLength the length of the file
+     * @throws DocumentException the number of fonts is invalid
+     */
+    static void checkDirCount(int dirCount, long fileLength) throws DocumentException {
+        if (dirCount < 0 || dirCount > fileLength / TTC_OFFSET_SIZE) {
+            throw new DocumentException("Invalid number of fonts in the TTC file: " + dirCount);
         }
     }
 

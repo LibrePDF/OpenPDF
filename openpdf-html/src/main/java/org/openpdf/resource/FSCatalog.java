@@ -20,6 +20,7 @@
  */
 package org.openpdf.resource;
 
+import org.jspecify.annotations.Nullable;
 import org.openpdf.util.XRLog;
 import org.openpdf.util.XRRuntimeException;
 import org.xml.sax.Attributes;
@@ -173,8 +174,17 @@ public class FSCatalog {
         public void startElement(String namespaceURI, String localName, String qName, Attributes attributes) {
             if (localName.equalsIgnoreCase("public") ||
                     (localName.isEmpty() && qName.equalsIgnoreCase("public"))) {
-                entityMap.put(attributes.getValue("publicId"), attributes.getValue("uri"));
+                entityMap.put(publicId(attributes), attributes.getValue("uri"));
             }
+        }
+
+        /**
+         * The catalog is usually read with the HTML parser, which reports attribute names in lower case.
+         */
+        @Nullable
+        private static String publicId(Attributes attributes) {
+            String publicId = attributes.getValue("publicId");
+            return publicId == null ? attributes.getValue("publicid") : publicId;
         }
     }
 
