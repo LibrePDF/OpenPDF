@@ -843,7 +843,8 @@ class PdfStamperImp extends PdfWriter {
             correctAcroFieldPages(pageNumber);
         }
         page.put(PdfName.PARENT, parentRef);
-        while (parent != null) {
+        PdfTraversalGuard ancestors = new PdfTraversalGuard();
+        while (parent != null && ancestors.visit(parent)) {
             markUsed(parent);
             PdfNumber count = (PdfNumber) PdfReader.getPdfObjectRelease(parent.get(PdfName.COUNT));
             parent.put(PdfName.COUNT, new PdfNumber(count.intValue() + 1));

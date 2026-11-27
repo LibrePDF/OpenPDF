@@ -319,6 +319,8 @@ public class AcroFields {
                     lastIDRNumber = indirectObject.getNumber();
                 }
                 PdfIndirectReference parentRef = null;
+                PdfTraversalGuard parents = new PdfTraversalGuard();
+                parents.visit(indirectObject);
 
                 while (annot != null) {
                     dic.mergeDifferent(annot);
@@ -341,7 +343,8 @@ public class AcroFields {
                         parentIDRNumber = asIndirectObject.getNumber();
                         parentRef = asIndirectObject;
                     }
-                    if (parentIDRNumber != -1 && lastIDRNumber != parentIDRNumber) {
+                    if (parentIDRNumber != -1 && lastIDRNumber != parentIDRNumber
+                            && parents.visit(asIndirectObject)) {
                         annot = annot.getAsDict(PdfName.PARENT);
                         lastIDRNumber = parentIDRNumber;
                     } else {
