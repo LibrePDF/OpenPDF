@@ -120,57 +120,49 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
         switch (e.getNodeName()) {
             case "td":
             case "th": {
-                String s;
-                s = getAttribute(e, "colspan");
-                if (AttributeValues.isInteger(s)) {
-                    style.append("-fs-table-cell-colspan: ");
-                    style.append(s);
-                    style.append(";");
-                }
-                s = getAttribute(e, "rowspan");
-                if (AttributeValues.isInteger(s)) {
-                    style.append("-fs-table-cell-rowspan: ");
-                    style.append(s);
-                    style.append(";");
-                }
+                appendInteger(style, e, "colspan", "-fs-table-cell-colspan: ");
+                appendInteger(style, e, "rowspan", "-fs-table-cell-rowspan: ");
                 break;
             }
             case "img": {
-                String s;
-                s = getAttribute(e, "width");
-                if (AttributeValues.isLength(s)) {
-                    style.append("width: ");
-                    style.append(convertToLength(s));
-                    style.append(";");
-                }
-                s = getAttribute(e, "height");
-                if (AttributeValues.isLength(s)) {
-                    style.append("height: ");
-                    style.append(convertToLength(s));
-                    style.append(";");
-                }
+                appendLength(style, e, "width", "width: ", ";");
+                appendLength(style, e, "height", "height: ", ";");
                 break;
             }
             case "colgroup":
             case "col": {
-                String s;
-                s = getAttribute(e, "span");
-                if (AttributeValues.isInteger(s)) {
-                    style.append("-fs-table-cell-colspan: ");
-                    style.append(s);
-                    style.append(";");
-                }
-                s = getAttribute(e, "width");
-                if (AttributeValues.isLength(s)) {
-                    style.append("width: ");
-                    style.append(convertToLength(s));
-                    style.append(";");
-                }
+                appendInteger(style, e, "span", "-fs-table-cell-colspan: ");
+                appendLength(style, e, "width", "width: ", ";");
                 break;
             }
         }
         style.append(e.getAttribute("style"));
         return style.toString();
+    }
+
+    /**
+     * Appends a declaration for an attribute, if the value of the attribute is an integer.
+     *
+     * @param before the text of the declaration in front of the value, for example "width: "
+     */
+    final void appendInteger(StringBuilder style, Element e, String attribute, String before) {
+        String s = getAttribute(e, attribute);
+        if (AttributeValues.isInteger(s)) {
+            style.append(before).append(s).append(";");
+        }
+    }
+
+    /**
+     * Appends a declaration for an attribute, if the value of the attribute is a length.
+     *
+     * @param before the text of the declaration in front of the length, for example "width: "
+     * @param after  the text of the declaration behind the length, for example ";"
+     */
+    final void appendLength(StringBuilder style, Element e, String attribute, String before, String after) {
+        String s = getAttribute(e, attribute);
+        if (AttributeValues.isLength(s)) {
+            style.append(before).append(convertToLength(s)).append(after);
+        }
     }
 
     /**
