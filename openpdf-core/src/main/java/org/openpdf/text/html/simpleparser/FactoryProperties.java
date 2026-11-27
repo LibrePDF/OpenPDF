@@ -468,10 +468,8 @@ public class FactoryProperties {
         if (fontImp instanceof FontFactoryImp) {
             return ((FontFactoryImp) fontImp).getRegisteredFont(face, encoding, true, size, style, color);
         }
-        if (face != null && FontFactoryImp.isFontFileName(face) && !fontImp.isRegistered(face)) {
-            face = null;
-        }
-        return fontImp.getFont(face, encoding, true, size, style, color);
+        boolean unregisteredFile = face != null && FontFactoryImp.isFontFileName(face) && !fontImp.isRegistered(face);
+        return fontImp.getFont(unregisteredFile ? null : face, encoding, true, size, style, color);
     }
 
     public FontProvider getFontImp() {
