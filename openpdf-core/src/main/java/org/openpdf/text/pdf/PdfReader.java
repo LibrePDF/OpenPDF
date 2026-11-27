@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -2197,12 +2198,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         tokens.seek(startxref);
         trailer = readXrefSection();
         PdfDictionary trailer2 = trailer;
+        Set<Long> visited = new HashSet<>();
+        visited.add(startxref);
         while (true) {
             PdfNumber prev = (PdfNumber) trailer2.get(PdfName.PREV);
             if (prev == null) {
                 break;
             }
-            if (prev.longValue() == startxref) {
+            if (!visited.add(prev.longValue())) {
                 throw new InvalidPdfException(
                         MessageLocalization
                                 .getComposedMessage("xref.infinite.loop"));
@@ -2296,10 +2299,31 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     protected boolean readXRefStream(long ptr) throws IOException {
-        PRStream stm = readXRefStreamObject(ptr);
-        if (stm == null) {
-            return false;
+        Set<Long> visited = new HashSet<>();
+        long next = ptr;
+        while (true) {
+            if (!visited.add(next)) {
+                throw new InvalidPdfException(
+                        MessageLocalization.getComposedMessage("xref.infinite.loop"));
+            }
+            PRStream stm = readXRefStreamObject(next);
+            if (stm == null) {
+                return false;
+            }
+            next = readXRefStreamSection(stm);
+            if (next == -1) {
+                return true;
+            }
         }
+    }
+
+    /**
+     * Reads the entries of one cross-reference stream into the xref table.
+     *
+     * @param stm the cross-reference stream
+     * @return the offset of the previous cross-reference stream, or -1 if there is none
+     */
+    private long readXRefStreamSection(PRStream stm) throws IOException {
         int thisStream = stm.getObjNum();
         if (trailer == null) {
             trailer = new PdfDictionary();
@@ -2352,10 +2376,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             xref[thisStream] = -1;
         }
 
-        if (prev == -1) {
-            return true;
-        }
-        return readXRefStream(prev);
+        return prev;
     }
 
     /**
