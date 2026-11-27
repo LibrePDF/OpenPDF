@@ -51,6 +51,7 @@ package org.openpdf.text.pdf.codec.wmf;
 
 import org.openpdf.text.Utilities;
 import java.awt.Color;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -65,11 +66,16 @@ public class InputMeta {
 
     public int readWord() throws IOException {
         length += 2;
-        int k1 = in.read();
-        if (k1 < 0) {
-            return 0;
+        int k1 = readOrFail();
+        return (k1 + (readOrFail() << 8)) & 0xffff;
+    }
+
+    private int readOrFail() throws IOException {
+        int b = in.read();
+        if (b < 0) {
+            throw new EOFException("Unexpected end of the WMF image.");
         }
-        return (k1 + (in.read() << 8)) & 0xffff;
+        return b;
     }
 
     public int readShort() throws IOException {
@@ -82,18 +88,15 @@ public class InputMeta {
 
     public int readInt() throws IOException {
         length += 4;
-        int k1 = in.read();
-        if (k1 < 0) {
-            return 0;
-        }
-        int k2 = in.read() << 8;
-        int k3 = in.read() << 16;
-        return k1 + k2 + k3 + (in.read() << 24);
+        int k1 = readOrFail();
+        int k2 = readOrFail() << 8;
+        int k3 = readOrFail() << 16;
+        return k1 + k2 + k3 + (readOrFail() << 24);
     }
 
     public int readByte() throws IOException {
         ++length;
-        return in.read() & 0xff;
+        return readOrFail();
     }
 
     public void skip(int len) throws IOException {
