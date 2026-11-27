@@ -74,6 +74,9 @@ import static org.openpdf.util.ImageUtil.loadEmbeddedBase64Image;
 public class NaiveUserAgent implements UserAgentCallback, DocumentListener {
 
     private static final int DEFAULT_IMAGE_CACHE_SIZE = 16;
+    private static final int MAX_REDIRECTS = 5;
+    private static final int HTTP_TEMPORARY_REDIRECT = 307;
+    private static final int HTTP_PERMANENT_REDIRECT = 308;
     /**
      * a (simple) LRU cache
      */
@@ -175,23 +178,71 @@ public class NaiveUserAgent implements UserAgentCallback, DocumentListener {
      * @throws IOException if an I/O exception occurs.
      */
     protected URLConnection onHttpConnection(HttpURLConnection origin) throws MalformedURLException, IOException {
-        URLConnection connection = origin;
-        int status = origin.getResponseCode();
+        if (origin.getInstanceFollowRedirects()) {
+            return followRedirects(origin);
+        }
+        if (needsRedirect(origin.getResponseCode())) {
+            XRLog.load("Redirect is required but not allowed to: " + origin.getHeaderField("Location"));
+        }
+        return origin;
+    }
 
-        if (needsRedirect(status)) {
-            // get redirect url from "location" header field
-            String newUrl = origin.getHeaderField("Location");
+    /**
+     * Decides whether a redirect is followed. It is called for every redirect of a connection, after the
+     * target has been resolved against the URL that sent the redirect and found to be an http or https URL.
+     * Redirects to any other protocol are never followed.
+     *
+     * <p>This implementation allows every such redirect. Applications that restrict the hosts which may
+     * be contacted should override it, because a redirect target does not pass through {@link #resolveURI(String)}.
+     *
+     * @param from the URL that answered with the redirect
+     * @param to the http or https URL it redirects to
+     * @return true to follow the redirect, false to fail the request
+     */
+    @CheckReturnValue
+    protected boolean isRedirectAllowed(URL from, URL to) {
+        return true;
+    }
 
-            if (origin.getInstanceFollowRedirects()) {
-                XRLog.load("Connection is redirected to: " + newUrl);
-                // open the new connection again
-                connection = new URL(newUrl).openConnection();
-                connection.setRequestProperty("Accept", "*/*");
-            } else {
-                XRLog.load("Redirect is required but not allowed to: " + newUrl);
+    /**
+     * Follows redirects one at a time, so that every target can be checked before it is contacted.
+     */
+    private URLConnection followRedirects(HttpURLConnection origin) throws IOException {
+        HttpURLConnection connection = origin;
+        connection.setInstanceFollowRedirects(false);
+
+        for (int redirects = 0; isRedirect(connection.getResponseCode()); redirects++) {
+            String location = connection.getHeaderField("Location");
+            if (location == null) {
+                break;
             }
+            if (redirects >= MAX_REDIRECTS) {
+                throw new IOException("Too many redirects, starting at " + origin.getURL());
+            }
+            URL target = redirectTarget(connection.getURL(), location);
+            XRLog.load("Connection is redirected to: " + target);
+            connection.disconnect();
+            connection = (HttpURLConnection) target.openConnection();
+            connection.setRequestProperty("Accept", "*/*");
+            connection.setInstanceFollowRedirects(false);
         }
         return connection;
+    }
+
+    private URL redirectTarget(URL from, String location) throws IOException {
+        URL target = new URL(from, location);
+        String protocol = target.getProtocol();
+        if (!"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {
+            throw new IOException("Redirect from " + from + " to a URL that is not http or https: " + target);
+        }
+        if (!isRedirectAllowed(from, target)) {
+            throw new IOException("Redirect from " + from + " is not allowed to: " + target);
+        }
+        return target;
+    }
+
+    private boolean isRedirect(int status) {
+        return needsRedirect(status) || status == HTTP_TEMPORARY_REDIRECT || status == HTTP_PERMANENT_REDIRECT;
     }
 
     /**
