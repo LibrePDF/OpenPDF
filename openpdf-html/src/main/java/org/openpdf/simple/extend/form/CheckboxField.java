@@ -51,7 +51,9 @@ class CheckboxField extends InputField {
     protected void applyOriginalState() {
         JToggleButton button = (JToggleButton) getComponent();
 
-        button.setSelected(getOriginalState().isChecked());
+        if (button != null) {
+            button.setSelected(getOriginalState().isChecked());
+        }
     }
 
     @Override

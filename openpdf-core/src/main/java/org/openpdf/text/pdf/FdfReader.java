@@ -146,6 +146,9 @@ public class FdfReader extends PdfReader {
 
     protected void readFields() {
         catalog = trailer.getAsDict(PdfName.ROOT);
+        if (catalog == null) {
+            return;
+        }
         PdfDictionary fdf = catalog.getAsDict(PdfName.FDF);
         if (fdf == null) {
             return;

@@ -38,6 +38,8 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openpdf.toolbox.AbstractTool;
 import org.openpdf.toolbox.swing.FileList;
 
@@ -47,6 +49,8 @@ import org.openpdf.toolbox.swing.FileList;
  */
 public class FileArrayArgument extends AbstractArgument {
 
+    private static final Logger LOGGER = Logger.getLogger(FileArrayArgument.class.getName());
+
     FileList fileList1 = new FileList();
 
     public FileArrayArgument() {
@@ -54,7 +58,7 @@ public class FileArrayArgument extends AbstractArgument {
         try {
             jbInit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not initialize the file array argument", ex);
         }
     }
 
@@ -63,7 +67,7 @@ public class FileArrayArgument extends AbstractArgument {
         try {
             jbInit();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not initialize the file array argument", ex);
         }
     }
 

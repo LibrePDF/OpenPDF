@@ -442,10 +442,12 @@ public class PdfCell extends Rectangle {
         if (index == 0) {
             if (!lines.isEmpty()) {
                 firstLine = lines.get(0);
-                float firstLineRealHeight = firstLineRealHeight();
-                contentHeight -= firstLine.height();
-                firstLine.height = firstLineRealHeight;
-                contentHeight += firstLineRealHeight;
+                if (firstLine != null) {
+                    float firstLineRealHeight = firstLineRealHeight();
+                    contentHeight -= firstLine.height();
+                    firstLine.height = firstLineRealHeight;
+                    contentHeight += firstLineRealHeight;
+                }
             }
         }
         return oldLine;
@@ -470,7 +472,7 @@ public class PdfCell extends Rectangle {
             if (chunk != null) {
                 Image image = chunk.getImage();
                 if (image != null) {
-                    firstLineRealHeight = firstLine.getChunk(0).getImage().getScaledHeight();
+                    firstLineRealHeight = image.getScaledHeight();
                 } else {
                     firstLineRealHeight = useAscender ? firstLine.getAscender() : leading;
                 }
@@ -526,6 +528,9 @@ public class PdfCell extends Rectangle {
 
     private float addImage(Image i, float left, float right, int alignment) {
         Image image = Image.getInstance(i);
+        if (image == null) {
+            throw new IllegalArgumentException("The image to add to the cell must not be null.");
+        }
         if (image.getScaledWidth() > right - left) {
             image.scaleToFit(right - left, Float.MAX_VALUE);
         }

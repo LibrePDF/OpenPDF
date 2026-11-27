@@ -245,6 +245,9 @@ final class OpenPdfCorePageRenderer {
         // Map PDF user space (origin bottom-left, Y up) to image pixels (origin top-left, Y down),
         // applying page rotation and DPI scaling.
         org.openpdf.text.Rectangle pageSize = reader.getPageSizeWithRotation(pageNumber);
+        if (pageSize == null) {
+            throw new IOException("Cannot determine the size of page " + pageNumber + ": page does not exist");
+        }
         float scale = dpi / PDF_USER_SPACE_DPI;
         int rotation = reader.getPageRotation(pageNumber) % 360;
         if (rotation < 0) {
@@ -1931,6 +1934,7 @@ final class OpenPdfCorePageRenderer {
             this.textRise = other.textRise;
             // hasPendingClip / pendingClipRule are intentionally not copied:
             // the W / W* operators apply to the current path before any q/Q boundary.
+            this.hasPendingClip = false;
         }
     }
 }

@@ -86,7 +86,10 @@ public class XhtmlCssOnlyNamespaceHandler extends NoNamespaceHandler {
     @Override
     @Nullable
     @CheckReturnValue
-    public String getID(Element e) {
+    public String getID(@Nullable Element e) {
+        if (e == null) {
+            return null;
+        }
         String result = e.getAttribute("id").trim();
         return result.isEmpty() ? null : result;
     }
