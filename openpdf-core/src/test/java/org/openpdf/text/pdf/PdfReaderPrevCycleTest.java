@@ -95,7 +95,7 @@ class PdfReaderPrevCycleTest {
         return append(original, update);
     }
 
-    private static String xrefTable(Trailer trailer, int prev) {
+    private static String xrefTable(Trailer trailer, long prev) {
         return lines("xref", "0 1", "0000000000 65535 f ", "trailer",
                 String.format("<< /Size %d /Root %s /Prev %010d >>", trailer.size, trailer.root, prev));
     }
@@ -120,7 +120,7 @@ class PdfReaderPrevCycleTest {
         return out.toByteArray();
     }
 
-    private record Trailer(int size, String root, int startxref) {
+    private record Trailer(int size, String root, long startxref) {
 
         static Trailer of(byte[] pdf) throws IOException {
             try (PdfReader reader = new PdfReader(pdf)) {

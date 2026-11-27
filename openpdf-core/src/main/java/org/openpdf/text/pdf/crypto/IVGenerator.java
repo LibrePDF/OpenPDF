@@ -48,22 +48,21 @@
  */
 package org.openpdf.text.pdf.crypto;
 
+import java.security.SecureRandom;
+
 /**
- * An initialization vector generator for a CBC block encryption. It's a random generator based on ARCFOUR.
+ * An initialization vector generator for a CBC block encryption. It is also used for the AES-256 file encryption key,
+ * the user/owner salts and the /Perms random bytes, so it must be cryptographically secure.
+ * <p>
+ * Earlier versions used an ARCFOUR stream seeded once with the current time and free memory. That seed is guessable,
+ * which allowed the file encryption key of an AES-256 encrypted document to be recovered without the password. See
+ * <a href="https://v12.sh/blog/the-case-of-the-9bit-aes-key">The case of the 9-bit AES key</a>.
  *
  * @author Paulo Soares (psoares@consiste.pt)
  */
 public final class IVGenerator {
 
-    private static ARCFOUREncryption arcfour;
-
-    static {
-        arcfour = new ARCFOUREncryption();
-        long time = System.currentTimeMillis();
-        long mem = Runtime.getRuntime().freeMemory();
-        String s = time + "+" + mem;
-        arcfour.prepareARCFOURKey(s.getBytes());
-    }
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     /**
      * Creates a new instance of IVGenerator
@@ -88,9 +87,7 @@ public final class IVGenerator {
      */
     public static byte[] getIV(int len) {
         byte[] b = new byte[len];
-        synchronized (arcfour) {
-            arcfour.encryptARCFOUR(b);
-        }
+        SECURE_RANDOM.nextBytes(b);
         return b;
     }
 }

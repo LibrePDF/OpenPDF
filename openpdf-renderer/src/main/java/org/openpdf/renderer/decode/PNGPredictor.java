@@ -47,8 +47,7 @@ public class PNGPredictor extends Predictor {
         byte[] prevLine = null;
         
         // get the number of bytes per row
-        int rowSize = getColumns() * getColors() * getBitsPerComponent();
-        rowSize = (int) Math.ceil(rowSize / 8.0);
+        int rowSize = getBytesPerRow();
         
         while (imageData.remaining() >= rowSize + 1) {
             // the first byte determines the algorithm

@@ -118,6 +118,8 @@ public class PdfPRow {
         }
         widths = new float[cells.length];
         System.arraycopy(row.widths, 0, widths, 0, cells.length);
+        // the canvas positions are scratch data of writeCells and are not copied
+        canvasesPos = null;
         initExtraHeights();
     }
 

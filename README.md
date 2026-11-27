@@ -33,8 +33,6 @@ The features of OpenPDF include:
 [![CodeQL](https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml/badge.svg)](https://github.com/LibrePDF/OpenPDF/actions/workflows/codeql.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/librepdf/openpdf/badge)](https://www.codefactor.io/repository/github/librepdf/openpdf)
 [![Join the chat at https://gitter.im/LibrePDF/OpenPDF](https://badges.gitter.im/LibrePDF/OpenPDF.svg)](https://gitter.im/LibrePDF/OpenPDF)
-![Java 21](https://img.shields.io/badge/Java-21-blue?logo=java&logoColor=white)
-![Java 24](https://img.shields.io/badge/Java-24-blue?logo=java&logoColor=yellow)
 ![Java 25](https://img.shields.io/badge/Java-25-blue?logo=java&logoColor=blue)
 [![Kotlin](https://img.shields.io/badge/Kotlin-Supported-ADD8E6?logo=kotlin&logoColor=white)](https://github.com/LibrePDF/OpenPDF/tree/master/openpdf-kotlin)
 
@@ -53,7 +51,7 @@ Add this to your pom.xml file to use the latest version of OpenPDF:
 <dependency>
   <groupId>com.github.librepdf</groupId>
   <artifactId>openpdf</artifactId>
-  <version>3.0.5</version>
+  <version>3.0.6</version>
 </dependency>
 ```
 
@@ -170,7 +168,10 @@ More details: [Contributing](CONTRIBUTING.md)
 
 We have now different versions of OpenPDF, and they require different versions of Java:
 
-- The 2.1.x Branch (and later) requires Java 21 or later.
+- OpenPDF 4.0 and later (the `master` branch) requires Java 25 or later.
+- OpenPDF 2.1 to 3.0 requires Java 21 or later. OpenPDF 3.0 is maintained in the
+  [3.0-java21](https://github.com/LibrePDF/OpenPDF/tree/3.0-java21) branch, which is the branch to use
+  if you need Java 21.
 - The 2.0.x Branch requires Java 17 or later.
 - The 1.4.x Branch requires Java 11 or later.
 - The 1.3.x Branch requires Java 8 or later.
@@ -196,8 +197,17 @@ and use the class `org.librepdf.openpdf.fonts.Liberation`.
 
 ### Brotli4j
 
-Brotli4j is a required dependency for Brotli stream compression support.
-<https://github.com/hyperxpro/Brotli4j/>
+[Brotli4j](https://github.com/hyperxpro/Brotli4j/) is an optional dependency, only needed for
+Brotli stream compression support (`/BrotliDecode`). It is not pulled in transitively, so add it
+to your project if you want to read or write Brotli-compressed PDF streams:
+
+```xml
+<dependency>
+  <groupId>com.aayushatharva.brotli4j</groupId>
+  <artifactId>brotli4j</artifactId>
+  <version>${brotli4j.version}</version>
+</dependency>
+```
 
 ### Supporting complex glyph substitution/ Ligature substitution
 
@@ -217,9 +227,9 @@ OpenPDF can read and write PDF streams compressed with
 [Brotli](https://github.com/google/brotli) — exposed in the PDF as the
 `/BrotliDecode` filter, which is being standardised for PDF 2.0 (ISO 32000-2)
 through [ISO/TS 32001](https://www.iso.org/standard/45874.html). The codec is
-backed by [brotli4j](https://github.com/hyperxpro/Brotli4j) (a required
+backed by [brotli4j](https://github.com/hyperxpro/Brotli4j) (an optional
 dependency, with native binaries shipped for Linux / macOS / Windows on x86_64
-and aarch64).
+and aarch64) — see [Brotli4j](#brotli4j) above for the Maven coordinates.
 
 Enable Brotli for the page content streams produced by a writer:
 
@@ -247,13 +257,14 @@ PDF readers that do not yet implement ISO/TS 32001.
 
 ### Optional
 
-- [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
+* [BouncyCastle](https://www.bouncycastle.org/) (BouncyCastle is used to sign PDF files, so it's a recommended
   dependency)
-  - Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
+  * Provider (`org.bouncycastle:bcprov-jdk18on` or `org.bouncycastle:bcprov-ext-jdk18on` depending
     on which algorithm you are using)
-  - PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
-- Apache FOP (`org.apache.xmlgraphics:fop`)
-- Please refer to our [pom.xml](pom.xml) to see what version is needed.
+  * PKIX/CMS (`org.bouncycastle:bcpkix-jdk18on`)
+* Apache FOP (`org.apache.xmlgraphics:fop`)
+* Brotli4j (`com.aayushatharva.brotli4j:brotli4j`) for Brotli stream compression (`/BrotliDecode`)
+* Please refer to our [pom.xml](pom.xml) to see what version is needed.
 
 ## Credits
 

@@ -1848,7 +1848,8 @@ public final class CSSName implements Comparable<CSSName> {
         if (object == null) {
             throw new NullPointerException("Cannot compare " + this + " to null");
         }
-        return FS_ID - object.FS_ID; //will throw ClassCastException according to Comparable if not a CSSName
+        //will throw ClassCastException according to Comparable if not a CSSName
+        return Integer.compare(FS_ID, object.FS_ID);
     }
 
     // FIXME equals, hashcode

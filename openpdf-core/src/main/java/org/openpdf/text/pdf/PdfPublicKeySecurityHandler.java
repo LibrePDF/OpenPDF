@@ -90,11 +90,8 @@
 
 package org.openpdf.text.pdf;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.AlgorithmParameterGenerator;
-import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -102,27 +99,18 @@ import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import org.bouncycastle.asn1.ASN1Encoding;
-import org.bouncycastle.asn1.ASN1InputStream;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERSet;
-import org.bouncycastle.asn1.cms.ContentInfo;
-import org.bouncycastle.asn1.cms.EncryptedContentInfo;
-import org.bouncycastle.asn1.cms.EnvelopedData;
-import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
-import org.bouncycastle.asn1.cms.KeyTransRecipientInfo;
-import org.bouncycastle.asn1.cms.RecipientIdentifier;
-import org.bouncycastle.asn1.cms.RecipientInfo;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.TBSCertificate;
+import org.bouncycastle.cms.CMSAlgorithm;
+import org.bouncycastle.cms.CMSEnvelopedData;
+import org.bouncycastle.cms.CMSEnvelopedDataGenerator;
+import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSProcessableByteArray;
+import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
+import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
 
 /**
  * @author Aiken Sam (aikensam@ieee.org)
@@ -232,58 +220,20 @@ public class PdfPublicKeySecurityHandler {
         return encodedRecipients;
     }
 
+    /**
+     * Creates the enveloped data of one recipient. The content is encrypted with AES-256 and its key is
+     * encrypted with the public key of the certificate.
+     */
     private ASN1Primitive createDERForRecipient(byte[] in, X509Certificate cert)
-            throws IOException, GeneralSecurityException {
-
-        String s = "1.2.840.113549.3.2";
-
-        AlgorithmParameterGenerator algorithmparametergenerator = AlgorithmParameterGenerator
-                .getInstance(s);
-        AlgorithmParameters algorithmparameters = algorithmparametergenerator
-                .generateParameters();
-        ByteArrayInputStream bytearrayinputstream = new ByteArrayInputStream(
-                algorithmparameters.getEncoded("ASN.1"));
-        ASN1InputStream asn1inputstream = new ASN1InputStream(bytearrayinputstream);
-        ASN1Primitive derobject = asn1inputstream.readObject();
-        KeyGenerator keygenerator = KeyGenerator.getInstance(s);
-        keygenerator.init(128);
-        SecretKey secretkey = keygenerator.generateKey();
-        Cipher cipher = Cipher.getInstance(s);
-        cipher.init(1, secretkey, algorithmparameters);
-        byte[] abyte1 = cipher.doFinal(in);
-        DEROctetString deroctetstring = new DEROctetString(abyte1);
-        KeyTransRecipientInfo keytransrecipientinfo = computeRecipientInfo(cert,
-                secretkey.getEncoded());
-        DERSet derset = new DERSet(new RecipientInfo(keytransrecipientinfo));
-        AlgorithmIdentifier algorithmidentifier = new AlgorithmIdentifier(
-                new ASN1ObjectIdentifier(s), derobject);
-        EncryptedContentInfo encryptedcontentinfo = new EncryptedContentInfo(
-                PKCSObjectIdentifiers.data, algorithmidentifier, deroctetstring);
-        ASN1Set set = null;
-        EnvelopedData env = new EnvelopedData(null, derset, encryptedcontentinfo,
-                set);
-        ContentInfo contentinfo = new ContentInfo(
-                PKCSObjectIdentifiers.envelopedData, env);
-        // OJO... Modificacion de
-        // Felix--------------------------------------------------
-        // return contentinfo.getDERObject();
-        return contentinfo.toASN1Primitive();
-        // ******************************************************************************
-    }
-
-    private KeyTransRecipientInfo computeRecipientInfo(
-            X509Certificate x509certificate, byte[] abyte0)
-            throws GeneralSecurityException, IOException {
-        ASN1InputStream asn1inputstream = new ASN1InputStream(
-                new ByteArrayInputStream(x509certificate.getTBSCertificate()));
-        TBSCertificate tbsCertificate = TBSCertificate.getInstance(asn1inputstream.readObject());
-        AlgorithmIdentifier algorithmidentifier = tbsCertificate.getSubjectPublicKeyInfo().getAlgorithm();
-        IssuerAndSerialNumber issuerandserialnumber = new IssuerAndSerialNumber(
-                tbsCertificate.getIssuer(), tbsCertificate.getSerialNumber().getValue());
-        Cipher cipher = Cipher.getInstance(algorithmidentifier.getAlgorithm().getId());
-        cipher.init(1, x509certificate);
-        DEROctetString deroctetstring = new DEROctetString(cipher.doFinal(abyte0));
-        RecipientIdentifier recipId = new RecipientIdentifier(issuerandserialnumber);
-        return new KeyTransRecipientInfo(recipId, algorithmidentifier, deroctetstring);
+            throws GeneralSecurityException {
+        try {
+            CMSEnvelopedDataGenerator generator = new CMSEnvelopedDataGenerator();
+            generator.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(cert));
+            CMSEnvelopedData envelopedData = generator.generate(new CMSProcessableByteArray(in),
+                    new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES256_CBC).build());
+            return envelopedData.toASN1Structure().toASN1Primitive();
+        } catch (CMSException e) {
+            throw new GeneralSecurityException(e);
+        }
     }
 }
