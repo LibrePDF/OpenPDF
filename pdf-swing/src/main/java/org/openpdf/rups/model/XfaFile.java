@@ -30,6 +30,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.xml.sax.SAXException;
 
 /**
  * Class that deals with the XFA file that can be inside a PDF file.
@@ -55,8 +56,25 @@ public class XfaFile implements OutputStreamResource {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         resource.writeTo(baos);
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-        SAXReader reader = new SAXReader();
+        SAXReader reader = createReader();
         xfaDocument = reader.read(bais);
+    }
+
+    /**
+     * Creates a reader that never resolves external entities and refuses DOCTYPE declarations, which XFA does not
+     * need.
+     *
+     * @return the reader
+     * @throws DocumentException when the XML parser cannot be configured that way
+     */
+    private static SAXReader createReader() throws DocumentException {
+        SAXReader reader = SAXReader.createDefault();
+        try {
+            reader.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        } catch (SAXException e) {
+            throw new DocumentException("The XML parser cannot be configured to refuse DOCTYPE declarations", e);
+        }
+        return reader;
     }
 
     /**
