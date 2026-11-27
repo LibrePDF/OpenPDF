@@ -57,6 +57,7 @@ import org.openpdf.text.Element;
 import org.openpdf.text.ElementTags;
 import org.openpdf.text.Font;
 import org.openpdf.text.FontFactory;
+import org.openpdf.text.FontFactoryImp;
 import org.openpdf.text.FontProvider;
 import org.openpdf.text.ListItem;
 import org.openpdf.text.Paragraph;
@@ -456,6 +457,20 @@ public class FactoryProperties {
 
         Color color = Markup.decodeColor(props.getProperty(Markup.CSS_KEY_COLOR));
         String encoding = props.getOrDefault("encoding", BaseFont.WINANSI);
+        return getDocumentFont(face, encoding, size, style, color);
+    }
+
+    /**
+     * Gets the font for a face name that comes from the HTML. Such a name is only looked up as a font name, it is
+     * never used as the path or URL of a font file.
+     */
+    private Font getDocumentFont(String face, String encoding, float size, int style, Color color) {
+        if (fontImp instanceof FontFactoryImp) {
+            return ((FontFactoryImp) fontImp).getRegisteredFont(face, encoding, true, size, style, color);
+        }
+        if (face != null && FontFactoryImp.isFontFileName(face) && !fontImp.isRegistered(face)) {
+            face = null;
+        }
         return fontImp.getFont(face, encoding, true, size, style, color);
     }
 
