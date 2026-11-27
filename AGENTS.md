@@ -51,6 +51,20 @@ Run the tests and `checkstyle:check` before opening a pull request.
   Fix what they report on the lines you changed.
 - Reference the issue a pull request fixes, for example `Fixes #1234`.
 
+## Changelog
+
+Update the changelog in the same pull request as the change. The changelogs are in the
+[changelogs](changelogs) folder, one file for every release.
+
+- Add the change to the file of the next release of the branch you are working on, which is the
+  version in `pom.xml` without `-SNAPSHOT`: `changelogs/4.0.0.md` for `master` and
+  `changelogs/3.0.7.md` for `3.0-java21`. Create the file if the release does not have one yet.
+- Write one line in the section that fits, in the style of the existing entries, and reference
+  the pull request or the issue.
+- Describe a change of behaviour or of the public API under "Upgrade Notes", and a security fix
+  under "Security".
+- A change that is also made in the `3.0-java21` branch belongs in the changelog of both releases.
+
 ## Security
 
 PDF files are untrusted input. Code that parses PDF content must not throw unexpected runtime

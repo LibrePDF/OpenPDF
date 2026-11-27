@@ -24,6 +24,8 @@ import org.openpdf.text.Document;
 import org.openpdf.text.PageSize;
 import org.openpdf.text.Rectangle;
 import org.openpdf.text.pdf.PdfContentByte;
+import org.openpdf.text.pdf.PdfReader;
+import org.openpdf.text.pdf.PdfStamper;
 import org.openpdf.text.pdf.PdfWriter;
 
 /**
@@ -101,6 +103,101 @@ class OpenPdfCorePageRendererOperatorsTest {
             assertThat(cyanish)
                     .as("CMYK (1,0,0,0) fill must produce cyan-ish pixels")
                     .isGreaterThan(100);
+        }
+    }
+
+    /**
+     * Builds a base single-page PDF, then uses {@link PdfStamper} to inject a named
+     * {@code /ColorSpace} resource entry (something {@code PdfContentByte}'s high-level API has
+     * no method for) directly into the page's {@code /Resources} dictionary, and appends
+     * {@code contentOperators} as raw content referencing that resource by name. This exercises
+     * the {@code cs}/{@code CS} resource-dictionary resolution path in
+     * {@code OpenPdfCorePageRenderer}, as opposed to a literal device color space name.
+     */
+    private static byte[] buildPdfWithColorSpaceResource(String resourceName,
+            org.openpdf.text.pdf.PdfArray colorSpaceDefinition, String contentOperators) throws Exception {
+        // A Document/PdfWriter only registers a page once some content is actually written
+        // to it; a no-op q/Q pair is enough to give PdfStamper a real page to attach to.
+        byte[] basePdf = buildPdf(cb -> {
+            cb.saveState();
+            cb.restoreState();
+        });
+        PdfReader reader = new PdfReader(basePdf);
+        ByteArrayOutputStream stamped = new ByteArrayOutputStream();
+        try (PdfStamper stamper = new PdfStamper(reader, stamped)) {
+            org.openpdf.text.pdf.PdfDictionary pageDict = reader.getPageN(1);
+            org.openpdf.text.pdf.PdfDictionary pageResources = pageDict.getAsDict(org.openpdf.text.pdf.PdfName.RESOURCES);
+            if (pageResources == null) {
+                pageResources = new org.openpdf.text.pdf.PdfDictionary();
+                pageDict.put(org.openpdf.text.pdf.PdfName.RESOURCES, pageResources);
+            }
+            org.openpdf.text.pdf.PdfDictionary csResources =
+                    pageResources.getAsDict(org.openpdf.text.pdf.PdfName.COLORSPACE);
+            if (csResources == null) {
+                csResources = new org.openpdf.text.pdf.PdfDictionary();
+                pageResources.put(org.openpdf.text.pdf.PdfName.COLORSPACE, csResources);
+            }
+            csResources.put(new org.openpdf.text.pdf.PdfName(resourceName), colorSpaceDefinition);
+            stamper.getOverContent(1).setLiteral(contentOperators);
+        }
+        return stamped.toByteArray();
+    }
+
+    @Test
+    void rendersLabNamedColorSpaceFillAsConvertedRgb() throws Exception {
+        // [/Lab <</WhitePoint [0.9642 1.0 0.8249]>>] resolved by name via the page's
+        // /ColorSpace resources, then filled with an scn triplet that is the D50 Lab
+        // encoding of sRGB red. Before resolving named color spaces, an unrecognized "cs"
+        // name fell back to ColorSpaceKind.UNKNOWN, and colorFromOperands's heuristic
+        // treated the 3 Lab operands as if they were raw (r, g, b) -- but Lab's L is 0-100
+        // and a/b run roughly -100..100, so clamping them into [0,1] collapses virtually
+        // every Lab color to solid white/black instead of the intended color.
+        org.openpdf.text.pdf.PdfDictionary labDict = new org.openpdf.text.pdf.PdfDictionary();
+        labDict.put(new org.openpdf.text.pdf.PdfName("WhitePoint"),
+                new org.openpdf.text.pdf.PdfArray(new float[]{0.9642f, 1.0f, 0.8249f}));
+        org.openpdf.text.pdf.PdfArray labCs = new org.openpdf.text.pdf.PdfArray();
+        labCs.add(new org.openpdf.text.pdf.PdfName("Lab"));
+        labCs.add(labDict);
+
+        byte[] pdf = buildPdfWithColorSpaceResource("CSLab", labCs,
+                "/CSLab cs\n54.29 80.81 69.89 scn\n50 50 150 150 re f\n");
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "lab-colorspace-fill.png");
+            int redish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green < 60 && blue < 60);
+            assertThat(redish)
+                    .as("a Lab color space fill must convert to the correct RGB color, "
+                            + "not the near-white/black result of treating L*a*b* as raw RGB")
+                    .isGreaterThan(200);
+        }
+    }
+
+    @Test
+    void rendersIccBasedNamedColorSpaceFill() throws Exception {
+        // A named /ColorSpace resource resolving to [/ICCBased <</N 3>>] (an RGB ICC
+        // profile stream; the profile bytes themselves are irrelevant to the renderer,
+        // which only reads /N to determine the component count). Locks in that the
+        // resource-dictionary resolution path (shared with the Lab case above) correctly
+        // classifies a 3-component ICCBased space as RGB.
+        org.openpdf.text.pdf.PdfDictionary iccDict = new org.openpdf.text.pdf.PdfDictionary();
+        iccDict.put(new org.openpdf.text.pdf.PdfName("N"), new org.openpdf.text.pdf.PdfNumber(3));
+        org.openpdf.text.pdf.PdfArray iccCs = new org.openpdf.text.pdf.PdfArray();
+        iccCs.add(new org.openpdf.text.pdf.PdfName("ICCBased"));
+        iccCs.add(iccDict);
+
+        byte[] pdf = buildPdfWithColorSpaceResource("CS0", iccCs,
+                "/CS0 cs\n0 1 0 scn\n50 50 150 150 re f\n");
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "iccbased-colorspace-fill.png");
+            int greenish = countPixelsMatching(img, (red, green, blue) ->
+                    green > 200 && red < 60 && blue < 60);
+            assertThat(greenish)
+                    .as("a 3-component ICCBased color space fill must be classified as RGB")
+                    .isGreaterThan(200);
         }
     }
 
@@ -274,6 +371,102 @@ class OpenPdfCorePageRendererOperatorsTest {
         }
     }
 
+    /**
+     * PDF §11.6.5.3: an Image XObject's {@code /SMask} entry is a soft mask that supplies
+     * a per-pixel alpha channel. This is exactly how a transparent-background PNG (a logo,
+     * a product photo, ...) ends up embedded in a PDF. Before {@code /SMask} support, the
+     * renderer ignored it entirely and painted every image fully opaque, hiding whatever was
+     * underneath. Build a red image with three alpha bands &mdash; fully transparent, half
+     * transparent, fully opaque &mdash; over a green background rectangle, and verify all
+     * three composite differently.
+     */
+    @Test
+    void rendersImageSoftMaskAsPerPixelAlpha() throws Exception {
+        int size = 30;
+        BufferedImage argb = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+                int band = x / (size / 3);
+                // band 0 = fully transparent, 1 = half transparent, 2 = fully opaque; all red.
+                int alpha = switch (band) {
+                    case 0 -> 0;
+                    case 1 -> 128;
+                    default -> 255;
+                };
+                argb.setRGB(x, y, (alpha << 24) | 0xFF0000);
+            }
+        }
+        // color=null so Image.getInstance() derives a real /SMask stream from the alpha
+        // channel rather than binary color-key masking (the mixed 0/128/255 alpha values
+        // force openpdf-core's "shades" detection down the SMask path).
+        org.openpdf.text.Image pdfImage = org.openpdf.text.Image.getInstance((java.awt.Image) argb, null);
+
+        // Placement in PDF user-space points: a 150x150pt image with its lower-left corner at
+        // (50, 75), i.e. spanning x:[50,200], y:[75,225].
+        float imgXPt = 50f;
+        float imgYPt = 75f;
+        float imgWPt = 150f;
+        float imgHPt = 150f;
+        byte[] pdf = buildPdf(cb -> {
+            cb.setRGBColorFillF(0f, 1f, 0f); // green background, full page
+            cb.rectangle(0, 0, 300, 300);
+            cb.fill();
+            cb.addImage(pdfImage, imgWPt, 0f, 0f, imgHPt, imgXPt, imgYPt);
+        });
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "image-smask.png");
+
+            // Translate the PDF-space placement into device pixels the same way the renderer
+            // does (dpi/72 scale, Y flipped against the page height) so band samples land
+            // squarely inside the image regardless of the test page's exact dimensions.
+            float dpi = 150f;
+            float scale = dpi / 72f;
+            double pageHeightPt = r.getPageSize(1).getHeight();
+            int imgLeftPx = Math.round(imgXPt * scale);
+            int imgWidthPx = Math.round(imgWPt * scale);
+            int imgTopPx = Math.round((float) (pageHeightPt - (imgYPt + imgHPt)) * scale);
+            int imgBottomPx = Math.round((float) (pageHeightPt - imgYPt) * scale);
+            int sampleY = (imgTopPx + imgBottomPx) / 2;
+            int transparentX = imgLeftPx + imgWidthPx / 6;   // center of the first (transparent) third
+            int halfX = imgLeftPx + imgWidthPx / 2;          // center of the middle (half-alpha) third
+            int opaqueX = imgLeftPx + imgWidthPx * 5 / 6;    // center of the last (opaque) third
+
+            int[] transparentRgb = channelsAt(img, transparentX, sampleY);
+            int[] halfRgb = channelsAt(img, halfX, sampleY);
+            int[] opaqueRgb = channelsAt(img, opaqueX, sampleY);
+
+            assertThat(transparentRgb[1])
+                    .as("fully transparent (alpha=0) band must let the green background show through")
+                    .isGreaterThan(150);
+            assertThat(transparentRgb[0])
+                    .as("fully transparent band must not show the image's red")
+                    .isLessThan(80);
+
+            assertThat(opaqueRgb[0])
+                    .as("fully opaque (alpha=255) band must show the image's red")
+                    .isGreaterThan(200);
+            assertThat(opaqueRgb[1])
+                    .as("fully opaque band must not let the green background show through")
+                    .isLessThan(80);
+
+            assertThat(halfRgb[0])
+                    .as("half-transparent (alpha=128) band must blend red and the green background, "
+                            + "not read as pure background")
+                    .isBetween(70, 200);
+            assertThat(halfRgb[1])
+                    .as("half-transparent band must blend red and the green background, "
+                            + "not read as pure opaque red")
+                    .isBetween(70, 200);
+        }
+    }
+
+    private static int[] channelsAt(BufferedImage img, int x, int y) {
+        int argb = img.getRGB(x, y);
+        return new int[]{(argb >> 16) & 0xFF, (argb >> 8) & 0xFF, argb & 0xFF};
+    }
+
     @Test
     void rendersFormXObjectViaNestedContentStream() throws Exception {
         // Form XObjects embed their own content stream. Wrap a colored rectangle
@@ -295,6 +488,73 @@ class OpenPdfCorePageRendererOperatorsTest {
             assertThat(orangeish)
                     .as("Form XObject content must be rendered onto the page")
                     .isGreaterThan(100);
+        }
+    }
+
+    /**
+     * Builds a single-page PDF with a Square annotation whose {@code /AP /N} appearance is an
+     * orange-filled template at Rect {@code [40, 120, 140, 180]}, optionally Hidden-flagged.
+     * Shared by {@link #rendersAnnotationNormalAppearanceStream()} and
+     * {@link #skipsHiddenAnnotationAppearance()}.
+     */
+    private static byte[] buildAnnotatedPdf(boolean hidden) throws Exception {
+        return buildPdf(cb -> {
+            org.openpdf.text.pdf.PdfTemplate appearance = cb.createTemplate(100f, 60f);
+            appearance.setRGBColorFillF(1f, 0.5f, 0f); // orange
+            appearance.rectangle(0f, 0f, 100f, 60f);
+            appearance.fill();
+
+            PdfWriter writer = cb.getPdfWriter();
+            org.openpdf.text.pdf.PdfAnnotation annotation =
+                    new org.openpdf.text.pdf.PdfAnnotation(writer, new Rectangle(40f, 120f, 140f, 180f));
+            annotation.put(org.openpdf.text.pdf.PdfName.SUBTYPE, org.openpdf.text.pdf.PdfName.SQUARE);
+            annotation.setAppearance(org.openpdf.text.pdf.PdfAnnotation.APPEARANCE_NORMAL, appearance);
+            if (hidden) {
+                annotation.setFlags(org.openpdf.text.pdf.PdfAnnotation.FLAGS_HIDDEN);
+            }
+            writer.addAnnotation(annotation);
+        });
+    }
+
+    /**
+     * PDF §12.5.5: an annotation's visible content is its {@code /AP /N} appearance stream,
+     * positioned in the page by mapping the stream's {@code /BBox} (through its {@code /Matrix})
+     * onto the annotation's {@code /Rect}. Before this support, {@code OpenPdfCorePageRenderer}
+     * only walked the page content stream and never looked at {@code /Annots} at all, so stamps,
+     * highlights, and form-field appearances were invisible no matter what.
+     */
+    @Test
+    void rendersAnnotationNormalAppearanceStream() throws Exception {
+        byte[] pdf = buildAnnotatedPdf(false);
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "annotation-appearance.png");
+            int orangeish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green > 80 && green < 200 && blue < 80);
+            assertThat(orangeish)
+                    .as("an annotation's /AP /N appearance stream must be painted at its /Rect")
+                    .isGreaterThan(100);
+        }
+    }
+
+    /**
+     * PDF §12.5.3: the Hidden flag (bit 2 of {@code /F}) means the annotation shall not be
+     * rendered at all, in any context. This is the same annotation/appearance as above, but
+     * flagged Hidden -- the orange fill must not appear anywhere on the page.
+     */
+    @Test
+    void skipsHiddenAnnotationAppearance() throws Exception {
+        byte[] pdf = buildAnnotatedPdf(true);
+
+        try (OpenPdfCoreRenderer r = new OpenPdfCoreRenderer(pdf)) {
+            BufferedImage img = r.renderPage(1, 150f);
+            saveForInspection(img, "annotation-hidden.png");
+            int orangeish = countPixelsMatching(img, (red, green, blue) ->
+                    red > 200 && green > 80 && green < 200 && blue < 80);
+            assertThat(orangeish)
+                    .as("a Hidden-flagged annotation must not be painted")
+                    .isZero();
         }
     }
 

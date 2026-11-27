@@ -88,6 +88,16 @@ import static org.openpdf.css.style.Length.LengthType.PERCENT;
  */
 public class CalculatedStyle {
     /**
+     * The largest number of columns a table cell can span, as in HTML. Larger values are reduced to it.
+     */
+    public static final int MAX_COL_SPAN = 1000;
+
+    /**
+     * The largest number of rows a table cell can span, as in HTML. Larger values are reduced to it.
+     */
+    public static final int MAX_ROW_SPAN = 65534;
+
+    /**
      * The parent-style we inherit from
      */
     @Nullable
@@ -1047,14 +1057,22 @@ public class CalculatedStyle {
         return isCollapseBorders() ? 0 : (int) getFloatPropertyProportionalTo(CSSName.FS_BORDER_SPACING_VERTICAL, 0, c);
     }
 
+    /**
+     * @return the number of rows a table cell spans, between 1 and {@value #MAX_ROW_SPAN}
+     */
     public int getRowSpan() {
-        int result = (int) asFloat(CSSName.FS_ROWSPAN);
-        return result > 0 ? result : 1;
+        return limitSpan(asFloat(CSSName.FS_ROWSPAN), MAX_ROW_SPAN);
     }
 
+    /**
+     * @return the number of columns a table cell or column spans, between 1 and {@value #MAX_COL_SPAN}
+     */
     public int getColSpan() {
-        int result = (int) asFloat(CSSName.FS_COLSPAN);
-        return result > 0 ? result : 1;
+        return limitSpan(asFloat(CSSName.FS_COLSPAN), MAX_COL_SPAN);
+    }
+
+    private static int limitSpan(float span, int max) {
+        return Math.max(1, Math.min((int) span, max));
     }
 
     public Length asLength(CssContext c, CSSName cssName) {

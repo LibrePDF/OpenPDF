@@ -140,9 +140,36 @@ public abstract class BaseWatchable implements Watchable, Runnable {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             PDFDebugger.debug("Thread interrupted while waiting for status change.");
+        } catch (RuntimeException | Error e) {
+            // an error in iterate(), or a failure in setup() or cleanup()
+            releaseWaiters(e);
+            throw e;
+        } finally {
+            // notify that we are no longer running
+            this.thread = null;
         }
-        // notify that we are no longer running
-        this.thread = null;
+    }
+
+    /**
+     * Make sure that nobody keeps waiting for a watchable that has stopped
+     * because of an error that iterate() does not report, like a
+     * StackOverflowError.  The status is set to ERROR, which wakes up
+     * waitForFinish(), and cleanup() is called as for any other error.
+     *
+     * @param failure what made the watchable stop
+     */
+    private void releaseWaiters(Throwable failure) {
+        if (isFinished()) {
+            // cleanup() failed, after the status had been set
+            return;
+        }
+        try {
+            setError(failure instanceof Exception ex ? ex
+                    : new PDFParseException("Processing stopped: " + failure, failure));
+        } finally {
+            setStatus(Watchable.ERROR);
+            cleanup();
+        }
     }
 
     /**

@@ -137,7 +137,8 @@ public class PdfNumberTree {
         }
     }
 
-    private static void iterateItems(PdfDictionary dic, Map<Integer, PdfObject> items) {
+    private static void iterateItems(PdfDictionary dic, Map<Integer, PdfObject> items,
+            PdfTraversalGuard guard) {
         PdfArray nn = (PdfArray) PdfReader.getPdfObjectRelease(dic.get(PdfName.NUMS));
         if (nn != null) {
             for (int k = 0; k < nn.size(); ++k) {
@@ -146,8 +147,13 @@ public class PdfNumberTree {
             }
         } else if ((nn = (PdfArray) PdfReader.getPdfObjectRelease(dic.get(PdfName.KIDS))) != null) {
             for (int k = 0; k < nn.size(); ++k) {
+                if (!guard.enter(nn.getPdfObject(k))) {
+                    // a node that was read before, as in a tree that leads back to itself, or nested too deeply
+                    continue;
+                }
                 PdfDictionary kid = (PdfDictionary) PdfReader.getPdfObjectRelease(nn.getPdfObject(k));
-                iterateItems(kid, items);
+                iterateItems(kid, items, guard);
+                guard.leave();
             }
         }
     }
@@ -155,7 +161,7 @@ public class PdfNumberTree {
     public static HashMap<Integer, PdfObject> readTree(PdfDictionary dic) {
         HashMap<Integer, PdfObject> items = new HashMap<>();
         if (dic != null) {
-            iterateItems(dic, items);
+            iterateItems(dic, items, new PdfTraversalGuard());
         }
         return items;
     }

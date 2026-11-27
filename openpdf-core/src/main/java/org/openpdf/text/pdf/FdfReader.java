@@ -61,6 +61,8 @@ public class FdfReader extends PdfReader {
 
     PdfName encoding;
     private Map<String, PdfDictionary> fields;
+    // no initializer: the fields are read while the constructor of the superclass runs
+    private PdfTraversalGuard kidGuard;
     private String fileSpec;
 
     /**
@@ -129,6 +131,10 @@ public class FdfReader extends PdfReader {
         } else {
             merged.remove(PdfName.KIDS);
             for (int k = 0; k < kids.size(); ++k) {
+                if (!kidGuard().enter(kids.getPdfObject(k))) {
+                    // a kid that was read before, as in a hierarchy that leads back to itself, or nested too deeply
+                    continue;
+                }
                 PdfDictionary dic = new PdfDictionary();
                 dic.merge(merged);
                 PdfDictionary newDic = kids.getAsDict(k);
@@ -140,8 +146,16 @@ public class FdfReader extends PdfReader {
                 dic.merge(newDic);
                 dic.remove(PdfName.T);
                 kidNode(dic, newName);
+                kidGuard().leave();
             }
         }
+    }
+
+    private PdfTraversalGuard kidGuard() {
+        if (kidGuard == null) {
+            kidGuard = new PdfTraversalGuard();
+        }
+        return kidGuard;
     }
 
     protected void readFields() {
@@ -164,6 +178,7 @@ public class FdfReader extends PdfReader {
         encoding = fdf.getAsName(PdfName.ENCODING);
         PdfDictionary merged = new PdfDictionary();
         merged.put(PdfName.KIDS, fld);
+        kidGuard = new PdfTraversalGuard();
         kidNode(merged, "");
     }
 
