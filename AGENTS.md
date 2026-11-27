@@ -6,7 +6,8 @@ Guidance for AI coding agents working on OpenPDF. Human contributors should star
 ## Project
 
 OpenPDF is an open source Java library for creating, editing, rendering and encrypting PDF files.
-It is licensed under LGPL 2.1 and MPL 2.0. The `master` branch requires Java 21 or later.
+It is licensed under LGPL 2.1 and MPL 2.0. The `master` branch requires Java 25 or later.
+OpenPDF 3.0 for Java 21 is maintained in the `3.0-java21` branch.
 
 ## Modules
 
@@ -46,7 +47,7 @@ Run the tests and `checkstyle:check` before opening a pull request.
 
 - Open pull requests against `master` and fill in the pull request template.
 - Contributors must use their real name, see [CONTRIBUTING.md](CONTRIBUTING.md).
-- The CI runs the Maven build on Java 21 and later, CodeQL, SonarCloud, Codacy and CodeFactor.
+- The CI runs the Maven build on Java 25 and later, CodeQL, SonarCloud, Codacy and CodeFactor.
   Fix what they report on the lines you changed.
 - Reference the issue a pull request fixes, for example `Fixes #1234`.
 
