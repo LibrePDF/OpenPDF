@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     static final PdfName[] pageInhCandidates = {PdfName.MEDIABOX,
             PdfName.ROTATE, PdfName.RESOURCES, PdfName.CROPBOX};
+
+    /**
+     * The deepest nesting of /Pages nodes in the page tree that is read.
+     */
+    private static final int MAX_PAGE_TREE_DEPTH = 256;
 
     private static final String ENDSTREAM = "endstream";
     private static final byte[] endstreamBytes = PdfEncodings
@@ -149,6 +155,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     private boolean partial;
     private PRIndirectReference cryptoRef;
     private boolean encryptionError;
+    /**
+     * The numbers of the objects that are being read right now (partial reading only), to notice an object that
+     * needs itself in order to be read.
+     */
+    private final Set<Integer> objectsBeingRead = new HashSet<>();
 
     /**
      * Holds value of property appendable.
@@ -1881,6 +1892,18 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     protected PdfObject readSingleObject(int k) throws IOException {
+        if (!objectsBeingRead.add(k)) {
+            // reading this object led back to itself, for example a stream that is its own /Length
+            return null;
+        }
+        try {
+            return readSingleObjectFromFile(k);
+        } finally {
+            objectsBeingRead.remove(k);
+        }
+    }
+
+    private PdfObject readSingleObjectFromFile(int k) throws IOException {
         strings.clear();
         int k2 = k * 2;
         long pos = xref[k2];
@@ -4005,6 +4028,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
          * stack to which pages dictionaries are pushed to keep track of the current page attributes
          */
         private List<PdfDictionary> pageInh;
+        /**
+         * The object numbers of the branches of the page tree that were read, while the pages are being read
+         */
+        private Set<Integer> visitedPageNodes;
         private boolean keepPages;
 
         private PageRefs(PdfReader reader) {
@@ -4047,6 +4074,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             refsp = null;
             refsn = new ArrayList<>();
             pageInh = new ArrayList<>();
+            visitedPageNodes = new HashSet<>();
             PdfObject obj = reader.catalog.get(PdfName.PAGES);
             if (obj instanceof PRIndirectReference) {
                 iteratePages((PRIndirectReference) obj);
@@ -4054,6 +4082,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 iteratePages((PdfDictionary) obj);
             }
             pageInh = null;
+            visitedPageNodes = null;
             reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
         }
 
@@ -4231,6 +4260,17 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             pageInh.remove(pageInh.size() - 1);
         }
 
+        /**
+         * Registers a branch of the page tree that is about to be read.
+         *
+         * @param node the reference to the branch
+         * @return {@code false} if the branch must not be read: it was read before, as in a tree whose /Kids lead
+         *         back to an ancestor or list the same branch many times, or it is nested too deeply
+         */
+        private boolean enterPageTreeBranch(PRIndirectReference node) {
+            return pageInh.size() < MAX_PAGE_TREE_DEPTH && visitedPageNodes.add(node.getNumber());
+        }
+
         private void iteratePages(PRIndirectReference rpage) {
             PdfDictionary page = (PdfDictionary) getPdfObject(rpage);
             if (page == null) {
@@ -4254,7 +4294,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     page.put(PdfName.MEDIABOX, arr);
                 }
                 refsn.add(rpage);
-            } else {
+            } else if (enterPageTreeBranch(rpage)) {
                 // reference to a branch
                 page.put(PdfName.TYPE, PdfName.PAGES);
                 pushPageAttributes(page);
@@ -4300,11 +4340,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             }
         }
 
-        protected PRIndirectReference getSinglePage(int n) {
+        protected PRIndirectReference getSinglePage(int n) throws IOException {
             PdfDictionary acc = new PdfDictionary();
             PdfDictionary top = reader.rootPages;
             int base = 0;
+            Set<Integer> visited = new HashSet<>();
             while (true) {
+                boolean descended = false;
                 for (PdfName pageInhCandidate : pageInhCandidates) {
                     PdfObject obj = top.get(pageInhCandidate);
                     if (obj != null) {
@@ -4329,10 +4371,15 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                         }
                         reader.releaseLastXrefPartial();
                         top = dic;
+                        descended = visited.add(ref.getNumber());
                         break;
                     }
                     reader.releaseLastXrefPartial();
                     base += acn;
+                }
+                if (!descended) {
+                    // the page is not among the kids, or the kids lead back to a node that was visited before
+                    throw new InvalidPdfException(MessageLocalization.getComposedMessage("invalid.page.tree"));
                 }
             }
         }
