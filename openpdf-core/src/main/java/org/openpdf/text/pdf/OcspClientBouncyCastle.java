@@ -101,6 +101,7 @@ package org.openpdf.text.pdf;
 import org.openpdf.text.ExceptionConverter;
 import org.openpdf.text.error_messages.MessageLocalization;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,12 +114,17 @@ import java.net.URL;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.security.GeneralSecurityException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Random;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.ExtensionsGenerator;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.CertificateID;
@@ -129,6 +135,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
 /**
@@ -156,6 +163,18 @@ public class OcspClientBouncyCastle implements OcspClient {
      */
     private Proxy proxy;
     private static final Random RANDOM_INSTANCE = new SecureRandom();
+    /**
+     * Timeout for connecting to the OCSP responder and for reading its response.
+     */
+    private static final int TIMEOUT_MILLIS = 30_000;
+    /**
+     * The largest OCSP response that is accepted.
+     */
+    private static final int MAX_RESPONSE_SIZE = 1024 * 1024;
+    /**
+     * The extended key usage of a certificate that may sign OCSP responses on behalf of the issuer.
+     */
+    private static final String OCSP_SIGNING = "1.3.6.1.5.5.7.3.9";
 
     /**
      * Creates an instance of an OcspClient that will be using BouncyCastle.
@@ -227,8 +246,11 @@ public class OcspClientBouncyCastle implements OcspClient {
                     checkCert.getSerialNumber());
             byte[] array = request.getEncoded();
             URL urlt = new URI(url).toURL();
+            checkHttpUrl(urlt);
             Proxy tmpProxy = proxy == null ? Proxy.NO_PROXY : proxy;
             HttpURLConnection con = (HttpURLConnection) urlt.openConnection(tmpProxy);
+            con.setConnectTimeout(TIMEOUT_MILLIS);
+            con.setReadTimeout(TIMEOUT_MILLIS);
             con.setRequestProperty("Content-Type", "application/ocsp-request");
             con.setRequestProperty("Accept", "application/ocsp-response");
             con.setDoOutput(true);
@@ -243,8 +265,10 @@ public class OcspClientBouncyCastle implements OcspClient {
                         "invalid.http.response.1", con.getResponseCode()));
             }
             // Get Response
-            InputStream in = (InputStream) con.getContent();
-            OCSPResp ocspResponse = new OCSPResp(in);
+            OCSPResp ocspResponse;
+            try (InputStream in = con.getInputStream()) {
+                ocspResponse = new OCSPResp(readResponse(in));
+            }
 
             if (ocspResponse.getStatus() != 0) {
                 throw new IOException(MessageLocalization.getComposedMessage(
@@ -258,6 +282,7 @@ public class OcspClientBouncyCastle implements OcspClient {
                     SingleResp resp = responses[0];
                     Object status = resp.getCertStatus();
                     if (status == null) {
+                        checkResponse(request, basicResponse, resp);
                         return basicResponse.getEncoded();
                     } else if (status instanceof org.bouncycastle.cert.ocsp.RevokedStatus) {
                         throw new IOException(
@@ -274,6 +299,75 @@ public class OcspClientBouncyCastle implements OcspClient {
             throw new ExceptionConverter(ex);
         }
         return null;
+    }
+
+    private static void checkHttpUrl(URL url) throws IOException {
+        String protocol = url.getProtocol();
+        if (!"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {
+            throw new IOException("The OCSP URL has to be an http or https URL: " + protocol);
+        }
+    }
+
+    private static byte[] readResponse(InputStream in) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[8192];
+        int read;
+        while ((read = in.read(buffer)) >= 0) {
+            out.write(buffer, 0, read);
+            if (out.size() > MAX_RESPONSE_SIZE) {
+                throw new IOException("The OCSP response is larger than " + MAX_RESPONSE_SIZE + " bytes");
+            }
+        }
+        return out.toByteArray();
+    }
+
+    /**
+     * Checks that a response answers the request and comes from the issuer of the certificate.
+     */
+    private void checkResponse(OCSPReq request, BasicOCSPResp basicResponse, SingleResp response)
+            throws IOException, OCSPException, OperatorCreationException, GeneralSecurityException {
+        if (!request.getRequestList()[0].getCertID().equals(response.getCertID())) {
+            throw new IOException("The OCSP response is not about the requested certificate");
+        }
+        Extension sent = request.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+        Extension received = basicResponse.getExtension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce);
+        if (received != null && (sent == null || !sent.getExtnValue().equals(received.getExtnValue()))) {
+            throw new IOException("The nonce of the OCSP response does not match the request");
+        }
+        if (!isSignedByIssuerOrDelegate(basicResponse)) {
+            throw new IOException("The OCSP response is not signed by the issuer of the certificate"
+                    + " or by a responder that the issuer authorised");
+        }
+    }
+
+    /**
+     * Checks the signature of a response. It has to be made by the issuer of the certificate, or with a certificate
+     * that the issuer issued for signing OCSP responses.
+     */
+    private boolean isSignedByIssuerOrDelegate(BasicOCSPResp basicResponse)
+            throws OCSPException, OperatorCreationException, GeneralSecurityException {
+        JcaContentVerifierProviderBuilder verifier = new JcaContentVerifierProviderBuilder();
+        if (basicResponse.isSignatureValid(verifier.build(rootCert))) {
+            return true;
+        }
+        for (X509CertificateHolder holder : basicResponse.getCerts()) {
+            X509Certificate responder = new JcaX509CertificateConverter().getCertificate(holder);
+            if (isAuthorisedResponder(responder) && basicResponse.isSignatureValid(verifier.build(responder))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isAuthorisedResponder(X509Certificate responder) {
+        try {
+            responder.verify(rootCert.getPublicKey());
+            responder.checkValidity();
+            List<String> usage = responder.getExtendedKeyUsage();
+            return usage != null && usage.contains(OCSP_SIGNING);
+        } catch (GeneralSecurityException e) {
+            return false;
+        }
     }
 
     /**
