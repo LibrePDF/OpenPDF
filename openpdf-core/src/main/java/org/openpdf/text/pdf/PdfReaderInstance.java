@@ -118,8 +118,7 @@ class PdfReaderInstance {
         if (page == null) {
             return null;
         }
-        PdfObject obj = PdfReader.getPdfObjectRelease(page.get(PdfName.RESOURCES));
-        return obj;
+        return PdfReader.getPdfObjectRelease(page.get(PdfName.RESOURCES));
     }
 
     /**

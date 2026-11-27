@@ -81,7 +81,7 @@ public class ImgJBIG2 extends Image {
      * Empty constructor.
      */
     public ImgJBIG2() {
-        super((Image) null);
+        super((URL) null);
     }
 
     /**

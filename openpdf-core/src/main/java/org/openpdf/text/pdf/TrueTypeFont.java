@@ -1147,7 +1147,7 @@ class TrueTypeFont extends BaseFont {
         int lly = head.yMin * 1000 / head.unitsPerEm;
         int urx = head.xMax * 1000 / head.unitsPerEm;
         int ury = head.yMax * 1000 / head.unitsPerEm;
-        dic.put(PdfName.FONTBBOX, new PdfRectangle(llx, lly, urx, ury));
+        dic.put(PdfName.FONTBBOX, new PdfRectangle((float) llx, (float) lly, (float) urx, (float) ury));
         if (cidset != null) {
             dic.put(PdfName.CIDSET, cidset);
         }
