@@ -196,15 +196,28 @@ final class OpenPdfCorePageRenderer {
      */
     private static final int MAX_FORM_DEPTH = 32;
 
+    /**
+     * The amount of work that is spent on one page: an operator counts as one unit and drawing
+     * a Form XObject as {@link #FORM_WORK} units. Forms can draw each other many times, so that
+     * a few small forms describe more work than any computer can do. Rendering of a page stops
+     * when the limit is reached. A page of a real document stays far below it.
+     */
+    static final long MAX_PAGE_WORK = 20_000_000L;
+
+    /**
+     * The work that drawing a Form XObject counts for, on top of the operators in it.
+     */
+    private static final int FORM_WORK = 64;
+
     private final Graphics2D g2;
     private final PdfDictionary resources;
     private final Map<String, CMapAwareDocumentFont> fontCache = new HashMap<>();
     /**
      * Embedded-font program cache keyed by the FontDescriptor's identity. Re-parsing a
      * TrueType program for every {@code Tj} call would be wasteful; a single page can
-     * reference the same font hundreds of times.
+     * reference the same font hundreds of times. Shared with the nested renderers.
      */
-    private final Map<PdfDictionary, Font> awtFontCache = new HashMap<>();
+    private final Map<PdfDictionary, Font> awtFontCache;
     /**
      * Decoded inline images, keyed by the synthetic XObject name we substitute into
      * the content stream in place of the original {@code BI...EI} block.
@@ -216,6 +229,10 @@ final class OpenPdfCorePageRenderer {
      * directly or through other forms, is not entered again.
      */
     private final Set<PRStream> formsInProgress;
+    /**
+     * What the renderer of a page and the renderers of its forms have in common.
+     */
+    private final PageState page;
 
     private final Deque<GState> stateStack = new ArrayDeque<>();
     private final Deque<AffineTransform> ctmStack = new ArrayDeque<>();
@@ -242,14 +259,49 @@ final class OpenPdfCorePageRenderer {
     private AffineTransform textLineMatrix;
 
     private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources) {
-        this(g2, resources, Collections.newSetFromMap(new IdentityHashMap<>()));
+        this(g2, resources, new PageState());
     }
 
-    private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources, Set<PRStream> formsInProgress) {
+    private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources, PageState page) {
         this.g2 = g2;
         this.resources = resources;
-        this.formsInProgress = formsInProgress;
+        this.page = page;
+        this.formsInProgress = page.formsInProgress;
+        this.awtFontCache = page.awtFonts;
         this.state = new GState();
+    }
+
+    /**
+     * The state that the renderer of a page shares with the renderers of the forms on it.
+     */
+    private static final class PageState {
+
+        private final Set<PRStream> formsInProgress = Collections.newSetFromMap(new IdentityHashMap<>());
+        private final Map<PdfDictionary, Font> awtFonts = new HashMap<>();
+        /**
+         * The fonts of the page and its forms by object number, {@code null} for a font that cannot be read.
+         */
+        private final Map<Integer, CMapAwareDocumentFont> fonts = new HashMap<>();
+        private long work;
+
+        /**
+         * Counts work against the limit of the page.
+         *
+         * @param units the amount of work that is about to be done
+         * @return {@code false} if the page has used up its work and rendering has to stop
+         */
+        private boolean spend(int units) {
+            if (work > MAX_PAGE_WORK) {
+                return false;
+            }
+            work += units;
+            if (work > MAX_PAGE_WORK) {
+                LOG.log(Level.WARNING, "Stopped rendering a page that needs more than {0} operations",
+                        MAX_PAGE_WORK);
+                return false;
+            }
+            return true;
+        }
     }
 
     /**
@@ -351,7 +403,7 @@ final class OpenPdfCorePageRenderer {
                 LOG.log(Level.FINE, "Aborting content stream early due to: {0}", e);
                 return;
             }
-            if (parsed.isEmpty()) {
+            if (parsed.isEmpty() || !page.spend(1)) {
                 return;
             }
             PdfLiteral op = (PdfLiteral) parsed.get(parsed.size() - 1);
@@ -1234,6 +1286,9 @@ final class OpenPdfCorePageRenderer {
      * than {@link #MAX_FORM_DEPTH} levels deep. A form that draws itself would never end.</p>
      */
     private void renderForm(PRStream form) {
+        if (!page.spend(FORM_WORK)) {
+            return;
+        }
         if (formsInProgress.size() >= MAX_FORM_DEPTH || !formsInProgress.add(form)) {
             LOG.log(Level.FINE, "Skipping Form XObject that draws itself or is nested too deeply");
             return;
@@ -1256,7 +1311,7 @@ final class OpenPdfCorePageRenderer {
             }
             PdfDictionary formResources = form.getAsDict(PdfName.RESOURCES);
             PdfDictionary effective = formResources != null ? formResources : resources;
-            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective, formsInProgress);
+            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective, page);
             nested.state = state;
             byte[] body = PdfReader.getStreamBytes(form);
             nested.processContent(body);
@@ -2120,11 +2175,21 @@ final class OpenPdfCorePageRenderer {
         if (!(ref instanceof PRIndirectReference indirect)) {
             return null;
         }
+        // a form that is drawn many times gets a new renderer every time, so the fonts are kept for the page
+        if (page.fonts.containsKey(indirect.getNumber())) {
+            CMapAwareDocumentFont known = page.fonts.get(indirect.getNumber());
+            if (known != null) {
+                fontCache.put(name, known);
+            }
+            return known;
+        }
         try {
             CMapAwareDocumentFont font = new CMapAwareDocumentFont(indirect);
+            page.fonts.put(indirect.getNumber(), font);
             fontCache.put(name, font);
             return font;
         } catch (RuntimeException ignored) {
+            page.fonts.put(indirect.getNumber(), null);
             return null;
         }
     }
