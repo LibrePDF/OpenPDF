@@ -12,7 +12,6 @@ import org.openpdf.text.pdf.PRIndirectReference;
 import org.openpdf.text.pdf.PdfDictionary;
 import org.openpdf.text.pdf.PdfName;
 import org.openpdf.text.pdf.PdfReader;
-import org.openpdf.text.pdf.PdfString;
 import org.openpdf.text.pdf.PdfWriter;
 import org.openpdf.text.pdf.parser.PdfTextExtractor;
 
@@ -51,11 +50,6 @@ class PdfContentStreamHandlerFontCacheTest {
 
                 @Override
                 public void reset() {
-                    // not needed for the font cache test
-                }
-
-                @Override
-                void displayPdfString(PdfString string) {
                     // not needed for the font cache test
                 }
 
