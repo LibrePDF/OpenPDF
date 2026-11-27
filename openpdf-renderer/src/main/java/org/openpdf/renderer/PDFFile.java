@@ -69,6 +69,10 @@ public class PDFFile {
     /** the end of line character */
     /** the comment text to begin the file to determine it's version */
     private final static String VERSION_COMMENT = "%PDF-";
+    /** how deeply arrays and dictionaries may be nested in each other */
+    private static final int MAX_NESTING_DEPTH = 256;
+    /** the number of arrays and dictionaries that are being read at the moment */
+    private int nestingDepth = 0;
     /**
      * A ByteBuffer containing the file data
      */
@@ -421,7 +425,7 @@ public class PDFFile {
                 c = this.buf.get();
                 if (c == '<') {
                     // it's a dictionary
-            obj = readDictionary(objNum, objGen, decrypter);
+            obj = readNested(true, objNum, objGen, decrypter);
                 } else {
                     this.buf.position(this.buf.position() - 1);
             obj = readHexString(objNum, objGen, decrypter);
@@ -430,7 +434,7 @@ public class PDFFile {
         obj = readLiteralString(objNum, objGen, decrypter);
             } else if (c == '[') {
                 // it's an array
-        obj = readArray(objNum, objGen, decrypter);
+        obj = readNested(false, objNum, objGen, decrypter);
             } else if (c == '/') {
                 // it's a name
                 obj = readName();
@@ -448,10 +452,10 @@ public class PDFFile {
                     // from dereference, which already is using a mark
                     int startPos = this.buf.position();
 
-            PDFObject testnum = readObject(-1, -1, true, decrypter);
+            PDFObject testnum = readReferenceToken(false);
                     if (testnum != null &&
                             testnum.getType() == PDFObject.NUMBER) {
-            PDFObject testR = readObject(-1, -1, true, decrypter);
+            PDFObject testR = readReferenceToken(true);
                         if (testR != null &&
                                 testR.getType() == PDFObject.KEYWORD &&
                                 testR.getStringValue().equals("R")) {
@@ -487,6 +491,76 @@ public class PDFFile {
             }
         }
         return obj;
+    }
+
+    /**
+     * read the token that follows a number, to test if the number is the
+     * start of a reference ("1 0 R") or of an object description
+     * ("1 0 obj").  Only a number or a keyword is read: an array, a dictionary
+     * or a string that follows the number is left alone, as it can not be
+     * part of a reference.
+     *
+     * @param keyword true to read a keyword, false to read a number
+     * @return the number or keyword, or null if something else follows. In
+     *  that case the caller has to restore the position of the buffer.
+     */
+    private PDFObject readReferenceToken(boolean keyword) throws IOException {
+        int c = nextTokenStart();
+        if (keyword) {
+            return isKeywordStart(c) ? readKeyword((char) c) : null;
+        }
+        return isNumberStart(c) ? readNumber((char) c) : null;
+    }
+
+    /**
+     * skip whitespace and comments.
+     *
+     * @return the first character of the next token, which has been read, or
+     *  -1 at the end of the buffer
+     */
+    private int nextTokenStart() {
+        while (this.buf.hasRemaining()) {
+            int c = this.buf.get() & 0xFF;
+            if (c == '%') {
+                readLine();
+            } else if (!isWhiteSpace(c)) {
+                return c;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean isNumberStart(int c) {
+        return (c >= '0' && c <= '9') || c == '-' || c == '+' || c == '.';
+    }
+
+    private static boolean isKeywordStart(int c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    /**
+     * read a dictionary or an array, of which the opening characters have
+     * been read, and keep track of how deeply they are nested.
+     *
+     * @param dictionary true to read a dictionary, false to read an array
+     * @param objNum the object number of the object containing the object
+     *  being read
+     * @param objGen the object generation of the object containing the object
+     *  being read
+     * @param decrypter the decrypter to use
+     * @throws PDFParseException if the nesting is deeper than the limit
+     */
+    private PDFObject readNested(
+            boolean dictionary, int objNum, int objGen, PDFDecrypter decrypter) throws IOException {
+        if (this.nestingDepth >= MAX_NESTING_DEPTH) {
+            throw new PDFParseException("Arrays and dictionaries are nested deeper than " + MAX_NESTING_DEPTH);
+        }
+        this.nestingDepth++;
+        try {
+            return dictionary ? readDictionary(objNum, objGen, decrypter) : readArray(objNum, objGen, decrypter);
+        } finally {
+            this.nestingDepth--;
+        }
     }
 
     /**
