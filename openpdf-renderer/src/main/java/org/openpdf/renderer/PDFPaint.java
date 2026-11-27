@@ -66,6 +66,10 @@ public class PDFPaint {
     public Rectangle2D fill(PDFRenderer state, Graphics2D g,
             GeneralPath s) {
         g.setPaint(this.mainPaint);
+        if (s == null) {
+            // no path and no clip region to fall back on: nothing is filled, no dirty region
+            return null;
+        }
         g.fill(s);
 
         return s.createTransformedShape(g.getTransform()).getBounds2D();

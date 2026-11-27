@@ -110,7 +110,8 @@ public class PolylineShape implements Shape {
      * @see java.awt.Shape#getBounds()
      */
     public Rectangle getBounds() {
-        return getBounds2D().getBounds();
+        Rectangle2D bounds = getBounds2D();
+        return bounds == null ? null : bounds.getBounds();
     }
 
     /**

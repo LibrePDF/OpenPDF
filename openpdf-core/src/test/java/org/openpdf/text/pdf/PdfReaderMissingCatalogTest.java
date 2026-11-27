@@ -18,7 +18,7 @@ class PdfReaderMissingCatalogTest {
     void rootToMissingObjectIsReported() throws Exception {
         byte[] original = createPdf();
         int size;
-        int startxref;
+        long startxref;
         try (PdfReader reader = new PdfReader(original)) {
             size = reader.getTrailer().getAsNumber(PdfName.SIZE).intValue();
             startxref = reader.getLastXref();

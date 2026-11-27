@@ -98,6 +98,40 @@ public class SpecialSymbol {
     }
 
     /**
+     * Splits a string containing special Greek/Symbol characters into normal and Symbol-font {@link Chunk}s
+     * and appends them to the target {@link Phrase}.
+     *
+     * @param target the target {@link Phrase} to populate
+     * @param string the input string that may contain special symbol characters
+     * @param font   the base font to use for non-symbol characters
+     */
+    static void appendSymbolChunks(Phrase target, String string, Font font) {
+        String remaining = string;
+        if (font.getFamily() != Font.SYMBOL && font.getFamily() != Font.ZAPFDINGBATS && font.getBaseFont() == null) {
+            int index;
+            while ((index = index(remaining)) > -1) {
+                if (index > 0) {
+                    String firstPart = remaining.substring(0, index);
+                    target.add(new Chunk(firstPart, font));
+                    remaining = remaining.substring(index);
+                }
+                Font symbolFont = new Font(Font.SYMBOL, font.getSize(), font.getStyle(), font.getColor());
+                StringBuilder buf = new StringBuilder();
+                buf.append(getCorrespondingSymbol(remaining.charAt(0)));
+                remaining = remaining.substring(1);
+                while (index(remaining) == 0) {
+                    buf.append(getCorrespondingSymbol(remaining.charAt(0)));
+                    remaining = remaining.substring(1);
+                }
+                target.add(new Chunk(buf.toString(), symbolFont));
+            }
+        }
+        if (remaining != null && !remaining.isEmpty()) {
+            target.add(new Chunk(remaining, font));
+        }
+    }
+
+    /**
      * Looks for the corresponding symbol in the font Symbol.
      *
      * @param c the original ASCII-char

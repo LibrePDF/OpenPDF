@@ -268,11 +268,17 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
      * @param indirect 2004-06-13
      */
     private static int getNumber(PdfIndirectReference indirect) {
+        if (indirect == null) {
+            throw new IllegalArgumentException("Illegal bookmark destination");
+        }
         PdfDictionary pdfObj = (PdfDictionary) PdfReader.getPdfObjectRelease(indirect);
-        if (pdfObj.contains(PdfName.TYPE) && pdfObj.get(PdfName.TYPE).equals(PdfName.PAGES) && pdfObj.contains(
-                PdfName.KIDS)) {
+        if (pdfObj != null && pdfObj.contains(PdfName.TYPE) && pdfObj.get(PdfName.TYPE).equals(PdfName.PAGES)
+                && pdfObj.contains(PdfName.KIDS)) {
             PdfArray kids = (PdfArray) pdfObj.get(PdfName.KIDS);
-            indirect = (PdfIndirectReference) kids.getPdfObject(0);
+            PdfIndirectReference firstKid = (PdfIndirectReference) kids.getPdfObject(0);
+            if (firstKid != null) {
+                return firstKid.getNumber();
+            }
         }
         return indirect.getNumber();
     }

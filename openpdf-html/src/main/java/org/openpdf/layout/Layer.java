@@ -239,7 +239,7 @@ public final class Layer {
     private static class ZIndexComparator implements Comparator<Layer> {
         @Override
         public int compare(Layer l1, Layer l2) {
-            return l1.getZIndex() - l2.getZIndex();
+            return Integer.compare(l1.getZIndex(), l2.getZIndex());
         }
     }
 
