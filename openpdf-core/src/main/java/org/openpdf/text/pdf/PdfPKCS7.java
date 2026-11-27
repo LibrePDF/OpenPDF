@@ -243,6 +243,9 @@ public class PdfPKCS7 {
     private List<Certificate> signCerts;
     private X509Certificate signCert;
     private byte[] digest;
+    // The digest accumulates the signed content across successive update() calls, exactly like the Signature below,
+    // so it has to live as long as this object. Instances of this class are not meant to be shared between threads.
+    @SuppressWarnings("java:S9428")
     private MessageDigest messageDigest;
     private String digestAlgorithm, digestEncryptionAlgorithm;
     private Signature sig;
