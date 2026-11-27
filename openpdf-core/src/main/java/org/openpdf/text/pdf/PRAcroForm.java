@@ -68,6 +68,7 @@ public class PRAcroForm extends PdfDictionary {
     ArrayList<PdfDictionary> stack;
     HashMap<String, FieldInformation> fieldByName;
     PdfReader reader;
+    private PdfTraversalGuard fieldGuard = new PdfTraversalGuard();
 
     /**
      * Constructor
@@ -124,6 +125,7 @@ public class PRAcroForm extends PdfDictionary {
         hashMap = root.hashMap;
         pushAttrib(root);
         PdfArray fieldlist = (PdfArray) PdfReader.getPdfObjectRelease(root.get(PdfName.FIELDS));
+        fieldGuard = new PdfTraversalGuard();
         iterateFields(fieldlist, null, null);
     }
 
@@ -137,6 +139,10 @@ public class PRAcroForm extends PdfDictionary {
     protected void iterateFields(PdfArray fieldlist, PRIndirectReference fieldDict, String title) {
         for (PdfObject pdfObject : fieldlist.getElements()) {
             PRIndirectReference ref = (PRIndirectReference) pdfObject;
+            if (!fieldGuard.enter(ref)) {
+                // a field that was read before, as in a hierarchy that leads back to itself, or nested too deeply
+                continue;
+            }
             PdfDictionary dict = (PdfDictionary) PdfReader.getPdfObjectRelease(ref);
 
             // if we are not a field dictionary, pass our parent's values
@@ -180,6 +186,7 @@ public class PRAcroForm extends PdfDictionary {
                     fieldByName.put(myTitle, fi);
                 }
             }
+            fieldGuard.leave();
         }
     }
 
