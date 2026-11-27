@@ -3329,13 +3329,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         return result;
     }
 
-    private void iterateBookmarks(PdfObject outlineRef, Map<Object, PdfObject> names) {
-        while (outlineRef != null) {
+    private void iterateBookmarks(PdfObject outlineRef, Map<Object, PdfObject> names, PdfTraversalGuard guard) {
+        while (outlineRef != null && guard.visit(outlineRef)) {
             replaceNamedDestination(outlineRef, names);
             PdfDictionary outline = (PdfDictionary) getPdfObjectRelease(outlineRef);
             PdfObject first = outline.get(PdfName.FIRST);
-            if (first != null) {
-                iterateBookmarks(first, names);
+            if (first != null && guard.enter()) {
+                iterateBookmarks(first, names, guard);
+                guard.leave();
             }
             outlineRef = outline.get(PdfName.NEXT);
         }
@@ -3467,7 +3468,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (outlines == null) {
             return;
         }
-        iterateBookmarks(outlines.get(PdfName.FIRST), names);
+        iterateBookmarks(outlines.get(PdfName.FIRST), names, new PdfTraversalGuard());
     }
 
     private boolean replaceNamedDestination(PdfObject obj, Map<Object, PdfObject> names) {
