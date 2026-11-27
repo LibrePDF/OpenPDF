@@ -36,6 +36,9 @@ import java.io.IOException;
  */
 public class NameTree {
 
+    /** more levels than a name tree has, unless it has a cycle */
+    private static final int MAX_DEPTH = 256;
+
     /** the root object */
     private PDFObject root;
 
@@ -51,14 +54,17 @@ public class NameTree {
      * @return the object associated with str,  if found, or null if not
      */
     public PDFObject find(String key) throws IOException {
-        return find(root, key);
+        return find(root, key, 0);
     }
 
     /**
      * Recursively walk the name tree looking for a given value
      */
-    private PDFObject find(PDFObject root, String key)
+    private PDFObject find(PDFObject root, String key, int depth)
             throws IOException {
+        if (depth > MAX_DEPTH) {
+            throw new PDFParseException("The name tree is nested too deeply");
+        }
         // first, look for a Names entry, meaning this is a leaf
         PDFObject names = root.getDictRef("Names");
         if (names != null) {
@@ -82,7 +88,7 @@ public class NameTree {
                             (key.compareTo(upperLimit) <= 0)) {
 
                         // we are, so find in this child
-                        return find(kids[i], key);
+                        return find(kids[i], key, depth + 1);
                     }
                 }
             }

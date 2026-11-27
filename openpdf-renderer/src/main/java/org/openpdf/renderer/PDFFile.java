@@ -62,6 +62,8 @@ public class PDFFile {
 
     public final static int             NUL_CHAR = 0;
     public final static int             FF_CHAR = 12;
+    /** more levels than a tree of pages has, unless it has a cycle */
+    private static final int MAX_PAGE_TREE_DEPTH = 256;
 
     private String versionString = "1.1";
     private int majorVersion = 1;
@@ -1616,7 +1618,7 @@ public class PDFFile {
                 resources = new HashMap<String, PDFObject>();
 
                 PDFObject topPagesObj = this.root.getDictRef("Pages");
-                pageObj = findPage(topPagesObj, 0, pagenum, resources);
+                pageObj = findPage(topPagesObj, 0, pagenum, resources, 0);
 
                 if (pageObj == null) {
                     return null;
@@ -1770,9 +1772,13 @@ public class PDFFile {
      * @param getPage the number of the page to find; NOT the page's label.
      * @param resources a HashMap that will be filled with any resource
      *                  definitions encountered on the search for the page
+     * @param depth the number of levels above this dictionary
      */
     private PDFObject findPage(PDFObject pagedict, int start, int getPage,
-            Map<String, PDFObject> resources) throws IOException {
+            Map<String, PDFObject> resources, int depth) throws IOException {
+        if (depth > MAX_PAGE_TREE_DEPTH) {
+            throw new PDFParseException("The tree of pages is nested too deeply");
+        }
         PDFObject rsrcObj = pagedict.getDictRef("Resources");
         if (rsrcObj != null) {
             resources.putAll(rsrcObj.getDictionary());
@@ -1799,7 +1805,7 @@ public class PDFFile {
                 }
 
                 if (start + count >= getPage) {
-                    return findPage(kids[i], start, getPage, resources);
+                    return findPage(kids[i], start, getPage, resources, depth + 1);
                 }
 
                 start += count;
@@ -1819,16 +1825,15 @@ public class PDFFile {
      */
     private PDFObject getInheritedValue(PDFObject pageObj, String propName)
             throws IOException {
-        // see if we have the property
-        PDFObject propObj = pageObj.getDictRef(propName);
-        if (propObj != null) {
-            return propObj;
-        }
-
-        // recursively see if any of our parent have it
-        PDFObject parentObj = pageObj.getDictRef("Parent");
-        if (parentObj != null) {
-            return getInheritedValue(parentObj, propName);
+        // see if we have the property, or if any of our parents has it.
+        // Parents that lead back to the page are not followed forever.
+        PDFObject node = pageObj;
+        for (int depth = 0; node != null && depth <= MAX_PAGE_TREE_DEPTH; depth++) {
+            PDFObject propObj = node.getDictRef(propName);
+            if (propObj != null) {
+                return propObj;
+            }
+            node = node.getDictRef("Parent");
         }
 
         // no luck
