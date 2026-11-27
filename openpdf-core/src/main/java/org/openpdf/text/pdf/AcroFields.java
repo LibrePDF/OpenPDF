@@ -142,7 +142,11 @@ public class AcroFields {
     PdfWriter writer;
     private Map<String, Item> fields;
     private int topFirst;
-    private Map<String, int[]> sigNames;
+    /**
+     * The revision length of a signature whose byte range is not valid.
+     */
+    private static final long INVALID_BYTE_RANGE = -1;
+    private Map<String, long[]> sigNames;
     private HashMap<String, SignatureType> sigTypes;
     private boolean append;
     private XfaForm xfa;
@@ -2176,22 +2180,11 @@ public class AcroFields {
             if (rangeSize < 2) {
                 continue;
             }
-            /*
-             * From the PDF32000_2008 spec: Byterange: An array of pairs of integers
-             * (starting byte offset, length in bytes) Also see:
-             * https://pdf-insecurity.org/download/paper.pdf
-             */
-            int lengthOfSignedBlocks = 0;
-            for (int i = rangeSize - 1; i > 0; i = i - 2) {
-                lengthOfSignedBlocks += ro.getAsNumber(i).intValue();
-            }
-            int unsignedBlock = contents.getOriginalBytes().length * 2 + 2;
-            int length = lengthOfSignedBlocks + unsignedBlock;
-            sorter.add(new Object[]{entry.getKey(), new int[]{length, 0}});
+            sorter.add(new Object[]{entry.getKey(), new long[]{getSignedRevisionLength(v), 0}});
         }
         sorter.sort(new SorterComparator());
         if (!sorter.isEmpty()) {
-            if (((int[]) sorter.get(sorter.size() - 1)[1])[0] == reader.getFileLength()) {
+            if (((long[]) sorter.get(sorter.size() - 1)[1])[0] == reader.getFileLength()) {
                 totalRevisions = sorter.size();
             } else {
                 totalRevisions = sorter.size() + 1;
@@ -2199,12 +2192,94 @@ public class AcroFields {
             for (int k = 0; k < sorter.size(); ++k) {
                 Object[] objs = sorter.get(k);
                 String name = (String) objs[0];
-                int[] p = (int[]) objs[1];
-                p[1] = k + 1;
+                long[] p = (long[]) objs[1];
+                p[1] = k + 1L;
                 sigNames.put(name, p);
             }
         }
         return new ArrayList<>(sigNames.keySet());
+    }
+
+    /**
+     * Gets the length of the revision that a signature covers, which is the end of its signed byte range.
+     *
+     * @param v the signature dictionary
+     * @return the length of the signed revision or -1 if the byte range of the signature is not valid
+     */
+    private long getSignedRevisionLength(PdfDictionary v) {
+        long[] range = getValidByteRange(v);
+        return range == null ? INVALID_BYTE_RANGE : range[2] + range[3];
+    }
+
+    /**
+     * Gets the byte range of a signature, if it has the form that a signature over a document has. From the
+     * PDF32000_2008 spec: the byte range is an array of pairs of integers (starting byte offset, length in bytes).
+     * For a signature to say anything about the document, there have to be exactly two ranges: the first one starts
+     * at the beginning of the file, and the gap between the two holds the signature value (/Contents) of this
+     * signature and nothing else. Also see: https://pdf-insecurity.org/download/paper.pdf
+     *
+     * @param v the signature dictionary
+     * @return the four values of the byte range or <CODE>null</CODE> if the byte range is not valid
+     */
+    private long[] getValidByteRange(PdfDictionary v) {
+        PdfArray ro = v.getAsArray(PdfName.BYTERANGE);
+        PdfString contents = v.getAsString(PdfName.CONTENTS);
+        if (ro == null || ro.size() != 4 || contents == null) {
+            return null;
+        }
+        long[] range = new long[4];
+        for (int k = 0; k < 4; ++k) {
+            PdfNumber number = ro.getAsNumber(k);
+            if (number == null || number.doubleValue() != number.longValue()) {
+                return null;
+            }
+            range[k] = number.longValue();
+        }
+        long fileLength = reader.getFileLength();
+        boolean ordered = range[0] == 0 && range[1] > 0 && range[2] >= range[1] && range[3] >= 0
+                && range[2] <= fileLength && range[3] <= fileLength - range[2];
+        byte[] signature = contents.getOriginalBytes();
+        if (!ordered || range[2] - range[1] != signature.length * 2L + 2
+                || !isHexStringAt(range[1], signature)) {
+            return null;
+        }
+        return range;
+    }
+
+    /**
+     * Checks that the file contains the given bytes as a hexadecimal string at a position.
+     *
+     * @param position the position of the opening angle bracket in the file
+     * @param expected the bytes that the hexadecimal string has to represent
+     * @return <CODE>true</CODE> if the hexadecimal string at the position represents the bytes
+     */
+    private boolean isHexStringAt(long position, byte[] expected) {
+        byte[] hex = new byte[expected.length * 2 + 2];
+        RandomAccessFileOrArray rf = reader.getSafeFile();
+        try {
+            rf.reOpen();
+            rf.seek(position);
+            rf.readFully(hex);
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                rf.close();
+            } catch (IOException e) {
+                // empty on purpose
+            }
+        }
+        if (hex[0] != '<' || hex[hex.length - 1] != '>') {
+            return false;
+        }
+        for (int k = 0; k < expected.length; ++k) {
+            int high = Character.digit(hex[2 * k + 1], 16);
+            int low = Character.digit(hex[2 * k + 2], 16);
+            if (high < 0 || low < 0 || (byte) (high * 16 + low) != expected[k]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -2457,19 +2532,22 @@ public class AcroFields {
     }
 
     private void updateByteRange(PdfPKCS7 pkcs7, PdfDictionary v) {
-        PdfArray b = v.getAsArray(PdfName.BYTERANGE);
+        long[] range = getValidByteRange(v);
+        if (range == null) {
+            throw new IllegalArgumentException(
+                    "The byte range of the signature does not describe a signature over this document");
+        }
         RandomAccessFileOrArray rf = reader.getSafeFile();
         try {
             rf.reOpen();
             byte[] buf = new byte[8192];
-            for (int k = 0; k < b.size(); ++k) {
-                int start = b.getAsNumber(k).intValue();
-                int length = b.getAsNumber(++k).intValue();
-                rf.seek(start);
+            for (int k = 0; k < range.length; k += 2) {
+                long length = range[k + 1];
+                rf.seek(range[k]);
                 while (length > 0) {
-                    int rd = rf.read(buf, 0, Math.min(length, buf.length));
+                    int rd = rf.read(buf, 0, (int) Math.min(length, buf.length));
                     if (rd <= 0) {
-                        break;
+                        throw new IOException("Unexpected end of file in the signed byte range");
                     }
                     length -= rd;
                     pkcs7.update(buf, 0, rd);
@@ -2520,7 +2598,7 @@ public class AcroFields {
         if (!sigNames.containsKey(field)) {
             return 0;
         }
-        return sigNames.get(field)[1];
+        return (int) sigNames.get(field)[1];
     }
 
     /**
@@ -2537,7 +2615,10 @@ public class AcroFields {
         if (!sigNames.containsKey(field)) {
             return null;
         }
-        int length = sigNames.get(field)[0];
+        long length = sigNames.get(field)[0];
+        if (length == INVALID_BYTE_RANGE) {
+            return null;
+        }
         RandomAccessFileOrArray raf = reader.getSafeFile();
         raf.reOpen();
         raf.seek(0);
@@ -3111,11 +3192,11 @@ public class AcroFields {
 
         private final byte[] b = new byte[1];
         private final RandomAccessFileOrArray raf;
-        private final int length;
-        private int rangePosition = 0;
+        private final long length;
+        private long rangePosition = 0;
         private boolean closed;
 
-        private RevisionStream(RandomAccessFileOrArray raf, int length) {
+        private RevisionStream(RandomAccessFileOrArray raf, long length) {
             this.raf = raf;
             this.length = length;
         }
@@ -3141,7 +3222,7 @@ public class AcroFields {
                 close();
                 return -1;
             }
-            int elen = Math.min(len, length - rangePosition);
+            int elen = (int) Math.min(len, length - rangePosition);
             raf.readFully(b, off, elen);
             rangePosition += elen;
             return elen;
@@ -3158,9 +3239,9 @@ public class AcroFields {
     private static class SorterComparator implements Comparator<Object[]> {
 
         public int compare(Object[] o1, Object[] o2) {
-            int n1 = ((int[]) o1[1])[0];
-            int n2 = ((int[]) o2[1])[0];
-            return Integer.compare(n1, n2);
+            long n1 = ((long[]) o1[1])[0];
+            long n2 = ((long[]) o2[1])[0];
+            return Long.compare(n1, n2);
         }
     }
 
