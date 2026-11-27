@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
 import org.openpdf.text.html.simpleparser.HTMLWorker;
 import org.openpdf.text.pdf.BaseFont;
@@ -31,7 +32,8 @@ class DocumentFontNameTest {
 
     private static final String FONT_RESOURCE = "/fonts/liberation/LiberationSerif-Regular.ttf";
 
-    @TempDir
+    // on this branch a font file that was read stays mapped until it is garbage collected, so it cannot be deleted
+    @TempDir(cleanup = CleanupMode.NEVER)
     Path tempDir;
 
     private HttpServer server;
