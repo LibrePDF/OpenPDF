@@ -75,6 +75,11 @@ public class PDFImage {
 
     private static int[][] GREY_TO_ARGB = new int[8][];
 
+    /** how many masks may follow each other: a mask has no mask of its own */
+    private static final int MAX_MASK_DEPTH = 8;
+    /** the number of masks that the current thread is reading */
+    private static final ThreadLocal<Integer> MASK_DEPTH = ThreadLocal.withInitial(() -> 0);
+
     /**
      * color key mask. Array of start/end pairs of ranges of color components to
      * mask out. If a component falls within any of the ranges it is clear.
@@ -107,6 +112,33 @@ public class PDFImage {
     protected PDFImage(PDFObject imageObj) throws IOException {
         this.imageObj = imageObj;
         this.jpegDecode = PDFDecoder.isLastFilter(imageObj, PDFDecoder.DCT_FILTERS);
+    }
+
+    /**
+     * Read the mask of an image, unless it is one in a chain of masks that
+     * is longer than the limit, like a mask that refers back to its image.
+     *
+     * @param maskObj
+     *            the PDFObject containing the mask's dictionary and stream
+     * @param resources
+     *            the current resources
+     */
+    private static PDFImage createMaskImage(PDFObject maskObj, Map<String, PDFObject> resources)
+            throws IOException {
+        int depth = MASK_DEPTH.get();
+        if (depth >= MAX_MASK_DEPTH) {
+            throw new PDFParseException("Image masks are nested too deeply");
+        }
+        MASK_DEPTH.set(depth + 1);
+        try {
+            return createImage(maskObj, resources, true);
+        } finally {
+            if (depth == 0) {
+                MASK_DEPTH.remove();
+            } else {
+                MASK_DEPTH.set(depth);
+            }
+        }
     }
 
     /**
@@ -216,7 +248,7 @@ public class PDFImage {
             if (sMaskObj != null) {
                 if (sMaskObj.getType() == PDFObject.STREAM) {
                     try {
-                        PDFImage sMaskImage = PDFImage.createImage(sMaskObj, resources, true);
+                        PDFImage sMaskImage = createMaskImage(sMaskObj, resources);
                         image.setSMask(sMaskImage);
                     } catch (IOException ex) {
                         PDFDebugger.debug("ERROR: there was a problem parsing the mask for this object");
