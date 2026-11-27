@@ -48,6 +48,7 @@
  */
 package org.openpdf.text.pdf;
 
+import org.openpdf.text.ExceptionConverter;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -69,6 +70,15 @@ import java.util.Objects;
  * @author Oren Manor (manorore@post.tau.ac.il) and Ygal Blum (blumygal@post.tau.ac.il)
  */
 public class CFFFontSubset extends CFFFont {
+
+    /**
+     * The maximum nesting of subroutine calls, as defined for Type 2 charstrings.
+     */
+    private static final int MAX_SUBR_DEPTH = 10;
+    /**
+     * The nesting of the subroutine calls that are being followed.
+     */
+    private int subrDepth;
 
     /**
      * The Strings in this array represent Type1/Type2 operator names
@@ -667,7 +677,7 @@ public class CFFFontSubset extends CFFFont {
                         lSubr.add(Subr);
                     }
                     if (LSubrsOffsets != null) {
-                        CalcHints(LSubrsOffsets[Subr], LSubrsOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
+                        calcSubrHints(LSubrsOffsets, Subr, LBias, GBias, LSubrsOffsets);
                     }
                     seek(pos);
                 }
@@ -682,7 +692,7 @@ public class CFFFontSubset extends CFFFont {
                         hGSubrsUsed.put(Subr, null);
                         lGSubrsUsed.add(Subr);
                     }
-                    CalcHints(gsubrOffsets[Subr], gsubrOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
+                    calcSubrHints(gsubrOffsets, Subr, LBias, GBias, LSubrsOffsets);
                     seek(pos);
                 }
             } else if (Objects.equals(key, "hstem") || Objects.equals(key, "vstem") || Objects.equals(key, "hstemhm")
@@ -886,14 +896,14 @@ public class CFFFontSubset extends CFFFont {
             if (Objects.equals(key, "callsubr")) {
                 if (NumOfArgs > 0) {
                     int Subr = (Integer) TopElement + LBias;
-                    CalcHints(LSubrsOffsets[Subr], LSubrsOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
+                    calcSubrHints(LSubrsOffsets, Subr, LBias, GBias, LSubrsOffsets);
                     seek(pos);
                 }
             } else if (Objects.equals(key, "callgsubr")) {
                 // a call to a Gsubr
                 if (NumOfArgs > 0) {
                     int Subr = (Integer) TopElement + GBias;
-                    CalcHints(gsubrOffsets[Subr], gsubrOffsets[Subr + 1], LBias, GBias, LSubrsOffsets);
+                    calcSubrHints(gsubrOffsets, Subr, LBias, GBias, LSubrsOffsets);
                     seek(pos);
                 }
             } else if (Objects.equals(key, "hstem") || Objects.equals(key, "vstem") || Objects.equals(key, "hstemhm")
@@ -915,6 +925,32 @@ public class CFFFontSubset extends CFFFont {
             }
         }
         return NumOfHints;
+    }
+
+    /**
+     * Counts the hints of a subroutine that is called from a charstring or from another subroutine. The index of the
+     * subroutine is checked and the nesting of the calls is limited, so that a subroutine that calls itself is
+     * rejected.
+     *
+     * @param offsets       the offsets array the subroutine is in
+     * @param subr          the index of the subroutine
+     * @param LBias         the bias of the Local Subrs
+     * @param GBias         the bias of the Global Subrs
+     * @param LSubrsOffsets The Offsets array of the local subroutines
+     */
+    private void calcSubrHints(int[] offsets, int subr, int LBias, int GBias, int[] LSubrsOffsets) {
+        if (offsets == null || subr < 0 || subr >= offsets.length - 1) {
+            throw new ExceptionConverter(new IOException("Invalid subroutine index in the CFF font: " + subr));
+        }
+        if (subrDepth >= MAX_SUBR_DEPTH) {
+            throw new ExceptionConverter(new IOException("The subroutines of the CFF font are nested too deeply."));
+        }
+        subrDepth++;
+        try {
+            CalcHints(offsets[subr], offsets[subr + 1], LBias, GBias, LSubrsOffsets);
+        } finally {
+            subrDepth--;
+        }
     }
 
 
