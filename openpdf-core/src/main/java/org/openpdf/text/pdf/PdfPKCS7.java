@@ -1269,7 +1269,13 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Checks if OCSP revocation refers to the document signing certificate.
+     * Checks the OCSP response that is embedded in the signature: it has to be about the document signing
+     * certificate, state that the certificate is good, and be signed by the issuer of the signing certificate or
+     * by a responder certificate that the issuer issued for OCSP signing.
+     * <p>
+     * The issuer is taken from the certificates of the signature. Whether the issuer can be trusted is a separate
+     * question, see {@link #verifyCertificates(Certificate[], KeyStore, Collection, Calendar)}. The response is not
+     * checked for its age.
      *
      * @return true if it checks false otherwise
      * @since 2.1.6
@@ -1291,13 +1297,19 @@ public class PdfPKCS7 {
             // Felix--------------------------------------------------
             // CertificateID tis = new CertificateID(CertificateID.HASH_SHA1, isscer,
             // sigcer.getSerialNumber());
-            DigestCalculatorProvider digCalcProv = new JcaDigestCalculatorProviderBuilder()
-                    .setProvider(provider).build();
+            JcaDigestCalculatorProviderBuilder digCalcProvBuilder = new JcaDigestCalculatorProviderBuilder();
+            if (provider != null) {
+                // without this check, the default provider (null) made every response invalid
+                digCalcProvBuilder.setProvider(provider);
+            }
+            DigestCalculatorProvider digCalcProv = digCalcProvBuilder.build();
             CertificateID id = new CertificateID(
                     digCalcProv.get(CertificateID.HASH_SHA1),
                     new JcaX509CertificateHolder(isscer), sigcer.getSerialNumber());
 
-            return id.equals(cid);
+            // a response without a status object says that the certificate is good
+            return id.equals(cid) && sr.getCertStatus() == null
+                    && OcspClientBouncyCastle.isSignedByIssuerOrDelegate(basicResp, isscer);
             // ******************************************************************************
         } catch (Exception ignored) {
         }
