@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.htmlunit</groupId>
       <artifactId>neko-htmlunit</artifactId>
-      <version>5.7.0</version>
+      <version>5.9.0</version>
     </dependency>
     <dependency>
       <groupId>com.github.librepdf</groupId>
@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.18.0</version>
+      <version>5.25.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
