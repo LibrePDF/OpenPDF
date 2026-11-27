@@ -116,9 +116,10 @@ public final class SimpleBookmark implements SimpleXMLDocHandler {
     private SimpleBookmark() {
     }
 
-    private static List<Map<String, Object>> bookmarkDepth(PdfDictionary outline,
+    private static List<Map<String, Object>> bookmarkDepth(PdfDictionary firstOutline,
             IntHashtable pages, PdfTraversalGuard guard) {
         List<Map<String, Object>> list = new ArrayList<>();
+        PdfDictionary outline = firstOutline;
         while (outline != null) {
             Map<String, Object> map = new HashMap<>();
             PdfString title = (PdfString) PdfReader.getPdfObjectRelease(outline.get(PdfName.TITLE));
