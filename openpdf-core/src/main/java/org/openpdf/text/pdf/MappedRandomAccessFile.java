@@ -204,8 +204,8 @@ public class MappedRandomAccessFile implements AutoCloseable {
     /**
      * Cleans the mapped bytebuffer and closes the channel.
      * <p>
-     * On Java 22 and later, the mapping is released immediately, so the file can be deleted or moved right after this
-     * call, also on Windows. On Java 21, the mapping is released when the buffer is garbage collected.
+     * The mapping is released immediately, so the file can be deleted or moved right after this call, also on
+     * Windows.
      *
      * @throws IOException on error
      * @see java.io.RandomAccessFile#close()

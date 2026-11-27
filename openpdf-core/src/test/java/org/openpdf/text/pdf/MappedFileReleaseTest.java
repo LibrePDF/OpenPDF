@@ -3,7 +3,6 @@ package org.openpdf.text.pdf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.openpdf.text.Document;
@@ -20,11 +18,8 @@ import org.openpdf.text.Paragraph;
 import org.openpdf.text.utils.LongMappedByteBuffer;
 
 /**
- * On Java 22+, memory-mapped files must be unmapped as soon as they are closed, without waiting for the garbage
- * collector (issues #1112, #1517). This is an integration test: it is excluded from the default surefire run (which
- * uses {@code target/classes}, where the JVM ignores {@code META-INF/versions}) and instead runs with failsafe
- * against the packaged multi-release jar, so it actually exercises the Java 22+ variant of
- * {@link LongMappedByteBuffer}.
+ * Memory-mapped files must be unmapped as soon as they are closed, without waiting for the garbage collector
+ * (issues #1112, #1517).
  * <p>
  * On Windows, a mapped file cannot be deleted, so deleting the file verifies the release there. On Linux, a mapped
  * file can always be deleted, so the test checks /proc/self/maps instead.
@@ -36,11 +31,6 @@ class MappedFileReleaseTest {
     @TempDir
     Path tempDir;
 
-    @BeforeEach
-    void requireJava22() {
-        assumeTrue(Runtime.version().feature() >= 22, "deterministic unmapping requires Java 22+");
-    }
-
     @Test
     void bufferCannotBeAccessedAfterClose() throws IOException {
         Path file = Files.write(tempDir.resolve("data.bin"), new byte[]{1, 2, 3});
@@ -48,7 +38,7 @@ class MappedFileReleaseTest {
             LongMappedByteBuffer buffer = new LongMappedByteBuffer(channel, FileChannel.MapMode.READ_ONLY);
             assertEquals(1, buffer.get(0));
             buffer.close();
-            // the FFM variant is in use: the mapping is gone instead of just unreferenced
+            // the mapping is gone instead of just unreferenced
             assertThrows(IllegalStateException.class, () -> buffer.get(0));
         }
     }

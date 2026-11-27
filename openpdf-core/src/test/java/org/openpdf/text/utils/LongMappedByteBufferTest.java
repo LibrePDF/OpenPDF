@@ -16,9 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * Behavior of {@link LongMappedByteBuffer} that the Java 21 implementation and the Java 22+ multi-release variant
- * must have in common. Surefire runs this test against the Java 21 classes; on JDK 22+, failsafe runs it again
- * against the packaged multi-release jar.
+ * Behavior of {@link LongMappedByteBuffer}: reading, writing, positioning and the exceptions at the end of the file
+ * and for read-only mappings.
  */
 class LongMappedByteBufferTest {
 
