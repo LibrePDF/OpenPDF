@@ -11,10 +11,9 @@ Since 3.0.5 it uses `openpdf-core` (`com.github.librepdf:openpdf`) as its PDF pa
 - 📄 **PDF 1.4 Support** - Renders subset of PDF 1.4 specification
 - 🖼️ **Multiple Image Formats** - Convert to PNG, JPEG, or any ImageIO-supported format
 - 🎯 **Swing Integration** - Direct rendering to Swing components
-- 🔤 **Font Support** - TrueType, Type1, Type3, and CID fonts
-- 🌈 **Color Spaces** - RGB, CMYK, Gray, and ICC-based color spaces
-- 📝 **Annotations** - Basic support for PDF annotations
-- 🎨 **Patterns & Shaders** - Advanced graphics rendering capabilities
+- 🔤 **Font Support** - Embedded TrueType and OpenType fonts, and the fonts of the platform for the others
+- 🌈 **Color Spaces** - RGB, CMYK, Gray, Indexed, Lab and ICC-based color spaces
+- 📝 **Annotations** - Appearance streams of annotations
 
 ## Maven Dependency
 
@@ -35,15 +34,12 @@ Starting in **3.0.5**, `openpdf-renderer` depends on `openpdf-core`
 [`org.openpdf.renderer.core.OpenPdfCoreRenderer`](src/main/java/org/openpdf/renderer/core/OpenPdfCoreRenderer.java),
 which uses `org.openpdf.text.pdf.PdfReader` to parse PDF documents.
 
-The legacy in-tree parser is now `@Deprecated`:
-
-- `org.openpdf.renderer.PDFFile`
-- `org.openpdf.renderer.PDFPage`
-- `org.openpdf.renderer.PDFParser`
-- `org.openpdf.renderer.decode.PDFDecoder`
-
-These classes will remain for at least one release to ease migration and are
-not yet scheduled for removal.
+The parser that came with the renderer, and everything that was built on it, was deprecated
+in 3.0.5 and is removed in **4.0.0**. This is the `org.openpdf.renderer` package and its
+subpackages, apart from `org.openpdf.renderer.core`: `PDFFile`, `PDFPage`, `PDFParser`,
+`PDFRenderer`, `decode.PDFDecoder` and the classes for fonts, color spaces, functions, patterns,
+annotations and actions that they used. OpenPDF 3.0.x still has them. See
+[Migrating from `PDFFile` and `PDFPage`](#migrating-from-pdffile-and-pdfpage) below.
 
 ### Why?
 
@@ -81,9 +77,7 @@ try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.p
 ### Status
 
 `openpdf-renderer` now uses `openpdf-core` for **all** PDF parsing, including
-the per-operator content-stream walking that drives Java2D rasterization. The
-in-tree legacy parser (`PDFFile`, `PDFPage`, `PDFParser`,
-`decode.PDFDecoder`) is no longer used by `OpenPdfCoreRenderer`.
+the per-operator content-stream walking that drives Java2D rasterization.
 
 | Capability | Backend |
 |---|---|
@@ -192,17 +186,16 @@ Popup annotations, and annotations with no usable `/AP` (or an `/AS` that
 doesn't resolve to a state) are skipped; the renderer doesn't synthesize an
 appearance (e.g. a Link's default invisible border) when one isn't present.
 
-For pages that need features outside this supported subset and you want
-pixel-perfect output today, the deprecated `PDFFile` / `PDFPage.getImage(...)`
-API still works.
+Features outside this subset, such as patterns, shadings and Type 3 fonts, are not drawn.
+The renderer that was removed in 4.0.0 drew some of them. If you need them, stay on
+OpenPDF 3.0.x for now.
 
 ## Quick Start
 
 ### Basic PDF to Image Conversion
 
 `org.openpdf.renderer.core.OpenPdfCoreRenderer` is the recommended entry point.
-It uses `openpdf-core` (`PdfReader`) for parsing and the existing Java2D engine
-for rasterization.
+It uses `openpdf-core` (`PdfReader`) for parsing and Java2D for rasterization.
 
 ```java
 import org.openpdf.renderer.core.OpenPdfCoreRenderer;
@@ -268,129 +261,12 @@ try (OpenPdfCoreRenderer renderer = new OpenPdfCoreRenderer(new File("document.p
 }
 ```
 
-## Using the legacy `PDFFile` / `PDFPage` API (deprecated)
+## Migrating from `PDFFile` and `PDFPage`
 
-The pre-3.0.5 entry point still works but is now `@Deprecated`. New code should
-prefer `OpenPdfCoreRenderer` (see above). The legacy API is kept for one or
-more releases to ease migration, and may still be useful for pages that
-exercise PDF features outside the supported subset of the new
-`OpenPdfCorePageRenderer` (extended graphics state `gs`, CMYK / pattern /
-shading colors, XObject `Do`, inline images, marked content, clipping, ...),
-since the legacy renderer has broader operator coverage.
+`PDFFile`, `PDFPage` and the other classes of the old renderer are removed in 4.0.0.
+Use `OpenPdfCoreRenderer` instead:
 
-The legacy classes live in `org.openpdf.renderer`:
-
-- `org.openpdf.renderer.PDFFile`
-- `org.openpdf.renderer.PDFPage`
-- `org.openpdf.renderer.PDFParser`
-- `org.openpdf.renderer.decode.PDFDecoder`
-
-> ⚠️ Expect deprecation warnings at compile time. These classes are scheduled
-> to be removed in a future major release.
-
-### Legacy: Basic PDF to Image Conversion
-
-```java
-import org.openpdf.renderer.PDFFile;
-import org.openpdf.renderer.PDFPage;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-
-public class LegacyPdfToImageExample {
-
-    public static void main(String[] args) throws IOException {
-        // Load PDF file
-        File pdfFile = new File("document.pdf");
-        try (RandomAccessFile raf = new RandomAccessFile(pdfFile, "r");
-             FileChannel channel = raf.getChannel()) {
-
-            ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-            PDFFile pdf = new PDFFile(buf);
-
-            // Get first page (1-based index)
-            PDFPage page = pdf.getPage(1);
-
-            // Create image from page
-            Rectangle rect = new Rectangle(0, 0,
-                    (int) page.getBBox().getWidth(),
-                    (int) page.getBBox().getHeight());
-
-            Image img = page.getImage(
-                    rect.width, rect.height,  // image size
-                    rect,                      // clip rectangle
-                    null,                      // image observer
-                    true,                      // fill background
-                    true                       // block until done
-            );
-
-            // Convert to BufferedImage and save
-            BufferedImage bufferedImage = new BufferedImage(
-                    rect.width, rect.height,
-                    BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2 = bufferedImage.createGraphics();
-            g2.drawImage(img, 0, 0, null);
-            g2.dispose();
-
-            ImageIO.write(bufferedImage, "png", new File("output.png"));
-            System.out.println("PDF page rendered successfully!");
-        }
-    }
-}
-```
-
-### Legacy: Rendering with Custom Resolution
-
-```java
-import org.openpdf.renderer.PDFFile;
-import org.openpdf.renderer.PDFPage;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-public class LegacyHighResolutionRenderingExample {
-
-    public static BufferedImage renderPageAtDPI(PDFFile pdf, int pageNum, int dpi)
-            throws IOException {
-        PDFPage page = pdf.getPage(pageNum);
-
-        // Calculate dimensions at desired DPI (default is 72 DPI)
-        double scale = dpi / 72.0;
-        int width = (int) (page.getBBox().getWidth() * scale);
-        int height = (int) (page.getBBox().getHeight() * scale);
-
-        Rectangle rect = new Rectangle(0, 0, width, height);
-        Image img = page.getImage(width, height, rect, null, true, true);
-
-        // Convert to BufferedImage
-        BufferedImage bufferedImage = new BufferedImage(
-                width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2 = bufferedImage.createGraphics();
-
-        // Enable antialiasing for better quality
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                            RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-        g2.drawImage(img, 0, 0, null);
-        g2.dispose();
-
-        return bufferedImage;
-    }
-}
-```
-
-### Legacy: Migration tips
-
-| Legacy API | Replacement on `OpenPdfCoreRenderer` |
+| Removed API | Replacement on `OpenPdfCoreRenderer` |
 |---|---|
 | `new PDFFile(ByteBuffer)` | `new OpenPdfCoreRenderer(File \| Path \| InputStream \| byte[])` |
 | `pdf.getNumPages()` | `renderer.getNumPages()` |
@@ -401,9 +277,8 @@ public class LegacyHighResolutionRenderingExample {
 
 ## Examples
 
-For complete working examples, see:
-* [ImageRendererTest.java](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-renderer/src/test/java/openpdf/renderer/ImageRendererTest.java) - Basic PDF to image conversion
-* [PdfRendererGui.java](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-renderer/src/test/java/openpdf/renderer/PdfRendererGui.java) - Interactive Swing PDF viewer
+For complete working examples, see
+[OpenPdfCoreRendererTest.java](https://github.com/LibrePDF/OpenPDF/blob/master/openpdf-renderer/src/test/java/org/openpdf/renderer/core/OpenPdfCoreRendererTest.java).
 
 ## Building and Testing
 
@@ -430,10 +305,9 @@ mvn javadoc:javadoc
 - **Package Naming**: Classes have been renamed from `com.sun.pdfview` to `org.openpdf.renderer`
 - **Encryption**: PDF decryption features have been removed from this module
 - **Page Indexing**: Page numbers are 1-based (first page is index 1, not 0)
-- **Thread Safety**: PDFFile and PDFPage objects are not thread-safe; synchronize access if needed
-- **Deprecated APIs**: `PDFFile`, `PDFPage`, `PDFParser`, and `org.openpdf.renderer.decode.PDFDecoder`
-  are deprecated in favor of `org.openpdf.renderer.core.OpenPdfCoreRenderer`.
-  Existing code continues to work for now &mdash; see the "Migration to openpdf-core parser" section above.
+- **Thread Safety**: An `OpenPdfCoreRenderer` is not thread-safe; synchronize access if needed
+- **Removed APIs**: `PDFFile`, `PDFPage`, `PDFParser`, `org.openpdf.renderer.decode.PDFDecoder` and the
+  other classes of the old renderer are removed in 4.0.0. Use `org.openpdf.renderer.core.OpenPdfCoreRenderer`.
 
 ## Supported PDF Features
 
@@ -441,9 +315,9 @@ mvn javadoc:javadoc
 |---------|---------------|
 | PDF 1.4 Specification | ✅ Partial |
 | Basic Text Rendering | ✅ Full |
-| TrueType Fonts | ✅ Full |
-| Type1 Fonts | ✅ Full |
-| CID Fonts | ✅ Partial |
+| Embedded TrueType and OpenType Fonts | ✅ Full |
+| Other Fonts | ⚠️ Drawn with a font of the platform |
+| Patterns and Shadings | ❌ Not drawn |
 | RGB Color Space | ✅ Full |
 | CMYK Color Space | ✅ Full |
 | ICC Profiles | ✅ Full |
@@ -457,14 +331,9 @@ mvn javadoc:javadoc
 
 ### Common Issues
 
-**Issue**: "ICC profile not found" error
-```
-Solution: Ensure all required ICC profile resources are in your classpath
-```
-
 **Issue**: Font rendering issues
 ```
-Solution: Check that required font files are accessible and properly formatted
+Solution: Fonts that are not embedded as TrueType or OpenType are drawn with a font of the platform
 ```
 
 **Issue**: Out of memory errors with large PDFs

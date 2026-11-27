@@ -21,34 +21,12 @@
   </licenses>
   <description>
     OpenPDF Renderer is a pure Java library for rendering PDF files as images using Java2D.
-    It provides a lightweight, dependency-free way to convert PDF pages into BufferedImage objects
-    suitable for display in Swing applications or saving to image files. Supports PDF 1.4 specification
-    with TrueType, Type1, Type3, and CID fonts, along with RGB, CMYK, Gray, and ICC-based color spaces.
+    It reads PDF files with openpdf-core and converts PDF pages into BufferedImage objects
+    suitable for display in Swing applications or saving to image files.
   </description>
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.8.0</version>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>add-resource</goal>
-            </goals>
-            <configuration>
-              <resources>
-                <resource>
-                  <directory>src/main/resources</directory>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
