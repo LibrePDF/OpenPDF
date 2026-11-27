@@ -30,8 +30,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +166,12 @@ final class OpenPdfCorePageRenderer {
      */
     private static final String INLINE_IMAGE_PREFIX = "__inline_image__";
 
+    /**
+     * The number of Form XObjects that can be drawn inside each other. Real documents nest a few
+     * levels deep; the limit keeps a long chain of forms from overflowing the stack.
+     */
+    private static final int MAX_FORM_DEPTH = 32;
+
     private final Graphics2D g2;
     private final PdfDictionary resources;
     private final Map<String, CMapAwareDocumentFont> fontCache = new HashMap<>();
@@ -178,6 +186,12 @@ final class OpenPdfCorePageRenderer {
      * the content stream in place of the original {@code BI...EI} block.
      */
     private final Map<String, BufferedImage> inlineImages = new HashMap<>();
+    /**
+     * The Form XObjects and appearance streams that are being drawn right now, from the page
+     * down to this renderer. Shared with the nested renderers, so that a form that draws itself,
+     * directly or through other forms, is not entered again.
+     */
+    private final Set<PRStream> formsInProgress;
 
     private final Deque<GState> stateStack = new ArrayDeque<>();
     private final Deque<AffineTransform> ctmStack = new ArrayDeque<>();
@@ -204,8 +218,13 @@ final class OpenPdfCorePageRenderer {
     private AffineTransform textLineMatrix;
 
     private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources) {
+        this(g2, resources, Collections.newSetFromMap(new IdentityHashMap<>()));
+    }
+
+    private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources, Set<PRStream> formsInProgress) {
         this.g2 = g2;
         this.resources = resources;
+        this.formsInProgress = formsInProgress;
         this.state = new GState();
     }
 
@@ -1166,8 +1185,15 @@ final class OpenPdfCorePageRenderer {
      * {@code /Matrix} entry applied on top of the current CTM. The current
      * graphics state and CTM are saved and restored around the call so the
      * form's content can't leak out.
+     *
+     * <p>A form that is already being drawn is skipped, and so is a form that is nested more
+     * than {@link #MAX_FORM_DEPTH} levels deep. A form that draws itself would never end.</p>
      */
     private void renderForm(PRStream form) {
+        if (formsInProgress.size() >= MAX_FORM_DEPTH || !formsInProgress.add(form)) {
+            LOG.log(Level.FINE, "Skipping Form XObject that draws itself or is nested too deeply");
+            return;
+        }
         AffineTransform savedTx = g2.getTransform();
         Shape savedClip = g2.getClip();
         GState savedState = state;
@@ -1193,13 +1219,14 @@ final class OpenPdfCorePageRenderer {
             }
             PdfDictionary formResources = form.getAsDict(PdfName.RESOURCES);
             PdfDictionary effective = formResources != null ? formResources : resources;
-            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective);
+            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective, formsInProgress);
             nested.state = state;
             byte[] body = PdfReader.getStreamBytes(form);
             nested.processContent(body);
         } catch (IOException | RuntimeException e) {
             LOG.log(Level.FINE, "Skipping Form XObject due to: {0}", e);
         } finally {
+            formsInProgress.remove(form);
             state = savedState;
             g2.setTransform(savedTx);
             g2.setClip(savedClip);
