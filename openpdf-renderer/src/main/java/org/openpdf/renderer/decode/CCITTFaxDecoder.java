@@ -1336,6 +1336,16 @@ public class CCITTFaxDecoder {
         return i1;
     }
 
+    /**
+     * Checks that the bit counts can be used as indexes into table1 and table2.
+     */
+    private static void checkBitRange(int bitsToGet, int bitsLeft, int bitsFromNextByte) {
+        if (bitsLeft < 0 || bitsLeft > 8 || bitsFromNextByte < 0) {
+            throw new IllegalStateException("Cannot read " + bitsToGet //$NON-NLS-1$
+                    + " bits with " + bitsLeft + " bits left in the current byte"); //$NON-NLS-1$
+        }
+    }
+
     private int nextNBits(int bitsToGet) {
         byte b;
         byte next;
@@ -1375,11 +1385,7 @@ public class CCITTFaxDecoder {
 
         int bitsLeft = 8 - this.bitPointer;
         int bitsFromNextByte = bitsToGet - bitsLeft;
-        if (bitsLeft < 0 || bitsLeft > 8 || bitsFromNextByte < 0) {
-            // the lookups below index table1/table2 with these values
-            throw new RuntimeException("Cannot read " + bitsToGet //$NON-NLS-1$
-                    + " bits at bit position " + this.bitPointer); //$NON-NLS-1$
-        }
+        checkBitRange(bitsToGet, bitsLeft, bitsFromNextByte);
         int bitsFromNext2NextByte = 0;
         if (bitsFromNextByte > 8) {
             bitsFromNext2NextByte = bitsFromNextByte - 8;

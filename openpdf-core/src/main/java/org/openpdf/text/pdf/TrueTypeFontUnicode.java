@@ -437,13 +437,17 @@ class TrueTypeFontUnicode extends TrueTypeFont implements Comparator<int[]> {
      * @throws IOException       on error
      * @throws DocumentException error in generating the object
      */
-    @Override
-    @SuppressWarnings("unchecked")
-    void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
+    private static void checkWriteFontParams(Object[] params) {
         if (params == null || params.length < 3) {
             throw new IllegalArgumentException(
                     "The parameters must contain the used glyphs, the subset flag and the filler cmap");
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    void writeFont(PdfWriter writer, PdfIndirectReference ref, Object[] params) throws DocumentException, IOException {
+        checkWriteFontParams(params);
         HashMap<Integer, int[]> longTag = (HashMap<Integer, int[]>) params[0];
         Map<Integer, int[]> fillerCmap = (Map<Integer, int[]>) params[2];
         addRangeUni(longTag, true, subset);

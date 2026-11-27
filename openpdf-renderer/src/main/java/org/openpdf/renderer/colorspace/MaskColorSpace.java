@@ -32,6 +32,10 @@ import org.openpdf.renderer.PDFPaint;
 public class MaskColorSpace extends ColorSpace {
     /** The paint to paint in.  Note this cannot be a pattern or gradient. */
     private final PDFPaint paint;
+
+    ColorSpace cie = ColorSpace.getInstance(ColorSpace.CS_CIEXYZ);
+    float[] prev1;
+    float[] prev0;
     
     /** Creates a new instance of PaintColorSpace */
     public MaskColorSpace(PDFPaint paint) {
@@ -77,10 +81,6 @@ public class MaskColorSpace extends ColorSpace {
         return mask;
     }
     
-    ColorSpace cie = ColorSpace.getInstance(ColorSpace.CS_CIEXYZ);
-    float[] prev1;
-    float[] prev0;
-
     @Override
     public float[] toCIEXYZ(float[] colorvalue) {
         if (colorvalue[0] == 1) {
