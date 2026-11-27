@@ -228,6 +228,7 @@ not.all.annotations.could.be.added.to.the.document.the.document.doesn.t.have.eno
 not.colorized.typed3.fonts.only.accept.mask.images=Not colorized Typed3 fonts only accept mask images.
 null.outpustream=null OutpuStream
 number.of.entries.in.this.xref.subsection.not.found=Number of entries in this xref subsection not found
+object.nesting.too.deep=Arrays and dictionaries are nested too deeply.
 object.number.of.the.first.object.in.this.xref.subsection.not.found=Object number of the first object in this xref subsection not found
 ocsp.status.is.revoked=OCSP Status is revoked!
 ocsp.status.is.unknown=OCSP Status is unknown!
