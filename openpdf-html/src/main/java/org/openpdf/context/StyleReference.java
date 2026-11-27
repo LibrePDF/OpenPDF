@@ -43,10 +43,12 @@ import org.openpdf.layout.SharedContext;
 import org.openpdf.util.XRLog;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 
@@ -54,6 +56,22 @@ import java.util.logging.Level;
  * @author Torbjoern Gannholm
  */
 public class StyleReference {
+    /**
+     * How many stylesheets may import each other in a row.
+     */
+    private static final int MAX_IMPORT_DEPTH = 16;
+
+    /**
+     * How many stylesheets one document may load through import rules.
+     */
+    private static final int MAX_IMPORTED_STYLESHEETS = 1000;
+
+    /**
+     * Start of the keys under which the style elements of a document are cached, see
+     * {@link org.openpdf.simple.extend.XhtmlCssOnlyNamespaceHandler}.
+     */
+    private static final String INLINE_STYLE_PREFIX = "inline:";
+
     @Nullable
     private NamespaceHandler _nsh;
     @Nullable
@@ -98,6 +116,10 @@ public class StyleReference {
     }
 
     private List<Stylesheet> readAndParseAll(List<StylesheetInfo> infos, String medium) {
+        return readAndParseAll(infos, medium, new Imports());
+    }
+
+    private List<Stylesheet> readAndParseAll(List<StylesheetInfo> infos, String medium, Imports imports) {
         List<Stylesheet> result = new ArrayList<>(infos.size() + 15);
         for (StylesheetInfo info : infos) {
             if (info.appliesToMedia(medium)) {
@@ -105,7 +127,7 @@ public class StyleReference {
 
                 if (sheet != null) {
                     if (!sheet.getImportRules().isEmpty()) {
-                        result.addAll(readAndParseAll(sheet.getImportRules(), medium));
+                        result.addAll(readAndParseImports(info, sheet, medium, imports));
                     }
 
                     result.add(sheet);
@@ -116,6 +138,48 @@ public class StyleReference {
         }
 
         return result;
+    }
+
+    /**
+     * Loads the stylesheets imported by a stylesheet, except those that would never end or that are not
+     * stylesheets at all: a stylesheet that is already being imported (it imports itself, directly or through
+     * others), imports nested deeper than {@value #MAX_IMPORT_DEPTH} levels, more than
+     * {@value #MAX_IMPORTED_STYLESHEETS} imports in one document, and the keys of style elements.
+     */
+    private List<Stylesheet> readAndParseImports(StylesheetInfo importer, Stylesheet sheet, String medium,
+                                                 Imports imports) {
+        boolean added = imports.chain.add(importer.getUri());
+        try {
+            List<StylesheetInfo> allowed = new ArrayList<>();
+            for (StylesheetInfo imported : sheet.getImportRules()) {
+                if (isImportAllowed(imported, imports)) {
+                    allowed.add(imported);
+                }
+            }
+            return readAndParseAll(allowed, medium, imports);
+        } finally {
+            if (added) {
+                imports.chain.remove(importer.getUri());
+            }
+        }
+    }
+
+    private static boolean isImportAllowed(StylesheetInfo imported, Imports imports) {
+        String uri = imported.getUri();
+        String reason = null;
+        if (uri.startsWith(INLINE_STYLE_PREFIX)) {
+            reason = "it is not the address of a stylesheet";
+        } else if (imports.chain.contains(uri)) {
+            reason = "it is imported by itself";
+        } else if (imports.chain.size() > MAX_IMPORT_DEPTH) {
+            reason = "imports are nested more than " + MAX_IMPORT_DEPTH + " levels deep";
+        } else if (++imports.count > MAX_IMPORTED_STYLESHEETS) {
+            reason = "the document imports more than " + MAX_IMPORTED_STYLESHEETS + " stylesheets";
+        }
+        if (reason != null) {
+            XRLog.load(Level.WARNING, "Not importing CSS from " + uri + ": " + reason);
+        }
+        return reason == null;
     }
 
     public boolean isHoverStyled(Element e) {
@@ -228,6 +292,17 @@ public class StyleReference {
 
     public void setSupportCMYKColors(boolean b) {
         _stylesheetFactory.setSupportCMYKColors(b);
+    }
+
+    /**
+     * The import rules followed while the stylesheets of one document are loaded.
+     */
+    private static final class Imports {
+        /**
+         * The stylesheets whose import rules are being followed right now, from the document down.
+         */
+        private final Set<String> chain = new HashSet<>();
+        private int count;
     }
 }
 
