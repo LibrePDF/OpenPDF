@@ -161,6 +161,9 @@ public class ByteBuffer extends OutputStream {
      */
 
     private static byte[] convertToBytes(int i) {
+        if (i < 1) {
+            throw new IllegalArgumentException("Only positive values can be converted: " + i);
+        }
         int size = (int) Math.floor(Math.log(i) / Math.log(10));
         if (i % 100 != 0) {
             size += 2;
@@ -190,7 +193,7 @@ public class ByteBuffer extends OutputStream {
         size = (int) Math.floor(Math.log(i) / Math.log(10)) - 1;
         int add = 0;
         while (add < size) {
-            cache[add] = bytes[(i / (int) Math.pow(10, size - add + 1)) % 10];
+            cache[add] = bytes[(i / (int) Math.pow(10, size - add + 1.0)) % 10];
             add++;
         }
         return cache;

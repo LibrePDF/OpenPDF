@@ -46,8 +46,6 @@ public class FlateDecode {
      */
     public static ByteBuffer decode(PDFObject dict, ByteBuffer buf,
             PDFObject params) throws IOException {
-        Inflater inf = new Inflater(false);
-
         int bufSize = buf.remaining();
 
         // copy the data, since the array() method is not supported
@@ -55,16 +53,15 @@ public class FlateDecode {
         byte[] data = new byte[bufSize];
         buf.get(data);
 
-        // set the input to the inflater
-        inf.setInput(data);
-
         // output to a byte-array output stream, since we don't
         // know how big the output will be
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] decomp = new byte[bufSize];
         int read = 0;
 
-        try {            
+        try (Inflater inf = new Inflater(false)) {
+            // set the input to the inflater
+            inf.setInput(data);
             while (!inf.finished()) {
                 read = inf.inflate(decomp);
                 if (read <= 0) {

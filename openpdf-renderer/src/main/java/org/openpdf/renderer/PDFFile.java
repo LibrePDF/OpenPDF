@@ -24,9 +24,11 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.openpdf.renderer.action.GoToAction;
@@ -62,6 +64,8 @@ public class PDFFile {
 
     public final static int             NUL_CHAR = 0;
     public final static int             FF_CHAR = 12;
+    /** more levels than a tree of pages has, unless it has a cycle */
+    private static final int MAX_PAGE_TREE_DEPTH = 256;
 
     private String versionString = "1.1";
     private int majorVersion = 1;
@@ -69,6 +73,10 @@ public class PDFFile {
     /** the end of line character */
     /** the comment text to begin the file to determine it's version */
     private final static String VERSION_COMMENT = "%PDF-";
+    /** how deeply arrays and dictionaries may be nested in each other */
+    private static final int MAX_NESTING_DEPTH = 256;
+    /** the number of arrays and dictionaries that are being read at the moment */
+    private int nestingDepth = 0;
     /**
      * A ByteBuffer containing the file data
      */
@@ -102,6 +110,11 @@ public class PDFFile {
      * encryption is expected, and thus the IdentityDecrypter is used.
      */
     private PDFDecrypter defaultDecrypter = IdentityDecrypter.getInstance();
+
+    /** the offsets of the cross reference tables that have been read */
+    private final Set<Integer> xrefTableOffsets = new HashSet<>();
+    /** the offsets of the cross reference streams that have been read */
+    private final Set<Integer> xrefStreamOffsets = new HashSet<>();
 
     /**
      * get a PDFFile from a .pdf file.  The file must me a random access file
@@ -421,7 +434,7 @@ public class PDFFile {
                 c = this.buf.get();
                 if (c == '<') {
                     // it's a dictionary
-            obj = readDictionary(objNum, objGen, decrypter);
+            obj = readNested(true, objNum, objGen, decrypter);
                 } else {
                     this.buf.position(this.buf.position() - 1);
             obj = readHexString(objNum, objGen, decrypter);
@@ -430,7 +443,7 @@ public class PDFFile {
         obj = readLiteralString(objNum, objGen, decrypter);
             } else if (c == '[') {
                 // it's an array
-        obj = readArray(objNum, objGen, decrypter);
+        obj = readNested(false, objNum, objGen, decrypter);
             } else if (c == '/') {
                 // it's a name
                 obj = readName();
@@ -448,10 +461,10 @@ public class PDFFile {
                     // from dereference, which already is using a mark
                     int startPos = this.buf.position();
 
-            PDFObject testnum = readObject(-1, -1, true, decrypter);
+            PDFObject testnum = readReferenceToken(false);
                     if (testnum != null &&
                             testnum.getType() == PDFObject.NUMBER) {
-            PDFObject testR = readObject(-1, -1, true, decrypter);
+            PDFObject testR = readReferenceToken(true);
                         if (testR != null &&
                                 testR.getType() == PDFObject.KEYWORD &&
                                 testR.getStringValue().equals("R")) {
@@ -487,6 +500,76 @@ public class PDFFile {
             }
         }
         return obj;
+    }
+
+    /**
+     * read the token that follows a number, to test if the number is the
+     * start of a reference ("1 0 R") or of an object description
+     * ("1 0 obj").  Only a number or a keyword is read: an array, a dictionary
+     * or a string that follows the number is left alone, as it can not be
+     * part of a reference.
+     *
+     * @param keyword true to read a keyword, false to read a number
+     * @return the number or keyword, or null if something else follows. In
+     *  that case the caller has to restore the position of the buffer.
+     */
+    private PDFObject readReferenceToken(boolean keyword) throws IOException {
+        int c = nextTokenStart();
+        if (keyword) {
+            return isKeywordStart(c) ? readKeyword((char) c) : null;
+        }
+        return isNumberStart(c) ? readNumber((char) c) : null;
+    }
+
+    /**
+     * skip whitespace and comments.
+     *
+     * @return the first character of the next token, which has been read, or
+     *  -1 at the end of the buffer
+     */
+    private int nextTokenStart() {
+        while (this.buf.hasRemaining()) {
+            int c = this.buf.get() & 0xFF;
+            if (c == '%') {
+                readLine();
+            } else if (!isWhiteSpace(c)) {
+                return c;
+            }
+        }
+        return -1;
+    }
+
+    private static boolean isNumberStart(int c) {
+        return (c >= '0' && c <= '9') || c == '-' || c == '+' || c == '.';
+    }
+
+    private static boolean isKeywordStart(int c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    /**
+     * read a dictionary or an array, of which the opening characters have
+     * been read, and keep track of how deeply they are nested.
+     *
+     * @param dictionary true to read a dictionary, false to read an array
+     * @param objNum the object number of the object containing the object
+     *  being read
+     * @param objGen the object generation of the object containing the object
+     *  being read
+     * @param decrypter the decrypter to use
+     * @throws PDFParseException if the nesting is deeper than the limit
+     */
+    private PDFObject readNested(
+            boolean dictionary, int objNum, int objGen, PDFDecrypter decrypter) throws IOException {
+        if (this.nestingDepth >= MAX_NESTING_DEPTH) {
+            throw new PDFParseException("Arrays and dictionaries are nested deeper than " + MAX_NESTING_DEPTH);
+        }
+        this.nestingDepth++;
+        try {
+            return dictionary ? readDictionary(objNum, objGen, decrypter) : readArray(objNum, objGen, decrypter);
+        } finally {
+            this.nestingDepth--;
+        }
     }
 
     /**
@@ -1051,6 +1134,7 @@ public class PDFFile {
 
         // read a bunch of nested trailer tables
         while (true) {
+            checkXrefTableNotRead(this.buf.position());
             // make sure we are looking at an xref table
             if (!nextItemIs("xref")) {
                 this.buf.position(pos);
@@ -1101,6 +1185,7 @@ public class PDFFile {
                 }
 
                 // extend the objIdx table, if necessary
+                checkXrefSubsection(refstart, reflen, this.buf.remaining() / 20);
                 if (refstart + reflen >= this.objIdx.length) {
                     PDFXref[] nobjIdx = new PDFXref[refstart + reflen];
                     System.arraycopy(this.objIdx, 0, nobjIdx, 0, this.objIdx.length);
@@ -1174,7 +1259,7 @@ public class PDFFile {
             PDFObject xrefstmPos = trailerdict.getDictRef("XRefStm");
             if (xrefstmPos != null) {
                 int pos14 = this.buf.position(); 
-                this.buf.position(xrefstmPos.getIntValue());
+                seekXref(xrefstmPos.getIntValue());
                 readTrailer15(password);
                 this.buf.position(pos14);
             }
@@ -1182,7 +1267,7 @@ public class PDFFile {
             // read the location of the previous xref table
             PDFObject prevloc = trailerdict.getDictRef("Prev");
             if (prevloc != null) {
-                this.buf.position(prevloc.getIntValue());
+                seekXref(prevloc.getIntValue());
             } else {
                 break;
             }
@@ -1239,6 +1324,10 @@ public class PDFFile {
         PDFDecrypter newDefaultDecrypter = null;
         
         while (true) {
+            if (!this.xrefStreamOffsets.add(this.buf.position())) {
+                // this cross reference stream has been read already
+                break;
+            }
             PDFObject xrefObj = readObject(-1, -1, IdentityDecrypter.getInstance());
             if (xrefObj == null) {
                 break;
@@ -1281,6 +1370,7 @@ public class PDFFile {
                 int reflen = idxArray[idxPos++];
 
                 // extend the objIdx table, if necessary
+                checkXrefSubsection(refstart, reflen, xrefStreamEntries(strmbuf.length - strmPos, l1, l2, l3));
                 if (refstart + reflen >= this.objIdx.length) {
                     PDFXref[] nobjIdx = new PDFXref[refstart + reflen];
                     System.arraycopy(this.objIdx, 0, nobjIdx, 0, this.objIdx.length);
@@ -1353,7 +1443,7 @@ public class PDFFile {
             // read the location of the previous xref table
             PDFObject prevloc = trailerdict.get("Prev");
             if (prevloc != null) {
-                this.buf.position(prevloc.getIntValue());
+                seekXref(prevloc.getIntValue());
             } else {
                 break;
             }
@@ -1387,6 +1477,69 @@ public class PDFFile {
 
         // dereference the root object
         this.root.dereference();
+    }
+
+    /**
+     * Move to a cross reference table or stream.
+     *
+     * @param offset the offset given by startxref, /Prev or /XRefStm
+     * @throws PDFParseException if the offset is not inside the file
+     */
+    private void seekXref(int offset) throws PDFParseException {
+        if (offset < 0 || offset >= this.buf.limit()) {
+            throw new PDFParseException("Cross reference offset " + offset + " is outside the file");
+        }
+        this.buf.position(offset);
+    }
+
+    /**
+     * Remember the offset of a cross reference table, so that a chain of
+     * /Prev entries that leads back to a table that has been read is noticed.
+     *
+     * @param offset the offset of the table that is about to be read
+     * @throws PDFParseException if that table has been read before
+     */
+    private void checkXrefTableNotRead(int offset) throws PDFParseException {
+        if (!this.xrefTableOffsets.add(offset)) {
+            throw new PDFParseException("Cross reference table at " + offset + " is linked to itself");
+        }
+    }
+
+    /**
+     * Check that a cross reference subsection can exist in this file, before
+     * the table of objects is extended for it.
+     *
+     * @param refstart the number of the first object in the subsection
+     * @param reflen the number of entries in the subsection
+     * @param available the number of entries that the remaining data holds
+     * @throws PDFParseException if the subsection is larger than the data
+     *  it is read from, or numbers more objects than fit in the file
+     */
+    private void checkXrefSubsection(int refstart, int reflen, int available) throws PDFParseException {
+        if (refstart < 0 || reflen < 0 || reflen > available || refstart > this.buf.limit() - reflen) {
+            throw new PDFParseException("Invalid cross reference subsection " + refstart + " " + reflen);
+        }
+    }
+
+    /**
+     * Get the number of entries that the rest of a cross reference stream holds.
+     *
+     * @param remaining the number of bytes left in the stream
+     * @param l1 the width of the first field of an entry
+     * @param l2 the width of the second field of an entry
+     * @param l3 the width of the third field of an entry
+     * @return the number of entries
+     * @throws PDFParseException if a field width is negative
+     */
+    private int xrefStreamEntries(int remaining, int l1, int l2, int l3) throws PDFParseException {
+        if (l1 < 0 || l2 < 0 || l3 < 0) {
+            throw new PDFParseException("Invalid field widths in cross reference stream");
+        }
+        long width = (long) l1 + l2 + l3;
+        if (width == 0) {
+            return Integer.MAX_VALUE;
+        }
+        return (int) (remaining / width);
     }
 
     private int readNum(byte[] sbuf, int pos, int numBytes) {
@@ -1460,7 +1613,7 @@ public class PDFFile {
             loc++;
         }
         int xrefpos = Integer.parseInt(scans.substring(numstart, loc));
-        this.buf.position(xrefpos);
+        seekXref(xrefpos);
 
         try {
             readTrailer(password);
@@ -1616,7 +1769,7 @@ public class PDFFile {
                 resources = new HashMap<String, PDFObject>();
 
                 PDFObject topPagesObj = this.root.getDictRef("Pages");
-                pageObj = findPage(topPagesObj, 0, pagenum, resources);
+                pageObj = findPage(topPagesObj, 0, pagenum, resources, 0);
 
                 if (pageObj == null) {
                     return null;
@@ -1770,9 +1923,13 @@ public class PDFFile {
      * @param getPage the number of the page to find; NOT the page's label.
      * @param resources a HashMap that will be filled with any resource
      *                  definitions encountered on the search for the page
+     * @param depth the number of levels above this dictionary
      */
     private PDFObject findPage(PDFObject pagedict, int start, int getPage,
-            Map<String, PDFObject> resources) throws IOException {
+            Map<String, PDFObject> resources, int depth) throws IOException {
+        if (depth > MAX_PAGE_TREE_DEPTH) {
+            throw new PDFParseException("The tree of pages is nested too deeply");
+        }
         PDFObject rsrcObj = pagedict.getDictRef("Resources");
         if (rsrcObj != null) {
             resources.putAll(rsrcObj.getDictionary());
@@ -1799,7 +1956,7 @@ public class PDFFile {
                 }
 
                 if (start + count >= getPage) {
-                    return findPage(kids[i], start, getPage, resources);
+                    return findPage(kids[i], start, getPage, resources, depth + 1);
                 }
 
                 start += count;
@@ -1819,16 +1976,15 @@ public class PDFFile {
      */
     private PDFObject getInheritedValue(PDFObject pageObj, String propName)
             throws IOException {
-        // see if we have the property
-        PDFObject propObj = pageObj.getDictRef(propName);
-        if (propObj != null) {
-            return propObj;
-        }
-
-        // recursively see if any of our parent have it
-        PDFObject parentObj = pageObj.getDictRef("Parent");
-        if (parentObj != null) {
-            return getInheritedValue(parentObj, propName);
+        // see if we have the property, or if any of our parents has it.
+        // Parents that lead back to the page are not followed forever.
+        PDFObject node = pageObj;
+        for (int depth = 0; node != null && depth <= MAX_PAGE_TREE_DEPTH; depth++) {
+            PDFObject propObj = node.getDictRef(propName);
+            if (propObj != null) {
+                return propObj;
+            }
+            node = node.getDictRef("Parent");
         }
 
         // no luck

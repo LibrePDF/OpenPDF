@@ -78,6 +78,7 @@ import org.openpdf.text.Section;
 import org.openpdf.text.SimpleTable;
 import org.openpdf.text.Table;
 import org.openpdf.text.pdf.BaseFont;
+import org.openpdf.text.xml.XMLUtil;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
@@ -87,6 +88,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A <CODE>DocWriter</CODE> class for HTML.
@@ -115,6 +118,8 @@ import java.util.Stack;
 
 @Deprecated(since = "2.1.0")
 public class HtmlWriter extends DocWriter {
+
+    private static final Logger LOGGER = Logger.getLogger(HtmlWriter.class.getName());
 
     // static membervariables (tags)
 
@@ -425,7 +430,7 @@ public class HtmlWriter extends DocWriter {
         writeStart(HtmlTags.META);
         switch (meta.type()) {
             case Element.HEADER:
-                write(HtmlTags.NAME, meta.getName());
+                writeAttribute(HtmlTags.NAME, meta.getName());
                 break;
             case Element.SUBJECT:
                 write(HtmlTags.NAME, HtmlTags.SUBJECT);
@@ -450,9 +455,9 @@ public class HtmlWriter extends DocWriter {
     protected void writeLink(Header header) throws IOException {
         addTabs(2);
         writeStart(HtmlTags.LINK);
-        write(HtmlTags.REL, header.getName());
+        writeAttribute(HtmlTags.REL, header.getName());
         write(HtmlTags.TYPE, HtmlTags.TEXT_CSS);
-        write(HtmlTags.REFERENCE, header.getContent());
+        writeAttribute(HtmlTags.REFERENCE, header.getContent());
         writeEnd();
     }
 
@@ -609,7 +614,7 @@ public class HtmlWriter extends DocWriter {
                 try {
                     add(element);
                 } catch (DocumentException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.WARNING, "Could not add a marked element to the HTML document", e);
                 }
                 return;
             }
@@ -705,10 +710,10 @@ public class HtmlWriter extends DocWriter {
                 addTabs(indent);
                 writeStart(HtmlTags.ANCHOR);
                 if (anchor.getName() != null) {
-                    write(HtmlTags.NAME, anchor.getName());
+                    writeAttribute(HtmlTags.NAME, anchor.getName());
                 }
                 if (anchor.getReference() != null) {
-                    write(HtmlTags.REFERENCE, anchor.getReference());
+                    writeAttribute(HtmlTags.REFERENCE, anchor.getReference());
                 }
                 writeMarkupAttributes(markup);
                 write(anchor.getFont(), styleAttributes);
@@ -962,7 +967,7 @@ public class HtmlWriter extends DocWriter {
                         path = imagepath + path;
                     }
                 }
-                write(HtmlTags.URL, path);
+                writeAttribute(HtmlTags.URL, path);
                 if ((image.getAlignment() & Image.RIGHT) > 0) {
                     write(HtmlTags.ALIGN, HtmlTags.ALIGN_RIGHT);
                 } else if ((image.getAlignment() & Image.MIDDLE) > 0) {
@@ -971,7 +976,7 @@ public class HtmlWriter extends DocWriter {
                     write(HtmlTags.ALIGN, HtmlTags.ALIGN_LEFT);
                 }
                 if (image.getAlt() != null) {
-                    write(HtmlTags.ALT, image.getAlt());
+                    writeAttribute(HtmlTags.ALT, image.getAlt());
                 }
                 write(HtmlTags.PLAINWIDTH, String.valueOf(image.getScaledWidth()));
                 write(HtmlTags.PLAINHEIGHT, String.valueOf(image.getScaledHeight()));
@@ -1100,6 +1105,18 @@ public class HtmlWriter extends DocWriter {
             }
         }
         write("\"");
+    }
+
+    /**
+     * Writes an attribute with a value that is not markup: the characters that could end the attribute or the tag are
+     * escaped.
+     *
+     * @param key   the name of the attribute
+     * @param value the value of the attribute
+     * @throws IOException thrown when an I/O operation fails
+     */
+    private void writeAttribute(String key, String value) throws IOException {
+        write(key, XMLUtil.escapeXML(value, true));
     }
 
     /**

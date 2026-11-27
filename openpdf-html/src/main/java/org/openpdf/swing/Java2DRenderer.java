@@ -34,9 +34,9 @@ import org.openpdf.render.ViewportBox;
 import org.openpdf.simple.extend.XhtmlNamespaceHandler;
 import org.openpdf.util.Configuration;
 import org.openpdf.util.ImageUtil;
+import org.openpdf.util.XMLUtil;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -360,7 +360,7 @@ public class Java2DRenderer {
     }
 
     public static BufferedImage htmlAsImage(InputStream source, int widthInPixels) throws SAXException, IOException, ParserConfigurationException {
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(source);
+        Document document = XMLUtil.documentFromStream(source);
         return new Java2DRenderer(document, widthInPixels).getImage();
     }
 }
