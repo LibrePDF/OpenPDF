@@ -57,6 +57,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
 import java.security.MessageDigest;
@@ -66,8 +67,16 @@ import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CRL;
+import java.security.cert.CertPathBuilder;
+import java.security.cert.CertPathBuilderException;
+import java.security.cert.CertStore;
 import java.security.cert.Certificate;
+import java.security.cert.CollectionCertStoreParameters;
+import java.security.cert.PKIXBuilderParameters;
+import java.security.cert.PKIXCertPathBuilderResult;
+import java.security.cert.TrustAnchor;
 import java.security.cert.X509CRL;
+import java.security.cert.X509CertSelector;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,6 +149,8 @@ public class PdfPKCS7 {
     private static final String ID_MESSAGE_DIGEST = "1.2.840.113549.1.9.4";
     private static final String ID_SIGNING_TIME = "1.2.840.113549.1.9.5";
     private static final String ID_ADBE_REVOCATION = "1.2.840.113583.1.1.8";
+    private static final String CANNOT_BE_VERIFIED =
+            "Cannot be verified against the KeyStore or the certificate chain";
     private static final String DIGEST_SHA3_256 = "SHA3-256";
     private static final String DIGEST_SHA3_512 = "SHA3-512";
     private static final Map<String, String> digestNames = new HashMap<>();
@@ -698,10 +709,19 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Verifies a certificate chain against a KeyStore.
+     * Verifies a certificate against a KeyStore.
+     * <p>
+     * The first certificate of <CODE>certs</CODE> is the one that is verified, which is the signing certificate for
+     * the arrays returned by {@link #getSignCertificateChain()} and {@link #getCertificates()}. It is accepted when
+     * it is one of the trusted certificates of the KeyStore, or when a certification path leads from it to one of
+     * them. The other certificates of <CODE>certs</CODE> are only used as intermediate certificates of that path.
+     * <p>
+     * The path is validated with the PKIX algorithm: every certificate has to be issued by the next one, and the
+     * issuing certificates have to be certification authorities. Revocation is only checked against the given
+     * certificate revocation lists.
      *
-     * @param certs    the certificate chain
-     * @param keystore the <CODE>KeyStore</CODE>
+     * @param certs    the certificate to verify, followed by the other certificates of its chain
+     * @param keystore the <CODE>KeyStore</CODE> with the trusted certificates
      * @param crls     the certificate revocation list or <CODE>null</CODE>
      * @param calendar the date or <CODE>null</CODE> for the current date
      * @return <CODE>null</CODE> if the certificate chain could be validated or a
@@ -713,54 +733,76 @@ public class PdfPKCS7 {
         if (calendar == null) {
             calendar = new GregorianCalendar();
         }
-        for (int k = 0; k < certs.length; ++k) {
-            X509Certificate cert = (X509Certificate) certs[k];
-            String err = verifyCertificate(cert, crls, calendar);
-            if (err != null) {
-                return new Object[]{cert, err};
-            }
-            try {
-                for (Enumeration aliases = keystore.aliases(); aliases
-                        .hasMoreElements(); ) {
-                    try {
-                        String alias = (String) aliases.nextElement();
-                        if (!keystore.isCertificateEntry(alias)) {
-                            continue;
-                        }
-                        X509Certificate certStoreX509 = (X509Certificate) keystore
-                                .getCertificate(alias);
-                        if (verifyCertificate(certStoreX509, crls, calendar) != null) {
-                            continue;
-                        }
-                        try {
-                            cert.verify(certStoreX509.getPublicKey());
-                            return null;
-                        } catch (Exception ignored) {
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
-            } catch (Exception ignored) {
-            }
-            int j;
-            for (j = 0; j < certs.length; ++j) {
-                if (j == k) {
-                    continue;
-                }
-                X509Certificate certNext = (X509Certificate) certs[j];
-                try {
-                    cert.verify(certNext.getPublicKey());
-                    break;
-                } catch (Exception ignored) {
+        if (certs == null || certs.length == 0) {
+            return new Object[]{null, "There is no certificate to verify"};
+        }
+        X509Certificate cert = (X509Certificate) certs[0];
+        String err = verifyCertificate(cert, crls, calendar);
+        if (err != null) {
+            return new Object[]{cert, err};
+        }
+        try {
+            Set<TrustAnchor> anchors = getTrustAnchors(keystore, crls, calendar);
+            for (TrustAnchor anchor : anchors) {
+                if (cert.equals(anchor.getTrustedCert())) {
+                    return null;
                 }
             }
-            if (j == certs.length) {
-                return new Object[]{cert,
-                        "Cannot be verified against the KeyStore or the certificate chain"};
+            if (anchors.isEmpty()) {
+                return new Object[]{cert, CANNOT_BE_VERIFIED};
+            }
+            return verifyCertificationPath(cert, certs, anchors, crls, calendar);
+        } catch (CertPathBuilderException e) {
+            return new Object[]{cert, CANNOT_BE_VERIFIED};
+        } catch (GeneralSecurityException e) {
+            return new Object[]{cert, CANNOT_BE_VERIFIED + ": " + e.getMessage()};
+        }
+    }
+
+    /**
+     * Gets the certificates of a KeyStore that are trusted and valid at the given date.
+     */
+    private static Set<TrustAnchor> getTrustAnchors(KeyStore keystore, Collection crls, Calendar calendar)
+            throws GeneralSecurityException {
+        Set<TrustAnchor> anchors = new HashSet<>();
+        for (Enumeration<String> aliases = keystore.aliases(); aliases.hasMoreElements(); ) {
+            String alias = aliases.nextElement();
+            if (!keystore.isCertificateEntry(alias)
+                    || !(keystore.getCertificate(alias) instanceof X509Certificate trusted)) {
+                continue;
+            }
+            if (verifyCertificate(trusted, crls, calendar) == null) {
+                anchors.add(new TrustAnchor(trusted, null));
             }
         }
-        return new Object[]{null,
-                "Invalid state. Possible circular certificate chain"};
+        return anchors;
+    }
+
+    /**
+     * Builds and validates the certification path from a certificate to one of the trust anchors.
+     *
+     * @return <CODE>null</CODE> if the path is valid or the failed certificate and the error message
+     * @throws CertPathBuilderException if there is no valid path
+     */
+    private static Object[] verifyCertificationPath(X509Certificate cert, Certificate[] certs,
+            Set<TrustAnchor> anchors, Collection crls, Calendar calendar) throws GeneralSecurityException {
+        X509CertSelector target = new X509CertSelector();
+        target.setCertificate(cert);
+        PKIXBuilderParameters parameters = new PKIXBuilderParameters(anchors, target);
+        parameters.addCertStore(CertStore.getInstance("Collection",
+                new CollectionCertStoreParameters(Arrays.asList(certs))));
+        parameters.setDate(calendar.getTime());
+        // revocation is checked below, against the certificate revocation lists that were passed in
+        parameters.setRevocationEnabled(false);
+        PKIXCertPathBuilderResult result =
+                (PKIXCertPathBuilderResult) CertPathBuilder.getInstance("PKIX").build(parameters);
+        for (Certificate intermediate : result.getCertPath().getCertificates()) {
+            String err = verifyCertificate((X509Certificate) intermediate, crls, calendar);
+            if (err != null) {
+                return new Object[]{intermediate, err};
+            }
+        }
+        return null;
     }
 
     /**
@@ -1032,13 +1074,17 @@ public class PdfPKCS7 {
     }
 
     /**
-     * Get all the X.509 certificates associated with this PKCS#7 object in no particular order. Other certificates,
-     * from OCSP for example, will also be included.
+     * Get all the X.509 certificates associated with this PKCS#7 object. The signing certificate comes first, the
+     * others follow in no particular order. Other certificates, from OCSP for example, will also be included.
      *
      * @return the X.509 certificates associated with this PKCS#7 object
      */
     public Certificate[] getCertificates() {
-        return certs.toArray(new Certificate[0]);
+        List<Certificate> all = new ArrayList<>(certs);
+        if (signCert != null && all.remove(signCert)) {
+            all.add(0, signCert);
+        }
+        return all.toArray(new Certificate[0]);
     }
 
     // OJO... Modificacion de
