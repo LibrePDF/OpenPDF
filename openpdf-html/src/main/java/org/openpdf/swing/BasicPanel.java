@@ -469,7 +469,7 @@ public abstract class BasicPanel extends RootPanel implements FormSubmissionList
     }
 
     private boolean isAnchorInCurrentDocument(String str) {
-        return str.charAt(0) == '#';
+        return str != null && str.charAt(0) == '#';
     }
 
     private String getAnchorId(String url) {

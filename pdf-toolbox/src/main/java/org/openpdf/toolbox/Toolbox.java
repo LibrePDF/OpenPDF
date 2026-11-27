@@ -54,6 +54,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
@@ -80,6 +82,8 @@ import org.openpdf.tools.Executable;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Toolbox extends JFrame implements ActionListener {
+
+    private static final Logger LOGGER = Logger.getLogger(Toolbox.class.getName());
 
     /**
      * A serial version ID
@@ -134,7 +138,7 @@ public class Toolbox extends JFrame implements ActionListener {
             c = new Console();
             console = new JScrollPane(c.textArea);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not create the console", e);
         }
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 desktop,
@@ -220,7 +224,7 @@ public class Toolbox extends JFrame implements ActionListener {
                 p.load(new FileInputStream(usertoolstxt));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not load the tool list", e);
         }
         toolmap = new Properties();
         JMenuBar menubar = new JMenuBar();
@@ -385,7 +389,7 @@ public class Toolbox extends JFrame implements ActionListener {
             try {
                 createFrame(evt.getActionCommand());
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "Could not open the tool", e);
             }
         }
     }

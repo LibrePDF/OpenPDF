@@ -166,7 +166,7 @@ public class XfaForm {
             return;
         }
         PdfObject xfa = getXfaObject(reader);
-        if (xfa.isArray()) {
+        if (xfa != null && xfa.isArray()) {
             PdfArray ar = (PdfArray) xfa;
             int t = -1;
             int d = -1;

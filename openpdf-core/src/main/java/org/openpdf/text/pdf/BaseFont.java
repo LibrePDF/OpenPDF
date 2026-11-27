@@ -709,6 +709,9 @@ public abstract class BaseFont {
             boolean embedded, boolean cached, byte[] ttfAfm, byte[] pfb,
             boolean noThrow, boolean forceRead) throws DocumentException,
             IOException {
+        if (name == null) {
+            throw new DocumentException("The font name must not be null.");
+        }
         String nameBase = getBaseName(name);
         encoding = normalizeEncoding(encoding);
         boolean isBuiltinFonts14 = BuiltinFonts14.containsKey(name);
@@ -980,7 +983,7 @@ public abstract class BaseFont {
     private static void recourseFonts(PdfDictionary page, IntHashtable hits,
             ArrayList<Object[]> fonts, int level) {
         ++level;
-        if (level > 50) {
+        if (level > 50 || page == null) {
             return;
         }
         PdfDictionary resources = page.getAsDict(PdfName.RESOURCES);
@@ -1174,6 +1177,9 @@ public abstract class BaseFont {
         } else {
             int total = 0;
             byte[] mbytes = convertToBytes((char) char1);
+            if (mbytes == null) {
+                return total;
+            }
             for (byte mbyte : mbytes) {
                 total += widths[0xff & mbyte];
             }
@@ -1202,6 +1208,9 @@ public abstract class BaseFont {
             return total;
         } else {
             byte[] mbytes = convertToBytes(text);
+            if (mbytes == null) {
+                return total;
+            }
             for (byte mbyte : mbytes) {
                 total += widths[0xff & mbyte];
             }
@@ -1671,7 +1680,7 @@ public abstract class BaseFont {
      */
     public boolean charExists(int c) {
         byte[] b = convertToBytes(c);
-        return b.length > 0;
+        return b != null && b.length > 0;
     }
 
     /**
@@ -1684,7 +1693,7 @@ public abstract class BaseFont {
      */
     public boolean setCharAdvance(int c, int advance) {
         byte[] b = convertToBytes(c);
-        if (b.length == 0) {
+        if (b == null || b.length == 0) {
             return false;
         }
         widths[0xff & b[0]] = advance;
@@ -1702,7 +1711,7 @@ public abstract class BaseFont {
      */
     public int[] getCharBBox(int c) {
         byte[] b = convertToBytes(c);
-        if (b.length == 0) {
+        if (b == null || b.length == 0) {
             return null;
         } else {
             return charBBoxes[b[0] & 0xff];

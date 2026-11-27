@@ -586,8 +586,12 @@ public class ITextRenderer {
     }
 
     public void exportText(Writer writer) throws IOException {
+        Layer rootLayer = _root == null ? null : _root.getLayer();
+        if (rootLayer == null) {
+            throw new IllegalStateException("The document must be laid out before its text can be exported");
+        }
         RenderingContext c = newRenderingContext(0);
-        c.setPageCount(_root.getLayer().getPages().size());
+        c.setPageCount(rootLayer.getPages().size());
         _root.exportText(c, writer);
     }
 

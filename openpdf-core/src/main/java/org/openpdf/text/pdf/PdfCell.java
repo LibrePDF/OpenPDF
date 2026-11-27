@@ -213,7 +213,7 @@ public class PdfCell extends Rectangle {
                 case Element.JBIG2:
                 case Element.IMGRAW:
                 case Element.IMGTEMPLATE:
-                    addImage((Image) element, left, right, 0.4f * leading, alignment); //
+                    addImage((Image) element, left, right, alignment); //
                     break;
                 // if the element is a list
                 case Element.LIST:
@@ -442,10 +442,12 @@ public class PdfCell extends Rectangle {
         if (index == 0) {
             if (!lines.isEmpty()) {
                 firstLine = lines.get(0);
-                float firstLineRealHeight = firstLineRealHeight();
-                contentHeight -= firstLine.height();
-                firstLine.height = firstLineRealHeight;
-                contentHeight += firstLineRealHeight;
+                if (firstLine != null) {
+                    float firstLineRealHeight = firstLineRealHeight();
+                    contentHeight -= firstLine.height();
+                    firstLine.height = firstLineRealHeight;
+                    contentHeight += firstLineRealHeight;
+                }
             }
         }
         return oldLine;
@@ -470,7 +472,7 @@ public class PdfCell extends Rectangle {
             if (chunk != null) {
                 Image image = chunk.getImage();
                 if (image != null) {
-                    firstLineRealHeight = firstLine.getChunk(0).getImage().getScaledHeight();
+                    firstLineRealHeight = image.getScaledHeight();
                 } else {
                     firstLineRealHeight = useAscender ? firstLine.getAscender() : leading;
                 }
@@ -520,13 +522,15 @@ public class PdfCell extends Rectangle {
      * @param i           the image to add
      * @param left        the left border
      * @param right       the right border
-     * @param extraHeight extra height to add above image
      * @param alignment   horizontal alignment (constant from Element class)
      * @return the height of the image
      */
 
-    private float addImage(Image i, float left, float right, float extraHeight, int alignment) {
+    private float addImage(Image i, float left, float right, int alignment) {
         Image image = Image.getInstance(i);
+        if (image == null) {
+            throw new IllegalArgumentException("The image to add to the cell must not be null.");
+        }
         if (image.getScaledWidth() > right - left) {
             image.scaleToFit(right - left, Float.MAX_VALUE);
         }

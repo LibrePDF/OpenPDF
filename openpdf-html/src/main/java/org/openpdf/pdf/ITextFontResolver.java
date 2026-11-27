@@ -397,7 +397,7 @@ public class ITextFontResolver implements FontResolver {
         if (fontFamilyName != null) {
             if (isEmbeddedBase64Font(uri)) {
                 return fontFamilyName + getExtension(uri);
-            } else if (format != null) {
+            } else if (format != null && uri != null) {
                 String lower = uri.toLowerCase();
                 if (!lower.endsWith(OTF) && !lower.endsWith(TTF)) {
                     String ext = "";
