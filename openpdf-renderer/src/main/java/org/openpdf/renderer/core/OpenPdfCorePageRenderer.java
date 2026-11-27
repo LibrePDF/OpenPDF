@@ -35,14 +35,18 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import org.openpdf.text.pdf.CMapAwareDocumentFont;
 import org.openpdf.text.pdf.PRIndirectReference;
@@ -208,6 +212,13 @@ final class OpenPdfCorePageRenderer {
      * The work that drawing a Form XObject counts for, on top of the operators in it.
      */
     private static final int FORM_WORK = 64;
+
+    /**
+     * The largest JPEG or JPEG 2000 image that is decoded, in pixels. The size of such an image
+     * is in its own header, and a file of a few hundred bytes can announce any size. 100 million
+     * pixels is a scan of an A3 page at 600 dpi with room to spare, and takes 300 MB as an RGB image.
+     */
+    static final long MAX_ENCODED_IMAGE_PIXELS = 100_000_000L;
 
     private final Graphics2D g2;
     private final PdfDictionary resources;
@@ -522,7 +533,7 @@ final class OpenPdfCorePageRenderer {
             throws IOException {
         // Synthetic JPEG path: hdr told us to defer to ImageIO.
         if (components == 0) {
-            return ImageIO.read(new ByteArrayInputStream(decoded));
+            return readEncodedImage(decoded);
         }
         if (!holdsRaster(decoded, width, height, components)) {
             return null;
@@ -1790,15 +1801,55 @@ final class OpenPdfCorePageRenderer {
     private BufferedImage decodeViaImageIO(PRStream stream) {
         try {
             byte[] raw = PdfReader.getStreamBytesRaw(stream);
-            BufferedImage img = ImageIO.read(new ByteArrayInputStream(raw));
+            BufferedImage img = readEncodedImage(raw);
             if (img != null) {
                 return img;
             }
             // Some PDFs apply additional filters before DCTDecode; fall back to fully decoded bytes.
             byte[] decoded = PdfReader.getStreamBytes(stream);
-            return ImageIO.read(new ByteArrayInputStream(decoded));
+            return readEncodedImage(decoded);
         } catch (IOException | RuntimeException e) {
             LOG.log(Level.FINE, "Skipping JPEG/JPX image XObject due to: {0}", e);
+            return null;
+        }
+    }
+
+    /**
+     * Decodes the data of a DCT or JPX encoded image. Unlike {@link ImageIO#read(java.io.InputStream)},
+     * this only uses a reader for JPEG or JPEG 2000, whatever the data looks like, and it reads
+     * the size from the header of the image before it decodes it. The memory for the decoded
+     * image is reserved for that size, so an image that announces more than
+     * {@link #MAX_ENCODED_IMAGE_PIXELS} pixels is not decoded.
+     *
+     * @param data the encoded image
+     * @return the image, or {@code null} if the data is not a JPEG or JPEG 2000 image that can be decoded
+     * @throws IOException if the image is too large or cannot be read
+     */
+    static BufferedImage readEncodedImage(byte[] data) throws IOException {
+        try (ImageInputStream input = ImageIO.createImageInputStream(new ByteArrayInputStream(data))) {
+            if (input == null) {
+                return null;
+            }
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
+            while (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                String format = reader.getFormatName().toLowerCase(Locale.ROOT);
+                if (!format.contains("jpeg") && !format.contains("jp2")) {
+                    reader.dispose();
+                    continue;
+                }
+                try {
+                    reader.setInput(input, true, true);
+                    long pixels = (long) reader.getWidth(0) * reader.getHeight(0);
+                    if (pixels > MAX_ENCODED_IMAGE_PIXELS) {
+                        throw new IOException("The image has " + pixels + " pixels, more than the "
+                                + MAX_ENCODED_IMAGE_PIXELS + " that are decoded");
+                    }
+                    return reader.read(0);
+                } finally {
+                    reader.dispose();
+                }
+            }
             return null;
         }
     }
