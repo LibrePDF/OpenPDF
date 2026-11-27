@@ -1375,6 +1375,11 @@ public class CCITTFaxDecoder {
 
         int bitsLeft = 8 - this.bitPointer;
         int bitsFromNextByte = bitsToGet - bitsLeft;
+        if (bitsLeft < 0 || bitsLeft > 8 || bitsFromNextByte < 0) {
+            // the lookups below index table1/table2 with these values
+            throw new RuntimeException("Cannot read " + bitsToGet //$NON-NLS-1$
+                    + " bits at bit position " + this.bitPointer); //$NON-NLS-1$
+        }
         int bitsFromNext2NextByte = 0;
         if (bitsFromNextByte > 8) {
             bitsFromNext2NextByte = bitsFromNextByte - 8;

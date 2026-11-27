@@ -1227,6 +1227,9 @@ public abstract class Image extends Rectangle {
      */
     public static Image getInstance(PRIndirectReference ref) throws BadElementException {
         PdfDictionary dic = (PdfDictionary) PdfReader.getPdfObjectRelease(ref);
+        if (dic == null) {
+            throw new BadElementException("The reference does not point to an image dictionary.");
+        }
         int width = ((PdfNumber) PdfReader.getPdfObjectRelease(dic.get(PdfName.WIDTH))).intValue();
         int height = ((PdfNumber) PdfReader.getPdfObjectRelease(dic.get(PdfName.HEIGHT))).intValue();
         Image imask = null;

@@ -58,6 +58,8 @@ import org.openpdf.text.Rectangle;
 import org.openpdf.text.error_messages.MessageLocalization;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Formats content into one or more columns bounded by a rectangle.  The columns may be simple rectangles or more
@@ -67,6 +69,8 @@ import java.util.List;
  * @author Steve Appling
  */
 public class MultiColumnText implements Element {
+
+    private static final Logger LOGGER = Logger.getLogger(MultiColumnText.class.getName());
 
     /**
      * special constant for automatic calculation of height
@@ -338,7 +342,7 @@ public class MultiColumnText implements Element {
                 }
             }
         } catch (DocumentException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not write the columns of the MultiColumnText", ex);
             throw ex;
         }
         if (desiredHeight == AUTOMATIC && columnDefs.size() == 1) {

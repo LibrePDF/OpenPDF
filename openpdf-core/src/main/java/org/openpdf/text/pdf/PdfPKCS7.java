@@ -281,7 +281,8 @@ public class PdfPKCS7 {
      * @param certsKey    the /Cert key
      * @param provider    the provider or <code>null</code> for the default provider
      */
-    @SuppressWarnings("unchecked")
+    // SHA-1 is required by the PDF signature sub-filter adbe.x509.rsa_sha1
+    @SuppressWarnings({"unchecked", "java:S4790"})
     public PdfPKCS7(byte[] contentsKey, byte[] certsKey, String provider) {
         try {
             this.provider = provider;
@@ -1205,7 +1206,7 @@ public class PdfPKCS7 {
         // ML-DSA (NIST FIPS 204) is a single-shot signature scheme whose JCE
         // service name (e.g. "ML-DSA-65") is not combined with a separate
         // message-digest algorithm.
-        if (dea.startsWith("ML-DSA")) {
+        if (dea != null && dea.startsWith("ML-DSA")) {
             return dea;
         }
 

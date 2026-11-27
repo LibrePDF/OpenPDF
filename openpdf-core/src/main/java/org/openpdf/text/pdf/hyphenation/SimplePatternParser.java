@@ -61,6 +61,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Parses the xml hyphenation pattern.
@@ -69,6 +71,8 @@ import java.util.StringTokenizer;
  */
 public class SimplePatternParser implements SimpleXMLDocHandler,
         PatternConsumer {
+
+    private static final Logger LOGGER = Logger.getLogger(SimplePatternParser.class.getName());
 
     static final int ELEM_CLASSES = 1;
     static final int ELEM_EXCEPTIONS = 2;
@@ -123,7 +127,7 @@ public class SimplePatternParser implements SimpleXMLDocHandler,
                 pp.parse(new FileInputStream(args[0]), pp);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not parse the hyphenation pattern file", e);
         }
     }
 

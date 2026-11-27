@@ -48,6 +48,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -66,6 +68,8 @@ import org.openpdf.text.Document;
  */
 public class Versions
         extends JFrame {
+
+    private static final Logger LOGGER = Logger.getLogger(Versions.class.getName());
 
     /**
      * The serial version UID of this class.
@@ -95,7 +99,7 @@ public class Versions
         try {
             initialize();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not initialize the versions window", ex);
         }
     }
 
