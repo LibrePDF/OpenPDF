@@ -1,6 +1,7 @@
 package org.openpdf.text.pdf;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.openpdf.text.Document;
 import org.openpdf.text.Image;
@@ -51,6 +52,23 @@ class BarcodeDatamatrixTest {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Test
+    void supportsIso88591Characters() throws UnsupportedEncodingException {
+        BarcodeDatamatrix datamatrix = new BarcodeDatamatrix();
+
+        assertThat(datamatrix.generate("Grüße")).isEqualTo(BarcodeDatamatrix.DM_NO_ERROR);
+    }
+
+    @Test
+    void rejectsCharactersThatCannotBeEncodedWithIso88591() {
+        // before the fix, unmappable characters were silently replaced with '?'
+        BarcodeDatamatrix datamatrix = new BarcodeDatamatrix();
+
+        assertThatThrownBy(() -> datamatrix.generate("订单42"))
+                .isInstanceOf(UnsupportedEncodingException.class)
+                .hasMessage("The text '订单42' cannot be encoded with ISO-8859-1.");
     }
 
 }

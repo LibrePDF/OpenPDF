@@ -164,8 +164,36 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
 
     private final Set<String> _linkTargetAreas = new HashSet<>();
 
+    private boolean _onclickJavaScriptEnabled;
+
     public ITextOutputDevice(float dotsPerPoint) {
         _dotsPerPoint = dotsPerPoint;
+    }
+
+    /**
+     * Returns whether the <code>onclick</code> attribute of a link to an anchor in the same document is
+     * written to the PDF as a JavaScript action.
+     *
+     * @return true if the attribute is used, false (the default) if it is ignored
+     * @see #setOnclickJavaScriptEnabled(boolean)
+     */
+    public boolean isOnclickJavaScriptEnabled() {
+        return _onclickJavaScriptEnabled;
+    }
+
+    /**
+     * Sets whether the <code>onclick</code> attribute of a link to an anchor in the same document
+     * (<code>&lt;a href="#name" onclick="..."&gt;</code>) is written to the PDF as a JavaScript action
+     * instead of the action that goes to the anchor. The script runs in PDF viewers that support JavaScript
+     * when the link is clicked.
+     *
+     * <p>This is off by default, because the script comes from the document being rendered. Only enable
+     * it for documents from a trusted source.
+     *
+     * @param onclickJavaScriptEnabled true to write the attribute as a JavaScript action
+     */
+    public void setOnclickJavaScriptEnabled(boolean onclickJavaScriptEnabled) {
+        _onclickJavaScriptEnabled = onclickJavaScriptEnabled;
     }
 
     public void setWriter(PdfWriter writer) {
@@ -280,9 +308,7 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                         PdfDestination dest = createDestination(c, target);
 
                         if (dest != null) {
-                            PdfAction action = handler.getAttributeValue(elem, "onclick").isEmpty() ?
-                                    gotoDestination(dest) :
-                                    PdfAction.javaScript(handler.getAttributeValue(elem, "onclick"), _writer);
+                            PdfAction action = internalLinkAction(handler.getAttributeValue(elem, "onclick"), dest);
 
                             checkLinkArea(c, box).ifPresent(targetArea -> {
                                 targetArea.setBorder(0);
@@ -300,6 +326,13 @@ public class ITextOutputDevice extends AbstractOutputDevice implements OutputDev
                 }
             }
         }
+    }
+
+    private PdfAction internalLinkAction(@Nullable String onclick, PdfDestination dest) {
+        if (_onclickJavaScriptEnabled && onclick != null && !onclick.isEmpty()) {
+            return PdfAction.javaScript(onclick, _writer);
+        }
+        return gotoDestination(dest);
     }
 
     private static PdfAction gotoDestination(PdfDestination dest) {

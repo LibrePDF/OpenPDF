@@ -250,28 +250,7 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
         Phrase p = new Phrase(true);
         p.setLeading(leading);
         p.font = font;
-        if (font.getFamily() != Font.SYMBOL && font.getFamily() != Font.ZAPFDINGBATS && font.getBaseFont() == null) {
-            int index;
-            while ((index = SpecialSymbol.index(string)) > -1) {
-                if (index > 0) {
-                    String firstPart = string.substring(0, index);
-                    p.add(new Chunk(firstPart, font));
-                    string = string.substring(index);
-                }
-                Font symbol = new Font(Font.SYMBOL, font.getSize(), font.getStyle(), font.getColor());
-                StringBuilder buf = new StringBuilder();
-                buf.append(SpecialSymbol.getCorrespondingSymbol(string.charAt(0)));
-                string = string.substring(1);
-                while (SpecialSymbol.index(string) == 0) {
-                    buf.append(SpecialSymbol.getCorrespondingSymbol(string.charAt(0)));
-                    string = string.substring(1);
-                }
-                p.add(new Chunk(buf.toString(), symbol));
-            }
-        }
-        if (string != null && string.length() != 0) {
-            p.add(new Chunk(string, font));
-        }
+        SpecialSymbol.appendSymbolChunks(p, string, font);
         return p;
     }
 
@@ -471,11 +450,7 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
         if (size() > 0 && !chunk.hasAttributes()) {
             try {
                 Chunk previous = (Chunk) get(size() - 1);
-                if (!previous.hasAttributes()
-                        && (f == null
-                        || f.compareTo(previous.getFont()) == 0)
-                        && !"".equals(previous.getContent().trim())
-                        && !"".equals(c.trim())) {
+                if (canMergeWithPreviousChunk(previous, f, c)) {
                     previous.append(c);
                     return true;
                 }
@@ -488,6 +463,12 @@ public class Phrase extends ArrayList<Element> implements TextElementArray {
             newChunk.setHyphenation(hyphenation);
         }
         return super.add(newChunk);
+    }
+
+    private boolean canMergeWithPreviousChunk(Chunk previous, Font resolvedFont, String content) {
+        boolean sameOrNullFont = resolvedFont == null || resolvedFont.compareTo(previous.getFont()) == 0;
+        boolean bothHaveVisibleText = !previous.getContent().trim().isEmpty() && !content.trim().isEmpty();
+        return !previous.hasAttributes() && sameOrNullFont && bothHaveVisibleText;
     }
 
     /**

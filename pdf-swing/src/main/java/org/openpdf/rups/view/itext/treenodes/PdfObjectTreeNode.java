@@ -63,6 +63,10 @@ public class PdfObjectTreeNode extends IconTreeNode {
     protected PdfObjectTreeNode(PdfObject object) {
         super(null, getCaption(object));
         this.object = object;
+        if (object == null) {
+            // captioned "null" by getCaption(); there is no type to pick an icon for
+            return;
+        }
         switch (object.type()) {
             case PdfObject.INDIRECT:
                 if (isRecursive()) {
