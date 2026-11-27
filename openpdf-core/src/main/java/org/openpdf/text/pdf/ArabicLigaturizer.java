@@ -125,6 +125,50 @@ public class ArabicLigaturizer {
     private static final char LAM_ALEFHAMZA = 0xFEF7;
     private static final char LAM_ALEFHAMZABELOW = 0xFEF9;
     private static final char LAM_ALEFMADDA = 0xFEF5;
+    /**
+     * Composed forms of a shadda combined with a vowel mark: first character, second character, ligature.
+     */
+    private static final char[][] TASHKEEL_LIGATURES = {
+            {SHADDA, KASRA, 0xFC62},
+            {SHADDA, FATHA, 0xFC60},
+            {SHADDA, DAMMA, 0xFC61},
+            {SHADDA, 0x064C, 0xFC5E},
+            {SHADDA, 0x064D, 0xFC5F},
+            {KASRA, SHADDA, 0xFC62},
+            {FATHA, SHADDA, 0xFC60},
+            {DAMMA, SHADDA, 0xFC61},
+    };
+
+    /**
+     * Presentation ligatures of two shaped letters: first character, second character, ligature.
+     */
+    private static final char[][] PRESENTATION_LIGATURES = {
+            {0xFEDF, 0xFE9E, 0xFC3F}, /* JEEM final */
+            {0xFEDF, 0xFEA0, 0xFCC9}, /* JEEM medial */
+            {0xFEDF, 0xFEA2, 0xFC40}, /* HAH final */
+            {0xFEDF, 0xFEA4, 0xFCCA}, /* HAH medial */
+            {0xFEDF, 0xFEA6, 0xFC41}, /* KHAH final */
+            {0xFEDF, 0xFEA8, 0xFCCB}, /* KHAH medial */
+            {0xFEDF, 0xFEE2, 0xFC42}, /* MEEM final */
+            {0xFEDF, 0xFEE4, 0xFCCC}, /* MEEM medial */
+            {0xFE97, 0xFEA0, 0xFCA1}, /* JEEM medial */
+            {0xFE97, 0xFEA4, 0xFCA2}, /* HAH medial */
+            {0xFE97, 0xFEA8, 0xFCA3}, /* KHAH medial */
+            {0xFE91, 0xFEA0, 0xFC9C}, /* JEEM medial */
+            {0xFE91, 0xFEA4, 0xFC9D}, /* HAH medial */
+            {0xFE91, 0xFEA8, 0xFC9E}, /* KHAH medial */
+            {0xFEE7, 0xFEA0, 0xFCD2}, /* JEEM initial */
+            {0xFEE7, 0xFEA4, 0xFCD3}, /* HAH medial */
+            {0xFEE7, 0xFEA8, 0xFCD4}, /* KHAH medial */
+            {0xFEE8, 0xFEAE, 0xFC8A}, /* REH final  */
+            {0xFEE8, 0xFEB0, 0xFC8B}, /* ZAIN final */
+            {0xFEE3, 0xFEA0, 0xFCCE}, /* JEEM medial */
+            {0xFEE3, 0xFEA4, 0xFCCF}, /* HAH medial */
+            {0xFEE3, 0xFEA8, 0xFCD0}, /* KHAH medial */
+            {0xFEE3, 0xFEE4, 0xFCD1}, /* MEEM medial */
+            {0xFED3, 0xFEF2, 0xFC32}, /* YEH final */
+    };
+
     private static final char[][] chartable = {
             {0x0621, 0xFE80}, /* HAMZA */
             {0x0622, 0xFE81, 0xFE82}, /* ALEF WITH MADDA ABOVE */
@@ -413,11 +457,11 @@ public class ArabicLigaturizer {
         while (si < olen) {
             lapresult = 0;
             if ((level & ar_composedtashkeel) != 0) {
-                lapresult = composedTashkeel(string.charAt(j), string.charAt(si));
+                lapresult = findLigature(TASHKEEL_LIGATURES, string.charAt(j), string.charAt(si));
             }
 
             if ((level & ar_lig) != 0) {
-                char lig = presentationLigature(string.charAt(j), string.charAt(si));
+                char lig = findLigature(PRESENTATION_LIGATURES, string.charAt(j), string.charAt(si));
                 if (lig != 0) {
                     lapresult = lig;
                 }
@@ -437,130 +481,14 @@ public class ArabicLigaturizer {
     }
 
     /**
-     * Returns the composed form of a shadda combined with a vowel mark, or 0 if there is none.
+     * Looks up the ligature for two characters, or returns 0 if the table has none.
      */
-    private static char composedTashkeel(char first, char second) {
-        switch (first) {
-            case SHADDA:
-                switch (second) {
-                    case KASRA:
-                        return 0xFC62;
-                    case FATHA:
-                        return 0xFC60;
-                    case DAMMA:
-                        return 0xFC61;
-                    case 0x064C:
-                        return 0xFC5E;
-                    case 0x064D:
-                        return 0xFC5F;
-                }
-                break;
-            case KASRA:
-                if (second == SHADDA) {
-                    return 0xFC62;
-                }
-                break;
-            case FATHA:
-                if (second == SHADDA) {
-                    return 0xFC60;
-                }
-                break;
-            case DAMMA:
-                if (second == SHADDA) {
-                    return 0xFC61;
-                }
-                break;
+    private static char findLigature(char[][] table, char first, char second) {
+        for (char[] entry : table) {
+            if (entry[0] == first && entry[1] == second) {
+                return entry[2];
+            }
         }
-        return 0;
-    }
-
-    /**
-     * Returns the presentation ligature for two shaped letters, or 0 if there is none.
-     */
-    private static char presentationLigature(char first, char second) {
-        switch (first) {
-            case 0xFEDF:       /* LAM initial */
-                switch (second) {
-                    case 0xFE9E:
-                        return 0xFC3F;        /* JEEM final */
-                    case 0xFEA0:
-                        return 0xFCC9;        /* JEEM medial */
-                    case 0xFEA2:
-                        return 0xFC40;        /* HAH final */
-                    case 0xFEA4:
-                        return 0xFCCA;        /* HAH medial */
-                    case 0xFEA6:
-                        return 0xFC41;        /* KHAH final */
-                    case 0xFEA8:
-                        return 0xFCCB;        /* KHAH medial */
-                    case 0xFEE2:
-                        return 0xFC42;        /* MEEM final */
-                    case 0xFEE4:
-                        return 0xFCCC;        /* MEEM medial */
-                }
-                break;
-            case 0xFE97:       /* TEH inital */
-                switch (second) {
-                    case 0xFEA0:
-                        return 0xFCA1;        /* JEEM medial */
-                    case 0xFEA4:
-                        return 0xFCA2;        /* HAH medial */
-                    case 0xFEA8:
-                        return 0xFCA3;        /* KHAH medial */
-                }
-                break;
-            case 0xFE91:       /* BEH inital */
-                switch (second) {
-                    case 0xFEA0:
-                        return 0xFC9C;        /* JEEM medial */
-                    case 0xFEA4:
-                        return 0xFC9D;        /* HAH medial */
-                    case 0xFEA8:
-                        return 0xFC9E;        /* KHAH medial */
-                }
-                break;
-            case 0xFEE7:       /* NOON inital */
-                switch (second) {
-                    case 0xFEA0:
-                        return 0xFCD2;        /* JEEM initial */
-                    case 0xFEA4:
-                        return 0xFCD3;        /* HAH medial */
-                    case 0xFEA8:
-                        return 0xFCD4;        /* KHAH medial */
-                }
-                break;
-
-            case 0xFEE8:       /* NOON medial */
-                switch (second) {
-                    case 0xFEAE:
-                        return 0xFC8A;        /* REH final  */
-                    case 0xFEB0:
-                        return 0xFC8B;        /* ZAIN final */
-                }
-                break;
-            case 0xFEE3:       /* MEEM initial */
-                switch (second) {
-                    case 0xFEA0:
-                        return 0xFCCE;        /* JEEM medial */
-                    case 0xFEA4:
-                        return 0xFCCF;        /* HAH medial */
-                    case 0xFEA8:
-                        return 0xFCD0;        /* KHAH medial */
-                    case 0xFEE4:
-                        return 0xFCD1;        /* MEEM medial */
-                }
-                break;
-
-            case 0xFED3:       /* FEH initial */
-                switch (second) {
-                    case 0xFEF2:
-                        return 0xFC32;        /* YEH final */
-                }
-                break;
-
-            default:
-                break;
-        }                   /* end switch first */
         return 0;
     }
 
