@@ -186,6 +186,7 @@ invalid.named.action=Invalid named action.
 invalid.object.number=Invalid object number.
 invalid.page.additional.action.type.1=Invalid page additional action type: {1}
 invalid.page.number.1=Invalid page number: {1}
+invalid.page.tree=The page tree is invalid.
 invalid.run.direction.1=Invalid run direction: {1}
 invalid.status.1=Invalid status: {1}
 invalid.tsa.1.response.code.2=Invalid TSA '{1}' response, code {2}
