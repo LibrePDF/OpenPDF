@@ -832,12 +832,17 @@ class PDFShadeCommand extends PDFCmd {
     public Rectangle2D execute(PDFRenderer state) {
         // TODO: Not sure this is the right way to get the area for the sh cmd
         Shape s = box;
-        Shape clip = state.getImage().getGraphics().getClipBounds();
+        BufferedImage image = state.getImage();
+        if (image == null) {
+            // the renderer has no target image (any more), so there is no area to shade
+            return null;
+        }
+        Shape clip = image.getGraphics().getClipBounds();
         if (clip != null) {
             s = clip;
         }
         if (s == null) {
-            s = state.getImage().getData().getBounds();
+            s = image.getData().getBounds();
             try {
                 s = state.getLastTransform().createInverse().createTransformedShape(s);
             } catch (NoninvertibleTransformException e) {

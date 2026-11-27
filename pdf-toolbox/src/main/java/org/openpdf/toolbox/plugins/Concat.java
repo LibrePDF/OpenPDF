@@ -40,6 +40,8 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import org.openpdf.text.Document;
 import org.openpdf.text.pdf.PdfCopy;
@@ -57,6 +59,8 @@ import org.openpdf.toolbox.arguments.filters.PdfFilter;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class Concat extends AbstractTool {
+
+    private static final Logger LOGGER = Logger.getLogger(Concat.class.getName());
 
     static {
         addVersion("$Id: Concat.java 3271 2008-04-18 20:39:42Z xlv $");
@@ -158,7 +162,7 @@ public class Concat extends AbstractTool {
             // step 5: we close the document
             document.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not concatenate the PDF files", e);
         }
     }
 

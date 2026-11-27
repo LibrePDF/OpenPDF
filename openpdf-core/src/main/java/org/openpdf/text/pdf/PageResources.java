@@ -181,12 +181,20 @@ class PageResources {
     }
 
     boolean hasResources() {
-        return (fontDictionary.size() > 0
-                || xObjectDictionary.size() > 0
-                || colorDictionary.size() > 0
-                || patternDictionary.size() > 0
-                || shadingDictionary.size() > 0
-                || extGStateDictionary.size() > 0
-                || propertyDictionary.size() > 0);
+        return hasGraphicResources()
+                || hasColorOrPatternResources()
+                || hasStateOrPropertyResources();
+    }
+
+    private boolean hasGraphicResources() {
+        return fontDictionary.size() > 0 || xObjectDictionary.size() > 0;
+    }
+
+    private boolean hasColorOrPatternResources() {
+        return colorDictionary.size() > 0 || patternDictionary.size() > 0 || shadingDictionary.size() > 0;
+    }
+
+    private boolean hasStateOrPropertyResources() {
+        return extGStateDictionary.size() > 0 || propertyDictionary.size() > 0;
     }
 }

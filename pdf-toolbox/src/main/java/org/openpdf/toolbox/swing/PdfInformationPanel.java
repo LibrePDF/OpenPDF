@@ -40,6 +40,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -55,6 +57,8 @@ import org.openpdf.text.pdf.RandomAccessFileOrArray;
  * @since 2.1.1 (imported from itexttoolbox project)
  */
 public class PdfInformationPanel extends JPanel implements PropertyChangeListener {
+
+    private static final Logger LOGGER = Logger.getLogger(PdfInformationPanel.class.getName());
 
     /**
      * A serial version id
@@ -94,7 +98,7 @@ public class PdfInformationPanel extends JPanel implements PropertyChangeListene
             panel.add(scrollpane, BorderLayout.CENTER);
             scrollpane.setViewportView(label);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not initialize the PDF information panel", ex);
         }
     }
 

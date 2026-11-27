@@ -530,7 +530,8 @@ public class TableRowBox extends BlockBox {
             super.exportText(c, writer);
         } else {
             int yPos = getAbsY();
-            if (yPos >= c.getPage().getBottom() && isInDocumentFlow()) {
+            PageBox page = c.getPage();
+            if (page != null && yPos >= page.getBottom() && isInDocumentFlow()) {
                 exportPageBoxText(c, writer, yPos);
             }
 

@@ -48,6 +48,7 @@ package org.openpdf.text.pdf;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 
 /**
  * @author psoares
@@ -103,6 +104,7 @@ public class OutputStreamCounter extends OutputStream {
      * @see java.io.OutputStream#write(byte[], int, int)
      */
     public void write(byte[] b) throws IOException {
+        Objects.requireNonNull(b, "The byte array to write must not be null.");
         counter += b.length;
         out.write(b);
     }

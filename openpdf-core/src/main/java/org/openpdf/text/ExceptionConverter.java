@@ -156,10 +156,8 @@ public class ExceptionConverter extends RuntimeException {
      * @param printStream printStream
      */
     public void printStackTrace(java.io.PrintStream printStream) {
-        synchronized (printStream) {
-            printStream.print(prefix);
-            ex.printStackTrace(printStream);
-        }
+        // a single print call keeps the prefix and the stack trace together
+        printStream.print(prefixedStackTrace());
     }
 
     /**
@@ -168,10 +166,17 @@ public class ExceptionConverter extends RuntimeException {
      * @param printWriter printWriter
      */
     public void printStackTrace(java.io.PrintWriter printWriter) {
-        synchronized (printWriter) {
-            printWriter.print(prefix);
-            ex.printStackTrace(printWriter);
-        }
+        // a single print call keeps the prefix and the stack trace together
+        printWriter.print(prefixedStackTrace());
+    }
+
+    private String prefixedStackTrace() {
+        java.io.StringWriter buffer = new java.io.StringWriter();
+        java.io.PrintWriter writer = new java.io.PrintWriter(buffer);
+        writer.print(prefix);
+        ex.printStackTrace(writer);
+        writer.flush();
+        return buffer.toString();
     }
 
     /**

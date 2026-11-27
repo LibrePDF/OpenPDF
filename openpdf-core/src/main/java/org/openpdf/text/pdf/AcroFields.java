@@ -979,17 +979,28 @@ public class AcroFields {
         if (ar == null) {
             return null;
         }
-        switch (ar.size()) {
+        int size = ar.size();
+        if (size != 1 && size != 3 && size != 4) {
+            return null;
+        }
+        float[] values = new float[size];
+        for (int k = 0; k < size; ++k) {
+            PdfNumber number = ar.getAsNumber(k);
+            if (number == null) {
+                // not a valid color array
+                return null;
+            }
+            values[k] = number.floatValue();
+        }
+        switch (size) {
             case 1:
-                return new GrayColor(ar.getAsNumber(0).floatValue());
+                return new GrayColor(values[0]);
             case 3:
-                return new Color(ExtendedColor.normalize(ar.getAsNumber(0).floatValue()),
-                        ExtendedColor.normalize(ar.getAsNumber(1).floatValue()),
-                        ExtendedColor.normalize(ar.getAsNumber(2).floatValue()));
+                return new Color(ExtendedColor.normalize(values[0]),
+                        ExtendedColor.normalize(values[1]),
+                        ExtendedColor.normalize(values[2]));
             case 4:
-                return new CMYKColor(ar.getAsNumber(0).floatValue(), ar.getAsNumber(1).floatValue(),
-                        ar.getAsNumber(2).floatValue(),
-                        ar.getAsNumber(3).floatValue());
+                return new CMYKColor(values[0], values[1], values[2], values[3]);
             default:
                 return null;
         }
@@ -2118,6 +2129,10 @@ public class AcroFields {
     public void setGenerateAppearances(boolean generateAppearances) {
         this.generateAppearances = generateAppearances;
         PdfDictionary top = reader.getCatalog().getAsDict(PdfName.ACROFORM);
+        if (top == null) {
+            // no AcroForm dictionary, so there is no NeedAppearances entry to maintain
+            return;
+        }
         if (generateAppearances) {
             top.remove(PdfName.NEEDAPPEARANCES);
         } else {
@@ -3142,7 +3157,7 @@ public class AcroFields {
         public int compare(Object[] o1, Object[] o2) {
             int n1 = ((int[]) o1[1])[0];
             int n2 = ((int[]) o2[1])[0];
-            return n1 - n2;
+            return Integer.compare(n1, n2);
         }
     }
 

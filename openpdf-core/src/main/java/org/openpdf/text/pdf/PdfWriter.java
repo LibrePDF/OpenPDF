@@ -92,6 +92,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -110,6 +112,8 @@ public class PdfWriter extends DocWriter implements
         PdfXConformance,
         PdfRunDirection,
         PdfAnnotations {
+
+    private static final Logger LOGGER = Logger.getLogger(PdfWriter.class.getName());
 
     /**
      * The highest generation number possible.
@@ -588,7 +592,7 @@ public class PdfWriter extends DocWriter implements
     /**
      * A number referring to the previous Cross-Reference Table.
      */
-    protected int prevxref = 0;
+    protected long prevxref = 0;
     protected List newBookmarks;
     /**
      * Stores the version information for the header and the catalog.
@@ -1791,7 +1795,7 @@ public class PdfWriter extends DocWriter implements
             XmpWriter xmp = new XmpWriter(baos, pdf.getInfo(), pdfxConformance.getPDFXConformance());
             xmp.close();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            LOGGER.log(Level.WARNING, "Could not create the XMP metadata", ioe);
         }
         return baos.toByteArray();
     }
@@ -3263,7 +3267,7 @@ public class PdfWriter extends DocWriter implements
          */
 
         void writeCrossReferenceTable(OutputStream os, PdfIndirectReference root, PdfIndirectReference info,
-                PdfIndirectReference encryption, PdfObject fileID, int prevxref) throws IOException {
+                PdfIndirectReference encryption, PdfObject fileID, long prevxref) throws IOException {
             int refNumber = 0;
             // Old-style xref tables limit object offsets to 10 digits
             boolean useNewXrefFormat = writer.isFullCompression() || position > 9_999_999_999L;
@@ -3484,7 +3488,7 @@ public class PdfWriter extends DocWriter implements
          */
 
         PdfTrailer(int size, PdfIndirectReference root, PdfIndirectReference info, PdfIndirectReference encryption,
-                PdfObject fileID, int prevxref) {
+                PdfObject fileID, long prevxref) {
             put(PdfName.SIZE, new PdfNumber(size));
             put(PdfName.ROOT, root);
             if (info != null) {

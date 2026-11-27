@@ -45,12 +45,7 @@ public class SmallPdfReadTest {
             Assertions.assertEquals(-1, result, "Expected -1 at EOF, but read returned: " + result);
         }
 
-        System.gc();
-        try {
-            Thread.sleep(100); // give GC time to release mapped file
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // best practice: restore interrupt flag
-            throw new IllegalStateException("Sleep was interrupted", e);
-        }
+        // the mapping is released by close(), so the temporary file can be deleted, also on Windows
+        Assertions.assertTrue(pdfFile.delete(), "The file must not be locked after close()");
     }
 }

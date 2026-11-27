@@ -110,9 +110,9 @@ public class PdfBoolean extends PdfObject {
 
     public PdfBoolean(String value) throws BadPdfFormatException {
         super(BOOLEAN, value);
-        if (value.equals(TRUE)) {
+        if (TRUE.equals(value)) {
             this.value = true;
-        } else if (value.equals(FALSE)) {
+        } else if (FALSE.equals(value)) {
             this.value = false;
         } else {
             throw new BadPdfFormatException(

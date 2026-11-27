@@ -150,7 +150,6 @@ public class PdfSmartCopy extends PdfCopy {
         private final int MAX_LEVELS = 100;
         private byte[] b;
         private int hash;
-        private MessageDigest md5;
         /**
          * Digests of the indirect objects that were already serialized. Shared objects (e.g. Form XObjects used by
          * several other Form XObjects) are only serialized once, otherwise the effort grows with the number of paths
@@ -158,7 +157,10 @@ public class PdfSmartCopy extends PdfCopy {
          */
         private Map<RefKey, byte[]> serialized;
 
+        // MD5 is only used as a content fingerprint to find equal streams, not for security
+        @SuppressWarnings("java:S4790")
         ByteStore(PRStream str) throws IOException {
+            MessageDigest md5;
             try {
                 md5 = MessageDigest.getInstance("MD5");
             } catch (Exception e) {
@@ -167,13 +169,12 @@ public class PdfSmartCopy extends PdfCopy {
             serialized = new HashMap<>();
             ByteBuffer bb = new ByteBuffer();
             int level = MAX_LEVELS;
-            serObject(str, level, bb);
+            serObject(str, level, bb, md5);
             this.b = bb.toByteArray();
-            md5 = null;
             serialized = null;
         }
 
-        private void serObject(PdfObject obj, int level, ByteBuffer bb) throws IOException {
+        private void serObject(PdfObject obj, int level, ByteBuffer bb, MessageDigest md5) throws IOException {
             if (level <= 0) {
                 throw new IOException("Max level reached");
             }
@@ -196,7 +197,7 @@ public class PdfSmartCopy extends PdfCopy {
                 // has the same representation whether it was serialized before or not, and whether it is direct or
                 // indirect
                 ByteBuffer content = new ByteBuffer();
-                serComposite(obj, level, content);
+                serComposite(obj, level, content, md5);
                 byte[] digest = md5.digest(content.toByteArray());
                 if (key != null) {
                     serialized.put(key, digest);
@@ -211,19 +212,19 @@ public class PdfSmartCopy extends PdfCopy {
             }
         }
 
-        private void serComposite(PdfObject obj, int level, ByteBuffer bb) throws IOException {
+        private void serComposite(PdfObject obj, int level, ByteBuffer bb, MessageDigest md5) throws IOException {
             if (obj.isStream()) {
                 bb.append("$B");
-                serDic((PdfDictionary) obj, level - 1, bb);
+                serDic((PdfDictionary) obj, level - 1, bb, md5);
                 bb.append(md5.digest(PdfReader.getStreamBytesRaw((PRStream) obj)));
             } else if (obj.isDictionary()) {
-                serDic((PdfDictionary) obj, level - 1, bb);
+                serDic((PdfDictionary) obj, level - 1, bb, md5);
             } else {
-                serArray((PdfArray) obj, level - 1, bb);
+                serArray((PdfArray) obj, level - 1, bb, md5);
             }
         }
 
-        private void serDic(PdfDictionary dic, int level, ByteBuffer bb) throws IOException {
+        private void serDic(PdfDictionary dic, int level, ByteBuffer bb, MessageDigest md5) throws IOException {
             bb.append("$D");
             if (level <= 0) {
                 throw new IOException("Max level reached");
@@ -231,18 +232,18 @@ public class PdfSmartCopy extends PdfCopy {
             Object[] keys = dic.getKeys().toArray();
             Arrays.sort(keys);
             for (Object key : keys) {
-                serObject((PdfObject) key, level, bb);
-                serObject(dic.get((PdfName) key), level, bb);
+                serObject((PdfObject) key, level, bb, md5);
+                serObject(dic.get((PdfName) key), level, bb, md5);
             }
         }
 
-        private void serArray(PdfArray array, int level, ByteBuffer bb) throws IOException {
+        private void serArray(PdfArray array, int level, ByteBuffer bb, MessageDigest md5) throws IOException {
             bb.append("$A");
             if (level <= 0) {
                 throw new IOException("Max level reached");
             }
             for (int k = 0; k < array.size(); ++k) {
-                serObject(array.getPdfObject(k), level, bb);
+                serObject(array.getPdfObject(k), level, bb, md5);
             }
         }
 
