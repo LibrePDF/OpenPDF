@@ -760,6 +760,22 @@ public class PdfWriter extends DocWriter implements
     }
 
     /**
+     * Creates and configures a PdfDocument using the settings.
+     *
+     * @param document The <CODE>Document</CODE> that will be used
+     * @return a configured <CODE>PdfDocument</CODE>
+     */
+    
+    public static PdfDocument createPdfDocument(Document document) {
+        PdfDocument pdf = new PdfDocument();
+
+        pdf.setTextRenderingOptions(document.getTextRenderingOptions());
+        pdf.setGlyphLayoutManager(document.getGlyphLayoutManager());
+
+        return pdf;
+    }
+
+    /**
      * Use this method to get an instance of the <CODE>PdfWriter</CODE>.
      *
      * @param document The <CODE>Document</CODE> that has to be written
@@ -770,12 +786,13 @@ public class PdfWriter extends DocWriter implements
 
     public static PdfWriter getInstance(Document document, OutputStream os)
             throws DocumentException {
-        PdfDocument pdf = new PdfDocument();
-        pdf.setTextRenderingOptions(document.getTextRenderingOptions());
-        pdf.setGlyphLayoutManager(document.getGlyphLayoutManager());
+        PdfDocument pdf = createPdfDocument(document);
+
         document.addDocListener(pdf);
+
         PdfWriter writer = new PdfWriter(pdf, os);
         pdf.addWriter(writer);
+
         return writer;
     }
 
@@ -791,13 +808,14 @@ public class PdfWriter extends DocWriter implements
 
     public static PdfWriter getInstance(Document document, OutputStream os, DocListener listener)
             throws DocumentException {
-        PdfDocument pdf = new PdfDocument();
-        pdf.setTextRenderingOptions(document.getTextRenderingOptions());
-        pdf.setGlyphLayoutManager(document.getGlyphLayoutManager());
+        PdfDocument pdf = createPdfDocument(document);
+
         pdf.addDocListener(listener);
         document.addDocListener(pdf);
+
         PdfWriter writer = new PdfWriter(pdf, os);
         pdf.addWriter(writer);
+        
         return writer;
     }
 
