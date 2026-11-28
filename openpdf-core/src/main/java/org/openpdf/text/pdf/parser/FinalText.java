@@ -13,8 +13,26 @@ public class FinalText implements TextAssemblyBuffer {
 
     private String content;
 
+    // first and last word of the text, to place following text on the same line or the next
+    private ParsedTextImpl firstWord;
+    private ParsedTextImpl lastWord;
+
     public FinalText(String content) {
         this.content = content;
+    }
+
+    FinalText(String content, ParsedTextImpl firstWord, ParsedTextImpl lastWord) {
+        this.content = content;
+        this.firstWord = firstWord;
+        this.lastWord = lastWord;
+    }
+
+    ParsedTextImpl getFirstWord() {
+        return firstWord;
+    }
+
+    ParsedTextImpl getLastWord() {
+        return lastWord;
     }
 
     /**

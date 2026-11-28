@@ -49,6 +49,9 @@ public class MarkedUpTextAssembler implements TextAssembler {
     List<FinalText> result = new ArrayList<>();
     private PdfReader reader;
     private ParsedTextImpl inProgress = null;
+    // first and last word rendered in this context, also across nested contexts
+    private ParsedTextImpl firstWord = null;
+    private ParsedTextImpl lastWord = null;
     private int page;
     private int wordIdCounter = 1;
     private boolean usePdfMarkupElements = false;
@@ -88,6 +91,16 @@ public class MarkedUpTextAssembler implements TextAssembler {
     @Override
     public void process(FinalText completed, String contextName) {
         clearAccumulator();
+        ParsedTextImpl first = completed.getFirstWord();
+        if (first != null) {
+            if (lastWord != null && startsNewLineBetweenContexts(lastWord, first)) {
+                addHardReturn();
+            }
+            if (firstWord == null) {
+                firstWord = first;
+            }
+            lastWord = completed.getLastWord();
+        }
         result.add(completed);
 
     }
@@ -152,7 +165,8 @@ public class MarkedUpTextAssembler implements TextAssembler {
     @Override
     public FinalText endParsingContext(String containingElementName) {
         clearAccumulator();
-        return concatenateResult(containingElementName);
+        FinalText text = concatenateResult(containingElementName);
+        return text == null ? null : new FinalText(text.getText(), firstWord, lastWord);
     }
 
     /**
@@ -163,6 +177,8 @@ public class MarkedUpTextAssembler implements TextAssembler {
         result.clear();
         partialWords.clear();
         inProgress = null;
+        firstWord = null;
+        lastWord = null;
     }
 
     @Override
@@ -179,27 +195,24 @@ public class MarkedUpTextAssembler implements TextAssembler {
     @Override
     public void renderText(ParsedTextImpl partialWord) {
         boolean firstRender = inProgress == null;
-        boolean hardReturn = false;
         if (firstRender) {
+            // text before this word may have come from a nested element
+            if (lastWord != null && startsNewLineBetweenContexts(lastWord, partialWord)) {
+                addHardReturn();
+            }
+            if (firstWord == null) {
+                firstWord = partialWord;
+            }
             inProgress = partialWord;
+            lastWord = partialWord;
             return;
         }
+        lastWord = partialWord;
         Vector start = partialWord.getStartPoint();
         Vector lastStart = inProgress.getStartPoint();
         Vector lastEnd = inProgress.getEndPoint();
 
-        // see
-        // http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
-        float dist = inProgress.getBaseline()
-                .subtract(lastStart)
-                .cross(lastStart.subtract(start))
-                .lengthSquared() / inProgress.getBaseline().subtract(lastStart).lengthSquared();
-
-        float sameLineThreshold = partialWord.getAscent() * 0.5f;
-        // let's try using 25% of current leading for vertical slop.
-        if (dist > sameLineThreshold || Float.isNaN(dist)) {
-            hardReturn = true;
-        }
+        boolean hardReturn = startsNewLine(inProgress, partialWord);
         /*
          * Note: Technically, we should check both the start and end positions,
          * in case the angle of the text changed without any displacement but
@@ -210,10 +223,7 @@ public class MarkedUpTextAssembler implements TextAssembler {
         if (hardReturn || partialWord.breakBefore()) {
             result.add(inProgress.getFinalText(reader, page, this, usePdfMarkupElements));
             if (hardReturn) {
-                result.add(new FinalText("\n"));
-                if (usePdfMarkupElements) {
-                    result.add(new FinalText("<br class='t-pdf' />"));
-                }
+                addHardReturn();
             }
             inProgress = partialWord;
             // System.out.println("<< Hard Return >>");
@@ -230,6 +240,46 @@ public class MarkedUpTextAssembler implements TextAssembler {
         } else {
             result.add(inProgress.getFinalText(reader, page, this, usePdfMarkupElements));
             inProgress = partialWord;
+        }
+    }
+
+    /**
+     * Whether next starts off the line of previous.
+     */
+    private static boolean startsNewLine(ParsedTextImpl previous, ParsedTextImpl next) {
+        Vector start = next.getStartPoint();
+        Vector lastStart = previous.getStartPoint();
+        // see
+        // http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
+        float dist = previous.getBaseline()
+                .subtract(lastStart)
+                .cross(lastStart.subtract(start))
+                .lengthSquared() / previous.getBaseline().subtract(lastStart).lengthSquared();
+
+        float sameLineThreshold = next.getAscent() * 0.5f;
+        // let's try using 25% of current leading for vertical slop.
+        return dist > sameLineThreshold || Float.isNaN(dist);
+    }
+
+    /**
+     * Same check across marked-content sequences, comparing the squared distance with a squared threshold, so that a
+     * superscript or footnote reference in its own sequence stays on the line.
+     */
+    private static boolean startsNewLineBetweenContexts(ParsedTextImpl previous, ParsedTextImpl next) {
+        Vector start = next.getStartPoint();
+        Vector lastStart = previous.getStartPoint();
+        float distSquared = previous.getBaseline()
+                .subtract(lastStart)
+                .cross(lastStart.subtract(start))
+                .lengthSquared() / previous.getBaseline().subtract(lastStart).lengthSquared();
+        float threshold = 0.5f * Math.max(previous.getAscent(), next.getAscent());
+        return distSquared > threshold * threshold || Float.isNaN(distSquared);
+    }
+
+    private void addHardReturn() {
+        result.add(new FinalText("\n"));
+        if (usePdfMarkupElements) {
+            result.add(new FinalText("<br class='t-pdf' />"));
         }
     }
 

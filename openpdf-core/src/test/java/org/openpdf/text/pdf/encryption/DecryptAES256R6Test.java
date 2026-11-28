@@ -88,8 +88,8 @@ class DecryptAES256R6Test {
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
                     "PdfReader fails to report the correct number of pages");
             Assertions.assertEquals(
-                    "Demo   Name   Signature   Date  Elizabeth Schultz (Apr 24, 2018) Elizabeth Schultz Apr 24, 2018 "
-                            + "Elizabeth Schultz Sue Northrop (Apr 24, 2018) Apr 24, 2018 Sue Northrop",
+                    "Demo \n \n Name \n \n Signature \n \n Date \n Elizabeth Schultz (Apr 24, 2018)\n Elizabeth Schultz\n"
+                            + " Apr 24, 2018\n Elizabeth Schultz\n Sue Northrop (Apr 24, 2018)\n Apr 24, 2018\n Sue Northrop",
                     new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
             pdfReader.close();
         }
@@ -522,7 +522,7 @@ class DecryptAES256R6Test {
             Assertions.assertFalse(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report limited permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
                     "PdfReader fails to report the correct number of pages");
-            Assertions.assertEquals("Mu PD F  a lightweight PDF and XPS viewer",
+            Assertions.assertEquals("Mu PD F \n a lightweight PDF and XPS viewer",
                     new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
             pdfReader.close();
         }
@@ -548,7 +548,7 @@ class DecryptAES256R6Test {
             Assertions.assertTrue(isOwnerPasswordUsed(pdfReader), "PdfReader fails to report full permissions.");
             Assertions.assertEquals(1, pdfReader.getNumberOfPages(),
                     "PdfReader fails to report the correct number of pages");
-            Assertions.assertEquals("Mu PD F  a lightweight PDF and XPS viewer",
+            Assertions.assertEquals("Mu PD F \n a lightweight PDF and XPS viewer",
                     new PdfTextExtractor(pdfReader).getTextFromPage(1), "Wrong text extracted from page 1");
             pdfReader.close();
         }
