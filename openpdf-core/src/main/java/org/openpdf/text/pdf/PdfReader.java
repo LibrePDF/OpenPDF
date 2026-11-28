@@ -653,6 +653,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     }
                     break;
                 case 3: // PNG_FILTER_AVERAGE
+                    // Each byte is the stored value plus the average of the bytes to its left and above it,
+                    // taken as unsigned. The first pixel has nothing to its left.
                     for (int i = 0; i < bytesPerPixel; i++) {
                         curr[i] += (byte) ((prior[i] & 0xff) / 2);
                     }
