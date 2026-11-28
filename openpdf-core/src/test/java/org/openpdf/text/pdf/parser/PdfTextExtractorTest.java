@@ -272,6 +272,55 @@ class PdfTextExtractorTest {
         assertEquals(4, coords.length);
     }
 
+    /**
+     * A composite font stores its glyph widths against character codes, not against Unicode characters, so a located
+     * match can only be measured by looking the codes up directly. Measuring the decoded text instead used to leave
+     * every glyph of an Identity-H font with a width of zero, which collapsed the located coordinates.
+     */
+    @Test
+    void testTextLocatorCoordinatesAreProportionalWithIdentityHFont() throws Exception {
+        // given: a document in an Identity-H encoded font, forced by a character outside Latin-1
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, baos);
+        document.getTextRenderingOptions().setGlyphSubstitutionEnabled(false);
+        document.open();
+        document.add(new Paragraph("Latin \u25b2 Hello Wonderful World"));
+        document.close();
+        final PdfReader pdfReader = new PdfReader(baos.toByteArray());
+
+        // when: the same text is located by progressively longer patterns
+        final float[] singleChar = locateMatchedBBox(pdfReader, "H");
+        final float[] oneWord = locateMatchedBBox(pdfReader, "Hello");
+        final float[] twoWords = locateMatchedBBox(pdfReader, "Hello Wonderful");
+
+        // then: every match starts at the same left edge, as they all begin at the same character
+        assertEquals(singleChar[0], oneWord[0], 0.01f, "Matches beginning at the same character should share an x");
+        assertEquals(singleChar[0], twoWords[0], 0.01f, "Matches beginning at the same character should share an x");
+
+        // and: each match is wider than the shorter one it contains, rather than collapsing to zero
+        final float singleCharWidth = singleChar[2] - singleChar[0];
+        final float oneWordWidth = oneWord[2] - oneWord[0];
+        final float twoWordsWidth = twoWords[2] - twoWords[0];
+        assertTrue(singleCharWidth > 0, "A single character should have a positive width, got: " + singleCharWidth);
+        assertTrue(oneWordWidth > singleCharWidth,
+                "'Hello' should be wider than 'H', got: " + oneWordWidth + " vs " + singleCharWidth);
+        assertTrue(twoWordsWidth > oneWordWidth,
+                "'Hello Wonderful' should be wider than 'Hello', got: " + twoWordsWidth + " vs " + oneWordWidth);
+
+        // and: the match stays within the bounds of the line that contains it
+        final float[] lineBox = new PdfTextLocator(pdfReader).searchPage(1, "Hello").get(0).getCoordinates();
+        assertTrue(oneWord[0] >= lineBox[0] - 0.01f && oneWord[2] <= lineBox[2] + 0.01f,
+                "The matched box should lie within the line box");
+    }
+
+    private static float[] locateMatchedBBox(PdfReader pdfReader, String pattern) throws IOException {
+        final List<MatchedPattern> matches = new PdfTextLocator(pdfReader).searchPage(1, pattern);
+        assertFalse(matches.isEmpty(), "Should find a match for '" + pattern + "'");
+        assertEquals(pattern, matches.get(0).getMatchedText(), "Matched text should be the pattern itself");
+        return matches.get(0).getMatchedBBox();
+    }
+
     @Test
     void testTextLocatorFindsMultipleMatchesWithCoordinates() throws Exception {
         // given: Create a simple document with known text

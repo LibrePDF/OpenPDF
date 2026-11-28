@@ -302,6 +302,10 @@ public class PdfDocument extends Document {
      * This is the flag meaning whether document is creating footer.
      */
     private boolean isDoFooter = false;
+    /**
+     * Whether annotations placed on a later page were still waiting for it when the current page was started.
+     */
+    private boolean delayedAnnotationsPending;
 
     /**
      * Constructs a new PDF document.
@@ -654,6 +658,15 @@ public class PdfDocument extends Document {
                     leading = listItem.getTotalLeading();
                     carriageReturn();
 
+                    // Keep the ListItem together on a single page when possible.
+                    if (listItem.getKeepTogether() && currentHeight > 0) {
+                        PdfPTable table = createInOneCell(listItem);
+
+                        if (!fitsPage(table, 0f)) {
+                            newPage();
+                        }
+                    }
+
                     // we prepare the current line to be able to show us the listsymbol
                     line.setListItem(listItem);
                     // we process the item
@@ -831,7 +844,7 @@ public class PdfDocument extends Document {
             if (imageWait != null || wasImage) {
                 newPage();
             }
-            if (annotationsImp.hasUnusedAnnotations()) {
+            if (delayedAnnotationsPending) {
                 throw new RuntimeException(MessageLocalization.getComposedMessage(
                         "not.all.annotations.could.be.added.to.the.document.the.document.doesn.t.have.enough.pages"));
             }
@@ -1149,6 +1162,9 @@ public class PdfDocument extends Document {
 
         // initialization of some page objects
         annotationsImp.resetAnnotations();
+        // Only annotations waiting for a later page are held at this point. The header and footer drawn below may
+        // add annotations of their own, which are no sign of a missing page if this page is never written.
+        delayedAnnotationsPending = annotationsImp.hasUnusedAnnotations();
         pageResources = new PageResources();
 
         writer.resetContent();
@@ -2641,8 +2657,7 @@ public class PdfDocument extends Document {
                 loop = 0;
             }
             if (loop == 3) {
-                add(new Paragraph("ERROR: Infinite table loop"));
-                break;
+                throw new DocumentException(MessageLocalization.getComposedMessage("infinite.table.loop"));
             }
             newPage();
         }

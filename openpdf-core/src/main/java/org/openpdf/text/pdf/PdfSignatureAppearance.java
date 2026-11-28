@@ -74,11 +74,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class takes care of the cryptographic options and appearances that form a signature.
  */
 public class PdfSignatureAppearance {
+
+    private static final Logger LOGGER = Logger.getLogger(PdfSignatureAppearance.class.getName());
 
     /**
      * The rendering mode is just the description
@@ -692,11 +696,12 @@ public class PdfSignatureAppearance {
                 String signedBy = PdfPKCS7.getSubjectFields((X509Certificate) certChain[0]).getField("CN");
                 Rectangle sr2 = new Rectangle(signatureRect.getWidth() - MARGIN,
                         signatureRect.getHeight() - MARGIN);
-                float signedSize = fitText(font, signedBy, sr2, -1, runDirection);
+                Font nameFont = new Font(font);
+                float signedSize = fitText(nameFont, signedBy, sr2, -1, runDirection);
 
                 ColumnText ct2 = new ColumnText(t);
                 ct2.setRunDirection(runDirection);
-                ct2.setSimpleColumn(new Phrase(signedBy, font),
+                ct2.setSimpleColumn(new Phrase(signedBy, nameFont),
                         signatureRect.getLeft(), signatureRect.getBottom(),
                         signatureRect.getRight(), signatureRect.getTop(), signedSize,
                         Element.ALIGN_LEFT);
@@ -1303,7 +1308,9 @@ public class PdfSignatureAppearance {
                 } catch (Exception ee) {
                 }
                 try {
-                    tempFile.delete();
+                    if (!tempFile.delete()) {
+                        LOGGER.log(Level.FINE, "Could not delete the temporary signature file");
+                    }
                 } catch (Exception ee) {
                 }
                 throw e;
@@ -1386,7 +1393,9 @@ public class PdfSignatureAppearance {
                 }
                 if (originalout != null) {
                     try {
-                        tempFile.delete();
+                        if (!tempFile.delete()) {
+                            LOGGER.log(Level.FINE, "Could not delete the temporary signature file");
+                        }
                     } catch (Exception ee) {
                     }
                 }

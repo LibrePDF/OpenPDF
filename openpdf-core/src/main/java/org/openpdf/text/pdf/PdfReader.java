@@ -74,6 +74,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,16 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     static final PdfName[] pageInhCandidates = {PdfName.MEDIABOX,
             PdfName.ROTATE, PdfName.RESOURCES, PdfName.CROPBOX};
 
+    /**
+     * The deepest nesting of /Pages nodes in the page tree that is read.
+     */
+    private static final int MAX_PAGE_TREE_DEPTH = 256;
+
+    /**
+     * The deepest nesting of arrays and dictionaries within one object that the parsers accept.
+     */
+    static final int MAX_NESTING_DEPTH = 512;
+
     private static final String ENDSTREAM = "endstream";
     private static final byte[] endstreamBytes = PdfEncodings
             .convertToBytes(ENDSTREAM, null);
@@ -105,9 +116,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     // type 0 -> -1, 0
     // type 1 -> offset, 0
     // type 2 -> index, obj num
-    protected int[] xref;
+    protected long[] xref;
     protected Map<Integer, IntHashtable> objStmMark;
-    protected IntHashtable objStmToOffset;
+    protected Map<Integer, Long> objStmToOffset;
     protected boolean newXrefType;
     protected PdfDictionary trailer;
     protected PdfDictionary catalog;
@@ -118,8 +129,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     protected boolean rebuilt = false;
     protected int freeXref;
     protected boolean tampered = false;
-    protected int lastXref;
-    protected int eofPos;
+    protected long lastXref;
+    protected long eofPos;
     protected String pdfVersion;
     protected PdfEncryption decrypt;
     protected byte[] password = null; // added by ujihara for decryption
@@ -143,12 +154,17 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     private boolean modificationAllowedWithoutOwnerPassword = true;
     private int objNum;
     private int objGen;
-    private int fileLength;
+    private long fileLength;
     private boolean hybridXref;
     private int lastXrefPartial = -1;
     private boolean partial;
     private PRIndirectReference cryptoRef;
     private boolean encryptionError;
+    /**
+     * The numbers of the objects that are being read right now (partial reading only), to notice an object that
+     * needs itself in order to be read.
+     */
+    private final Set<Integer> objectsBeingRead = new HashSet<>();
 
     /**
      * Holds value of property appendable.
@@ -330,6 +346,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         this.cryptoRef = (PRIndirectReference) duplicatePdfObject(reader.cryptoRef,
                 this);
         this.ownerPasswordUsed = reader.ownerPasswordUsed;
+        // state that is only used while parsing a document is not duplicated
+        this.objStmMark = null;
+        this.newXrefType = false;
+        this.objNum = 0;
+        this.objGen = 0;
+        this.encryptionError = false;
     }
 
     static int getPageRotation(PdfDictionary page) {
@@ -353,16 +375,23 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      * @return a normalized <CODE>Rectangle</CODE>
      */
     public static Rectangle getNormalizedRectangle(PdfArray box) {
-        float llx = ((PdfNumber) getPdfObjectRelease(box.getPdfObject(0)))
-                .floatValue();
-        float lly = ((PdfNumber) getPdfObjectRelease(box.getPdfObject(1)))
-                .floatValue();
-        float urx = ((PdfNumber) getPdfObjectRelease(box.getPdfObject(2)))
-                .floatValue();
-        float ury = ((PdfNumber) getPdfObjectRelease(box.getPdfObject(3)))
-                .floatValue();
+        if (box == null) {
+            throw new IllegalArgumentException("The rectangle array must not be null");
+        }
+        float llx = getRectangleValue(box, 0);
+        float lly = getRectangleValue(box, 1);
+        float urx = getRectangleValue(box, 2);
+        float ury = getRectangleValue(box, 3);
         return new Rectangle(Math.min(llx, urx), Math.min(lly, ury), Math.max(llx,
                 urx), Math.max(lly, ury));
+    }
+
+    private static float getRectangleValue(PdfArray box, int idx) {
+        PdfObject value = getPdfObjectRelease(box.getPdfObject(idx));
+        if (!(value instanceof PdfNumber)) {
+            throw new IllegalArgumentException("The rectangle array entry " + idx + " is not a number");
+        }
+        return ((PdfNumber) value).floatValue();
     }
 
     /**
@@ -563,7 +592,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             return in;
         }
         int predictor = ((PdfNumber) obj).intValue();
-        if (predictor < 10) {
+        if (predictor != 2 && predictor < 10) {
             return in;
         }
         int width = 1;
@@ -581,11 +610,18 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (obj != null && obj.isNumber()) {
             bpc = ((PdfNumber) obj).intValue();
         }
-        DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(
-                in));
+        if (predictor == 2) {
+            return decodeTiffPredictor(in, width, colors, bpc);
+        }
+        long rowBytes = pngPredictorRowBytes(width, colors, bpc);
+        if (rowBytes >= in.length) {
+            // the input does not hold a filter type byte and a complete row: there is nothing to decode
+            return new byte[0];
+        }
+        DataInputStream dataStream = new DataInputStream(new ByteArrayInputStream(in));
         ByteArrayOutputStream fout = new ByteArrayOutputStream(in.length);
-        int bytesPerPixel = colors * bpc / 8;
-        int bytesPerRow = (colors * width * bpc + 7) / 8;
+        int bytesPerPixel = (int) (((long) colors * bpc + 7) / 8);
+        int bytesPerRow = (int) rowBytes;
         byte[] curr = new byte[bytesPerRow];
         byte[] prior = new byte[bytesPerRow];
 
@@ -672,6 +708,65 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     /**
+     * Validates the parameters of a PNG predictor and works out the length of a row.
+     *
+     * @param columns the number of samples in a row, per colour component
+     * @param colors  the number of colour components per sample
+     * @param bits    the number of bits per colour component
+     * @return the number of bytes in a row, not counting the filter type byte; {@link Long#MAX_VALUE} if a row is
+     *         longer than any input can be
+     * @throws IllegalArgumentException if a parameter is not valid
+     */
+    private static long pngPredictorRowBytes(int columns, int colors, int bits) {
+        if (columns < 1 || colors < 1 || (bits != 1 && bits != 2 && bits != 4 && bits != 8 && bits != 16)) {
+            throw new IllegalArgumentException("Invalid PNG predictor parameters");
+        }
+        long samples = (long) columns * colors;
+        if (samples > Integer.MAX_VALUE) {
+            return Long.MAX_VALUE;
+        }
+        return (samples * bits + 7) / 8;
+    }
+
+    private static byte[] decodeTiffPredictor(byte[] input, int columns, int colors, int bits) {
+        if (columns < 1 || colors < 1 || (bits != 1 && bits != 2 && bits != 4 && bits != 8 && bits != 16)) {
+            throw new IllegalArgumentException("Invalid TIFF predictor parameters");
+        }
+        int samples = Math.multiplyExact(columns, colors);
+        int rowBytes = Math.toIntExact((Math.multiplyExact((long) samples, bits) + 7) / 8);
+        if (input.length % rowBytes != 0) {
+            throw new IllegalArgumentException("Incomplete TIFF predictor row");
+        }
+        byte[] output = input.clone();
+        int mask = (1 << bits) - 1;
+        for (int row = 0; row < output.length; row += rowBytes) {
+            for (int sample = colors; sample < samples; sample++) {
+                int value = predictorSample(output, row, sample, bits)
+                        + predictorSample(output, row, sample - colors, bits);
+                long bit = (long) sample * bits;
+                int index = row + (int) (bit / 8);
+                if (bits == 16) {
+                    output[index] = (byte) (value >> 8);
+                    output[index + 1] = (byte) value;
+                } else {
+                    int shift = 8 - bits - (int) (bit % 8);
+                    output[index] = (byte) ((output[index] & ~(mask << shift)) | ((value & mask) << shift));
+                }
+            }
+        }
+        return output;
+    }
+
+    private static int predictorSample(byte[] data, int row, int sample, int bits) {
+        long bit = (long) sample * bits;
+        int index = row + (int) (bit / 8);
+        if (bits == 16) {
+            return ((data[index] & 0xff) << 8) | (data[index + 1] & 0xff);
+        }
+        return (data[index] >> (8 - bits - (int) (bit % 8))) & ((1 << bits) - 1);
+    }
+
+    /**
      * A helper to FlateDecode.
      *
      * @param in     the input data
@@ -684,12 +779,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         InflaterInputStream zip = new InflaterInputStream(stream);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte[] b = new byte[strict ? 4092 : 1];
-        try {
+        try (zip) {
             int n;
             while ((n = zip.read(b)) >= 0) {
                 out.write(b, 0, n);
             }
-            zip.close();
             out.close();
             return out.toByteArray();
         } catch (Exception e) {
@@ -881,6 +975,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     break;
                 case "/BrotliDecode":
                     b = BrotliFilter.decode(b);
+                    if (j < dp.size()) {
+                        b = decodePredictor(b, dp.get(j));
+                    }
                     break;
                 default:
                     throw new UnsupportedPdfException(
@@ -1417,6 +1514,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     /**
      *
      */
+    // SHA-1 is required by the PDF public-key security handler
+    @SuppressWarnings("java:S4790")
     private void readDecryptedDocObj() throws IOException {
         if (encrypted) {
             return;
@@ -1431,7 +1530,17 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         encryptionError = true;
         byte[] encryptionKey = null;
         encrypted = true;
-        PdfDictionary enc = (PdfDictionary) getPdfObject(encDic);
+        PdfObject encObj = getPdfObject(encDic);
+        if (!(encObj instanceof PdfDictionary)) {
+            // The trailer /Encrypt entry is a dangling indirect reference (no xref entry for the
+            // referenced object) or not a dictionary at all. Other readers (poppler, qpdf) ignore
+            // such an entry and open the document as unencrypted; do the same instead of failing
+            // with a NullPointerException (issue #1588).
+            encrypted = false;
+            encryptionError = false;
+            return;
+        }
+        PdfDictionary enc = (PdfDictionary) encObj;
 
         String s;
         PdfObject o;
@@ -1808,8 +1917,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
         readDecryptedDocObj();
         if (objStmToOffset != null) {
-            int[] keys = objStmToOffset.getKeys();
-            for (int n : keys) {
+            for (Integer n : new ArrayList<>(objStmToOffset.keySet())) {
                 objStmToOffset.put(n, xref[n * 2]);
                 xref[n * 2] = -1;
             }
@@ -1817,14 +1925,26 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     protected PdfObject readSingleObject(int k) throws IOException {
+        if (!objectsBeingRead.add(k)) {
+            // reading this object led back to itself, for example a stream that is its own /Length
+            return null;
+        }
+        try {
+            return readSingleObjectFromFile(k);
+        } finally {
+            objectsBeingRead.remove(k);
+        }
+    }
+
+    private PdfObject readSingleObjectFromFile(int k) throws IOException {
         strings.clear();
         int k2 = k * 2;
-        int pos = xref[k2];
+        long pos = xref[k2];
         if (pos < 0) {
             return null;
         }
         if (xref[k2 + 1] > 0) {
-            pos = objStmToOffset.get(xref[k2 + 1]);
+            pos = objStmToOffset.get((int) xref[k2 + 1]);
         }
         if (pos == 0) {
             return null;
@@ -1861,7 +1981,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             obj = null;
         }
         if (xref[k2 + 1] > 0) {
-            obj = readOneObjStm((PRStream) obj, xref[k2]);
+            obj = readOneObjStm((PRStream) obj, (int) xref[k2]);
         }
         xrefObj.set(k, obj);
         return obj;
@@ -1869,7 +1989,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     protected PdfObject readOneObjStm(PRStream stream, int idx)
             throws IOException {
-        int first = stream.getAsNumber(PdfName.FIRST).intValue();
+        PdfNumber firstNumber = stream.getAsNumber(PdfName.FIRST);
+        if (firstNumber == null) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("error.reading.objstm"));
+        }
+        int first = firstNumber.intValue();
         byte[] b = getStreamBytes(stream, tokens.getFile());
         PRTokeniser saveTokens = tokens;
         tokens = new PRTokeniser(b);
@@ -1925,7 +2050,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         xrefObj = new ArrayList<>(xref.length / 2);
         xrefObj.addAll(Collections.nCopies(xref.length / 2, null));
         for (int k = 2; k < xref.length; k += 2) {
-            int pos = xref[k];
+            long pos = xref[k];
             if (pos <= 0 || ((xref.length > k + 1) && (xref[k + 1] > 0))) {
                 continue;
             }
@@ -1967,6 +2092,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 Map.Entry entry = (Map.Entry) o;
                 int n = (Integer) entry.getKey();
                 IntHashtable h = (IntHashtable) entry.getValue();
+                // A corrupt xref stream can reference an object stream number that is out of
+                // range, or that does not actually point at a stream object. Skip such entries
+                // instead of letting an IndexOutOfBoundsException/ClassCastException escape.
+                if (n < 0 || n >= xrefObj.size() || !(xrefObj.get(n) instanceof PRStream)) {
+                    continue;
+                }
                 readObjStm((PRStream) xrefObj.get(n), h);
                 xrefObj.set(n, null);
             }
@@ -1976,14 +2107,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
     }
 
     private void checkPRStreamLength(PRStream stream) throws IOException {
-        int fileLength = tokens.length();
-        int start = stream.getOffset();
+        long tokensLength = tokens.length();
+        long start = stream.getOffset();
         boolean calc = false;
         int streamLength = 0;
         PdfObject obj = getPdfObjectRelease(stream.get(PdfName.LENGTH));
         if (obj != null && obj.type() == PdfObject.NUMBER) {
             streamLength = ((PdfNumber) obj).intValue();
-            if (streamLength + start > fileLength - 20) {
+            if (streamLength + start > tokensLength - 20) {
                 calc = true;
             } else {
                 tokens.seek(start + streamLength);
@@ -2001,12 +2132,12 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             byte[] tline = new byte[16];
             tokens.seek(start);
             while (true) {
-                int pos = tokens.getFilePointer();
+                long pos = tokens.getFilePointer();
                 if (!tokens.readLineSegment(tline)) {
                     break;
                 }
                 if (equalsn(tline, endstreamBytes)) {
-                    streamLength = pos - start;
+                    streamLength = (int) (pos - start);
                     break;
                 }
                 if (equalsn(tline, endobj)) {
@@ -2016,7 +2147,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     if (index >= 0) {
                         pos = pos - 16 + index;
                     }
-                    streamLength = pos - start;
+                    streamLength = (int) (pos - start);
                     break;
                 }
             }
@@ -2026,9 +2157,16 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
 
     protected void readObjStm(PRStream stream, IntHashtable map)
             throws IOException {
-        int first = stream.getAsNumber(PdfName.FIRST).intValue();
-        int n = stream.getAsNumber(PdfName.N).intValue();
+        PdfNumber firstNumber = stream.getAsNumber(PdfName.FIRST);
+        PdfNumber countNumber = stream.getAsNumber(PdfName.N);
+        if (firstNumber == null || countNumber == null) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("error.reading.objstm"));
+        }
+        int first = firstNumber.intValue();
+        int n = countNumber.intValue();
         byte[] b = getStreamBytes(stream, tokens.getFile());
+        checkObjStmCount(n, b.length);
         PRTokeniser saveTokens = tokens;
         tokens = new PRTokeniser(b);
         try {
@@ -2071,15 +2209,101 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         }
     }
 
+    /**
+     * Checks the number of objects an object stream claims to hold. Each of them needs an object number and an
+     * offset in the decoded stream, so the stream cannot hold more objects than half its length in bytes.
+     */
+    private static void checkObjStmCount(int count, int decodedLength) throws InvalidPdfException {
+        if (count < 0 || count > decodedLength / 2) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("error.reading.objstm"));
+        }
+    }
+
+    /**
+     * Returns the largest number of objects a cross-reference table of this file is allowed to describe. Memory
+     * is reserved for every object the table announces, so the limit is what a file of this length can hold if
+     * each object takes a single byte.
+     */
+    private long maxXrefObjectCount() throws IOException {
+        return Math.min(tokens.length(), Integer.MAX_VALUE / 2);
+    }
+
+    /**
+     * Checks an object count read from a cross-reference table or its trailer before memory is reserved for it.
+     *
+     * @param objectCount the number of objects, counted from object 0
+     * @return {@code objectCount}
+     * @throws IOException if the count is negative or larger than the file can hold
+     */
+    private int checkXrefObjectCount(long objectCount) throws IOException {
+        if (objectCount < 0 || objectCount > maxXrefObjectCount()) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("xref.size.exceeds.file.length"));
+        }
+        return (int) objectCount;
+    }
+
+    /**
+     * Checks the header of a cross-reference subsection.
+     *
+     * @param start the number of the first object of the subsection
+     * @param count the number of entries in the subsection
+     * @return the object number right after the last entry
+     * @throws IOException if the subsection is not plausible for this file
+     */
+    private int checkXrefSubsection(int start, int count) throws IOException {
+        if (start < 0 || count < 0) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("xref.size.exceeds.file.length"));
+        }
+        return checkXrefObjectCount((long) start + count);
+    }
+
+    /**
+     * Checks a subsection of a cross-reference stream, which cannot have more entries than its decoded data holds.
+     *
+     * @param start     the number of the first object of the subsection
+     * @param count     the number of entries in the subsection
+     * @param wc        the /W field widths of the three entry fields
+     * @param available the number of decoded bytes that have not been read yet
+     * @return the object number right after the last entry
+     * @throws IOException if the subsection is not plausible for this file
+     */
+    private int checkXRefStreamSubsection(int start, int count, int[] wc, int available) throws IOException {
+        long entryLength = (long) Math.max(wc[0], 0) + Math.max(wc[1], 0) + Math.max(wc[2], 0);
+        if (count > 0 && (entryLength == 0 || count > available / entryLength)) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("xref.size.exceeds.file.length"));
+        }
+        return checkXrefSubsection(start, count);
+    }
+
+    /**
+     * Checks that the data of a cross-reference stream lies within the file.
+     *
+     * @param stm    the cross-reference stream
+     * @param length the value of its /Length entry
+     * @return {@code length}
+     * @throws IOException if the length is negative or reaches beyond the end of the file
+     */
+    private int checkXRefStreamLength(PRStream stm, int length) throws IOException {
+        if (length < 0 || length > tokens.length() - stm.getOffset()) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage(ILLEGAL_LENGTH_VALUE));
+        }
+        return length;
+    }
+
     private void ensureXrefSize(int size) {
         if (size == 0) {
             return;
         }
         if (xref == null) {
-            xref = new int[size];
+            xref = new long[size];
         } else {
             if (xref.length < size) {
-                int[] xref2 = new int[size];
+                long[] xref2 = new long[size];
                 System.arraycopy(xref, 0, xref2, 0, xref.length);
                 xref = xref2;
             }
@@ -2101,7 +2325,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     MessageLocalization
                             .getComposedMessage("startxref.is.not.followed.by.a.number"));
         }
-        int startxref = tokens.intValue();
+        long startxref = tokens.longValue();
         lastXref = startxref;
         eofPos = tokens.getFilePointer();
         try {
@@ -2115,17 +2339,19 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         tokens.seek(startxref);
         trailer = readXrefSection();
         PdfDictionary trailer2 = trailer;
+        Set<Long> visited = new HashSet<>();
+        visited.add(startxref);
         while (true) {
             PdfNumber prev = (PdfNumber) trailer2.get(PdfName.PREV);
             if (prev == null) {
                 break;
             }
-            if (prev.intValue() == startxref) {
+            if (!visited.add(prev.longValue())) {
                 throw new InvalidPdfException(
                         MessageLocalization
                                 .getComposedMessage("xref.infinite.loop"));
             }
-            tokens.seek(prev.intValue());
+            tokens.seek(prev.longValue());
             trailer2 = readXrefSection();
         }
     }
@@ -2138,7 +2364,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         }
         int start;
         int end;
-        int pos;
+        long pos;
         int gen;
         while (true) {
             tokens.nextValidToken();
@@ -2158,11 +2384,11 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                         .throwError(MessageLocalization
                                 .getComposedMessage("number.of.entries.in.this.xref.subsection.not.found"));
             }
-            end = tokens.intValue() + start;
+            end = checkXrefSubsection(start, tokens.intValue());
             if (start == 1) { // fix incorrect start number
-                int back = tokens.getFilePointer();
+                long back = tokens.getFilePointer();
                 tokens.nextValidToken();
-                pos = tokens.intValue();
+                pos = tokens.longValue();
                 tokens.nextValidToken();
                 gen = tokens.intValue();
                 if (pos == 0 && gen == PdfWriter.GENERATION_MAX) {
@@ -2174,7 +2400,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             ensureXrefSize(end * 2);
             for (int k = start; k < end; ++k) {
                 tokens.nextValidToken();
-                pos = tokens.intValue();
+                pos = tokens.longValue();
                 tokens.nextValidToken();
                 tokens.nextValidToken();
                 int p = k * 2;
@@ -2197,10 +2423,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         }
         PdfDictionary trailer = (PdfDictionary) readPRObject();
         PdfNumber xrefSize = (PdfNumber) trailer.get(PdfName.SIZE);
-        ensureXrefSize(xrefSize.intValue() * 2);
+        ensureXrefSize(checkXrefObjectCount(xrefSize.intValue()) * 2);
         PdfObject xrs = trailer.get(PdfName.XREFSTM);
         if (xrs != null && xrs.isNumber()) {
-            int loc = ((PdfNumber) xrs).intValue();
+            long loc = ((PdfNumber) xrs).longValue();
             try {
                 readXRefStream(loc);
                 newXrefType = true;
@@ -2213,38 +2439,39 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         return trailer;
     }
 
-    protected boolean readXRefStream(int ptr) throws IOException {
-        tokens.seek(ptr);
-        int thisStream;
-        if (!tokens.nextToken()) {
-            return false;
-        }
-        if (tokens.getTokenType() != PRTokeniser.TK_NUMBER) {
-            return false;
-        }
-        thisStream = tokens.intValue();
-        if (!tokens.nextToken() || tokens.getTokenType() != PRTokeniser.TK_NUMBER) {
-            return false;
-        }
-        if (!tokens.nextToken() || !tokens.getStringValue().equals("obj")) {
-            return false;
-        }
-        PdfObject object = readPRObject();
-        PRStream stm;
-        if (object.isStream()) {
-            stm = (PRStream) object;
-            if (!PdfName.XREF.equals(stm.get(PdfName.TYPE))) {
+    protected boolean readXRefStream(long ptr) throws IOException {
+        Set<Long> visited = new HashSet<>();
+        long next = ptr;
+        while (true) {
+            if (!visited.add(next)) {
+                throw new InvalidPdfException(
+                        MessageLocalization.getComposedMessage("xref.infinite.loop"));
+            }
+            PRStream stm = readXRefStreamObject(next);
+            if (stm == null) {
                 return false;
             }
-        } else {
-            return false;
+            next = readXRefStreamSection(stm);
+            if (next == -1) {
+                return true;
+            }
         }
+    }
+
+    /**
+     * Reads the entries of one cross-reference stream into the xref table.
+     *
+     * @param stm the cross-reference stream
+     * @return the offset of the previous cross-reference stream, or -1 if there is none
+     */
+    private long readXRefStreamSection(PRStream stm) throws IOException {
+        int thisStream = stm.getObjNum();
         if (trailer == null) {
             trailer = new PdfDictionary();
             trailer.putAll(stm);
         }
-        stm.setLength(((PdfNumber) stm.get(PdfName.LENGTH)).intValue());
-        int size = ((PdfNumber) stm.get(PdfName.SIZE)).intValue();
+        stm.setLength(checkXRefStreamLength(stm, ((PdfNumber) stm.get(PdfName.LENGTH)).intValue()));
+        int size = checkXrefObjectCount(((PdfNumber) stm.get(PdfName.SIZE)).intValue());
         PdfArray index;
         PdfObject obj = stm.get(PdfName.INDEX);
         if (obj == null) {
@@ -2254,10 +2481,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             index = (PdfArray) obj;
         }
         PdfArray w = (PdfArray) stm.get(PdfName.W);
-        int prev = -1;
+        long prev = -1;
         obj = stm.get(PdfName.PREV);
         if (obj != null) {
-            prev = ((PdfNumber) obj).intValue();
+            prev = ((PdfNumber) obj).longValue();
         }
         // Each xref pair is a position
         // type 0 -> -1, 0
@@ -2268,7 +2495,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             objStmMark = new HashMap<>();
         }
         if (objStmToOffset == null && partial) {
-            objStmToOffset = new IntHashtable();
+            objStmToOffset = new HashMap<>();
         }
         byte[] b = getStreamBytes(stm, tokens.getFile());
         int bptr = 0;
@@ -2279,51 +2506,9 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         for (int idx = 0; idx < index.size(); idx += 2) {
             int start = index.getAsNumber(idx).intValue();
             int length = index.getAsNumber(idx + 1).intValue();
-            ensureXrefSize((start + length) * 2);
+            ensureXrefSize(checkXRefStreamSubsection(start, length, wc, b.length - bptr) * 2);
             while (length-- > 0) {
-                int type = 1;
-                if (wc[0] > 0) {
-                    type = 0;
-                    for (int k = 0; k < wc[0]; ++k) {
-                        type = (type << 8) + (b[bptr++] & 0xff);
-                    }
-                }
-                int field2 = 0;
-                for (int k = 0; k < wc[1]; ++k) {
-                    field2 = (field2 << 8) + (b[bptr++] & 0xff);
-                }
-                int field3 = 0;
-                for (int k = 0; k < wc[2]; ++k) {
-                    field3 = (field3 << 8) + (b[bptr++] & 0xff);
-                }
-                int base = start * 2;
-                if (xref[base] == 0 && xref[base + 1] == 0) {
-                    switch (type) {
-                        case 0:
-                            xref[base] = -1;
-                            break;
-                        case 1:
-                            xref[base] = field2;
-                            break;
-                        case 2:
-                            xref[base] = field3;
-                            xref[base + 1] = field2;
-                            if (partial) {
-                                objStmToOffset.put(field2, 0);
-                            } else {
-                                Integer on = field2;
-                                IntHashtable seq = objStmMark.get(on);
-                                if (seq == null) {
-                                    seq = new IntHashtable();
-                                    seq.put(field3, 1);
-                                    objStmMark.put(on, seq);
-                                } else {
-                                    seq.put(field3, 1);
-                                }
-                            }
-                            break;
-                    }
-                }
+                bptr = readXRefStreamEntry(b, bptr, wc, start);
                 ++start;
             }
         }
@@ -2332,22 +2517,109 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             xref[thisStream] = -1;
         }
 
-        if (prev == -1) {
-            return true;
+        return prev;
+    }
+
+    /**
+     * Parses the indirect object at {@code ptr} and returns it if it is a cross-reference stream.
+     *
+     * @param ptr the file offset of the object
+     * @return the xref stream with its object number set, or {@code null} if the object at
+     *         {@code ptr} is not a valid cross-reference stream
+     */
+    private PRStream readXRefStreamObject(long ptr) throws IOException {
+        tokens.seek(ptr);
+        if (!tokens.nextToken() || tokens.getTokenType() != PRTokeniser.TK_NUMBER) {
+            return null;
         }
-        return readXRefStream(prev);
+        int streamObjNum = tokens.intValue();
+        if (!tokens.nextToken() || tokens.getTokenType() != PRTokeniser.TK_NUMBER) {
+            return null;
+        }
+        if (!tokens.nextToken() || !tokens.getStringValue().equals("obj")) {
+            return null;
+        }
+        PdfObject object = readPRObject();
+        if (!object.isStream() || !PdfName.XREF.equals(((PRStream) object).get(PdfName.TYPE))) {
+            return null;
+        }
+        PRStream stm = (PRStream) object;
+        stm.setObjNum(streamObjNum, 0);
+        return stm;
+    }
+
+    /**
+     * Decodes one cross-reference stream entry starting at {@code bptr} and stores it in the xref
+     * table, unless the object already has an entry from a newer section.
+     *
+     * @param b      the decoded bytes of the xref stream
+     * @param bptr   the position of this entry within {@code b}
+     * @param wc     the /W field widths of the three entry fields
+     * @param objNum the object number this entry describes
+     * @return the position within {@code b} right after this entry
+     */
+    private int readXRefStreamEntry(byte[] b, int bptr, int[] wc, int objNum) {
+        int type = 1;
+        if (wc[0] > 0) {
+            type = 0;
+            for (int k = 0; k < wc[0]; ++k) {
+                type = (type << 8) + (b[bptr++] & 0xff);
+            }
+        }
+        long field2 = 0;
+        for (int k = 0; k < wc[1]; ++k) {
+            field2 = (field2 << 8) + (b[bptr++] & 0xff);
+        }
+        int field3 = 0;
+        for (int k = 0; k < wc[2]; ++k) {
+            field3 = (field3 << 8) + (b[bptr++] & 0xff);
+        }
+        int base = objNum * 2;
+        if (xref[base] == 0 && xref[base + 1] == 0) {
+            switch (type) {
+                case 0:
+                    xref[base] = -1;
+                    break;
+                case 1:
+                    xref[base] = field2;
+                    break;
+                case 2:
+                    xref[base] = field3;
+                    xref[base + 1] = field2;
+                    markObjStmEntry((int) field2, field3);
+                    break;
+                default:
+                    // Per ISO 32000, unknown types shall be treated as references to the null object
+                    break;
+            }
+        }
+        return bptr;
+    }
+
+    /**
+     * Records that object stream {@code objStmNum} holds an object at index {@code idx}, in the
+     * bookkeeping structure matching the current (partial or full) read mode.
+     */
+    private void markObjStmEntry(int objStmNum, int idx) {
+        if (partial) {
+            objStmToOffset.put(objStmNum, 0L);
+        } else {
+            IntHashtable seq = objStmMark.computeIfAbsent(objStmNum, k -> new IntHashtable());
+            seq.put(idx, 1);
+        }
     }
 
     protected void rebuildXref() throws IOException {
         hybridXref = false;
         newXrefType = false;
         tokens.seek(0);
-        int[][] xr = new int[1024][];
+        long[][] xr = new long[1024][];
         int top = 0;
         trailer = null;
         byte[] line = new byte[64];
+        long maxObjectCount = maxXrefObjectCount();
         for (; ; ) {
-            int pos = tokens.getFilePointer();
+            long pos = tokens.getFilePointer();
             if (!tokens.readLineSegment(line)) {
                 break;
             }
@@ -2370,14 +2642,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 }
             } else if (line[0] >= '0' && line[0] <= '9') {
                 int[] obj = PRTokeniser.checkObjectStart(line);
-                if (obj == null) {
+                if (obj == null || obj[0] < 0 || obj[0] >= maxObjectCount) {
                     continue;
                 }
                 int num = obj[0];
                 int gen = obj[1];
                 if (num >= xr.length) {
                     int newLength = num * 2;
-                    int[][] xr2 = new int[newLength][];
+                    long[][] xr2 = new long[newLength][];
                     System.arraycopy(xr, 0, xr2, 0, top);
                     xr = xr2;
                 }
@@ -2385,17 +2657,16 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     top = num + 1;
                 }
                 if (xr[num] == null || gen >= xr[num][1]) {
-                    obj[0] = pos;
-                    xr[num] = obj;
+                    xr[num] = new long[]{pos, gen};
                 }
             }
         }
         if (trailer == null) {
             throw new InvalidPdfException(MessageLocalization.getComposedMessage("trailer.not.found"));
         }
-        xref = new int[top * 2];
+        xref = new long[top * 2];
         for (int k = 0; k < top; ++k) {
-            int[] obj = xr[k];
+            long[] obj = xr[k];
             if (obj != null) {
                 xref[k * 2] = obj[0];
             }
@@ -2451,10 +2722,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         int type = tokens.getTokenType();
         switch (type) {
             case PRTokeniser.TK_START_DIC: {
-                ++readDepth;
-                PdfDictionary dic = readDictionary();
-                --readDepth;
-                int pos = tokens.getFilePointer();
+                PdfDictionary dic = readNestedDictionary();
+                long pos = tokens.getFilePointer();
                 // be careful in the trailer. May not be a "next" token.
                 boolean hasNext;
                 do {
@@ -2485,10 +2754,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 }
             }
             case PRTokeniser.TK_START_ARRAY: {
-                ++readDepth;
-                PdfArray arr = readArray();
-                --readDepth;
-                return arr;
+                return readNestedArray();
             }
             case PRTokeniser.TK_NUMBER:
                 return new PdfNumber(tokens.getStringValue());
@@ -2540,6 +2806,32 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 }
                 return new PdfLiteral(-type, tokens.getStringValue());
         }
+    }
+
+    private PdfDictionary readNestedDictionary() throws IOException {
+        enterNestedObject();
+        try {
+            return readDictionary();
+        } finally {
+            --readDepth;
+        }
+    }
+
+    private PdfArray readNestedArray() throws IOException {
+        enterNestedObject();
+        try {
+            return readArray();
+        } finally {
+            --readDepth;
+        }
+    }
+
+    private void enterNestedObject() throws IOException {
+        if (readDepth >= MAX_NESTING_DEPTH) {
+            throw new InvalidPdfException(
+                    MessageLocalization.getComposedMessage("object.nesting.too.deep"));
+        }
+        ++readDepth;
     }
 
     /**
@@ -2839,7 +3131,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      *
      * @return the byte address of the last xref table
      */
-    public int getLastXref() {
+    public long getLastXref() {
         return lastXref;
     }
 
@@ -2857,7 +3149,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      *
      * @return the byte address of the %%EOF marker
      */
-    public int getEofPos() {
+    public long getEofPos() {
         return eofPos;
     }
 
@@ -3205,8 +3497,8 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         pageRefs.resetReleasePage();
         ArrayList<PdfAnnotation.PdfImportedLink> result = new ArrayList<>();
         PdfDictionary pageDic = pageRefs.getPageN(page);
-        if (pageDic.get(PdfName.ANNOTS) != null) {
-            PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);
+        PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);
+        if (annots != null) {
             for (int j = 0; j < annots.size(); ++j) {
                 PdfDictionary annot = (PdfDictionary) getPdfObjectRelease(annots
                         .getPdfObject(j));
@@ -3221,13 +3513,14 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         return result;
     }
 
-    private void iterateBookmarks(PdfObject outlineRef, Map<Object, PdfObject> names) {
-        while (outlineRef != null) {
+    private void iterateBookmarks(PdfObject outlineRef, Map<Object, PdfObject> names, PdfTraversalGuard guard) {
+        while (outlineRef != null && guard.visit(outlineRef)) {
             replaceNamedDestination(outlineRef, names);
             PdfDictionary outline = (PdfDictionary) getPdfObjectRelease(outlineRef);
             PdfObject first = outline.get(PdfName.FIRST);
-            if (first != null) {
-                iterateBookmarks(first, names);
+            if (first != null && guard.enter()) {
+                iterateBookmarks(first, names, guard);
+                guard.leave();
             }
             outlineRef = outline.get(PdfName.NEXT);
         }
@@ -3359,7 +3652,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
         if (outlines == null) {
             return;
         }
-        iterateBookmarks(outlines.get(PdfName.FIRST), names);
+        iterateBookmarks(outlines.get(PdfName.FIRST), names, new PdfTraversalGuard());
     }
 
     private boolean replaceNamedDestination(PdfObject obj, Map<Object, PdfObject> names) {
@@ -3718,7 +4011,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
      *
      * @return Value of property fileLength.
      */
-    public int getFileLength() {
+    public long getFileLength() {
         return fileLength;
     }
 
@@ -3898,6 +4191,10 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
          * stack to which pages dictionaries are pushed to keep track of the current page attributes
          */
         private List<PdfDictionary> pageInh;
+        /**
+         * The object numbers of the branches of the page tree that were read, while the pages are being read
+         */
+        private Set<Integer> visitedPageNodes;
         private boolean keepPages;
 
         private PageRefs(PdfReader reader) {
@@ -3940,6 +4237,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             refsp = null;
             refsn = new ArrayList<>();
             pageInh = new ArrayList<>();
+            visitedPageNodes = new HashSet<>();
             PdfObject obj = reader.catalog.get(PdfName.PAGES);
             if (obj instanceof PRIndirectReference) {
                 iteratePages((PRIndirectReference) obj);
@@ -3947,6 +4245,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                 iteratePages((PdfDictionary) obj);
             }
             pageInh = null;
+            visitedPageNodes = null;
             reader.rootPages.put(PdfName.COUNT, new PdfNumber(refsn.size()));
         }
 
@@ -4124,6 +4423,17 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             pageInh.remove(pageInh.size() - 1);
         }
 
+        /**
+         * Registers a branch of the page tree that is about to be read.
+         *
+         * @param node the reference to the branch
+         * @return {@code false} if the branch must not be read: it was read before, as in a tree whose /Kids lead
+         *         back to an ancestor or list the same branch many times, or it is nested too deeply
+         */
+        private boolean enterPageTreeBranch(PRIndirectReference node) {
+            return pageInh.size() < MAX_PAGE_TREE_DEPTH && visitedPageNodes.add(node.getNumber());
+        }
+
         private void iteratePages(PRIndirectReference rpage) {
             PdfDictionary page = (PdfDictionary) getPdfObject(rpage);
             if (page == null) {
@@ -4147,7 +4457,7 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                     page.put(PdfName.MEDIABOX, arr);
                 }
                 refsn.add(rpage);
-            } else {
+            } else if (enterPageTreeBranch(rpage)) {
                 // reference to a branch
                 page.put(PdfName.TYPE, PdfName.PAGES);
                 pushPageAttributes(page);
@@ -4193,11 +4503,13 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
             }
         }
 
-        protected PRIndirectReference getSinglePage(int n) {
+        protected PRIndirectReference getSinglePage(int n) throws IOException {
             PdfDictionary acc = new PdfDictionary();
             PdfDictionary top = reader.rootPages;
             int base = 0;
+            Set<Integer> visited = new HashSet<>();
             while (true) {
+                boolean descended = false;
                 for (PdfName pageInhCandidate : pageInhCandidates) {
                     PdfObject obj = top.get(pageInhCandidate);
                     if (obj != null) {
@@ -4222,10 +4534,15 @@ public class PdfReader implements PdfViewerPreferences, Closeable {
                         }
                         reader.releaseLastXrefPartial();
                         top = dic;
+                        descended = visited.add(ref.getNumber());
                         break;
                     }
                     reader.releaseLastXrefPartial();
                     base += acn;
+                }
+                if (!descended) {
+                    // the page is not among the kids, or the kids lead back to a node that was visited before
+                    throw new InvalidPdfException(MessageLocalization.getComposedMessage("invalid.page.tree"));
                 }
             }
         }

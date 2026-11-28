@@ -129,6 +129,9 @@ public class ImgWMF extends Image {
         try {
             String errorID;
             if (rawData == null) {
+                if (url == null) {
+                    throw new BadElementException("The Windows Metafile has neither data nor a URL to read from.");
+                }
                 is = url.openStream();
                 errorID = url.toString();
             } else {
@@ -146,12 +149,15 @@ public class ImgWMF extends Image {
             int right = in.readShort();
             int bottom = in.readShort();
             int inch = in.readWord();
+            if (inch == 0) {
+                throw new BadElementException(
+                        MessageLocalization.getComposedMessage("1.is.not.a.valid.placeable.windows.metafile", errorID));
+            }
             dpiX = 72;
             dpiY = 72;
-            scaledHeight = (float) (bottom - top) / inch * 72f;
-            setTop(scaledHeight);
-            scaledWidth = (float) (right - left) / inch * 72f;
-            setRight(scaledWidth);
+            float width = (float) (right - left) / inch * 72f;
+            float height = (float) (bottom - top) / inch * 72f;
+            setDimensions(width, height);
         } finally {
             if (is != null) {
                 is.close();

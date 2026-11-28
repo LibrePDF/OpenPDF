@@ -53,6 +53,7 @@ package org.openpdf.text.pdf;
 import org.openpdf.text.DocWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * <CODE>PdfIndirectObject</CODE> is the Pdf indirect object.
@@ -158,9 +159,9 @@ public class PdfIndirectObject {
      * @throws IOException on write error
      */
     void writeTo(OutputStream os) throws IOException {
-        os.write(DocWriter.getISOBytes(String.valueOf(number)));
+        os.write(String.valueOf(number).getBytes(StandardCharsets.ISO_8859_1));
         os.write(' ');
-        os.write(DocWriter.getISOBytes(String.valueOf(generation)));
+        os.write(String.valueOf(generation).getBytes(StandardCharsets.ISO_8859_1));
         os.write(STARTOBJ);
         object.toPdf(writer, os);
         os.write(ENDOBJ);
