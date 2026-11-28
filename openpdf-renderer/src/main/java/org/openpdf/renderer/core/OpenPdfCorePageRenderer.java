@@ -31,16 +31,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import org.openpdf.text.pdf.CMapAwareDocumentFont;
 import org.openpdf.text.pdf.PRIndirectReference;
@@ -188,20 +194,56 @@ final class OpenPdfCorePageRenderer {
      */
     private static final String INLINE_IMAGE_PREFIX = "__inline_image__";
 
+    /**
+     * The number of Form XObjects that can be drawn inside each other. Real documents nest a few
+     * levels deep; the limit keeps a long chain of forms from overflowing the stack.
+     */
+    private static final int MAX_FORM_DEPTH = 32;
+
+    /**
+     * The amount of work that is spent on one page: an operator counts as one unit and drawing
+     * a Form XObject as {@link #FORM_WORK} units. Forms can draw each other many times, so that
+     * a few small forms describe more work than any computer can do. Rendering of a page stops
+     * when the limit is reached. A page of a real document stays far below it.
+     */
+    static final long MAX_PAGE_WORK = 20_000_000L;
+
+    /**
+     * The work that drawing a Form XObject counts for, on top of the operators in it.
+     */
+    private static final int FORM_WORK = 64;
+
+    /**
+     * The largest JPEG or JPEG 2000 image that is decoded, in pixels. The size of such an image
+     * is in its own header, and a file of a few hundred bytes can announce any size. 100 million
+     * pixels is a scan of an A3 page at 600 dpi with room to spare, and takes 300 MB as an RGB image.
+     */
+    static final long MAX_ENCODED_IMAGE_PIXELS = 100_000_000L;
+
     private final Graphics2D g2;
     private final PdfDictionary resources;
     private final Map<String, CMapAwareDocumentFont> fontCache = new HashMap<>();
     /**
      * Embedded-font program cache keyed by the FontDescriptor's identity. Re-parsing a
      * TrueType program for every {@code Tj} call would be wasteful; a single page can
-     * reference the same font hundreds of times.
+     * reference the same font hundreds of times. Shared with the nested renderers.
      */
-    private final Map<PdfDictionary, Font> awtFontCache = new HashMap<>();
+    private final Map<PdfDictionary, Font> awtFontCache;
     /**
      * Decoded inline images, keyed by the synthetic XObject name we substitute into
      * the content stream in place of the original {@code BI...EI} block.
      */
     private final Map<String, BufferedImage> inlineImages = new HashMap<>();
+    /**
+     * The Form XObjects and appearance streams that are being drawn right now, from the page
+     * down to this renderer. Shared with the nested renderers, so that a form that draws itself,
+     * directly or through other forms, is not entered again.
+     */
+    private final Set<PRStream> formsInProgress;
+    /**
+     * What the renderer of a page and the renderers of its forms have in common.
+     */
+    private final PageState page;
 
     private final Deque<GState> stateStack = new ArrayDeque<>();
     private final Deque<AffineTransform> ctmStack = new ArrayDeque<>();
@@ -228,9 +270,49 @@ final class OpenPdfCorePageRenderer {
     private AffineTransform textLineMatrix;
 
     private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources) {
+        this(g2, resources, new PageState());
+    }
+
+    private OpenPdfCorePageRenderer(Graphics2D g2, PdfDictionary resources, PageState page) {
         this.g2 = g2;
         this.resources = resources;
+        this.page = page;
+        this.formsInProgress = page.formsInProgress;
+        this.awtFontCache = page.awtFonts;
         this.state = new GState();
+    }
+
+    /**
+     * The state that the renderer of a page shares with the renderers of the forms on it.
+     */
+    private static final class PageState {
+
+        private final Set<PRStream> formsInProgress = Collections.newSetFromMap(new IdentityHashMap<>());
+        private final Map<PdfDictionary, Font> awtFonts = new HashMap<>();
+        /**
+         * The fonts of the page and its forms by object number, {@code null} for a font that cannot be read.
+         */
+        private final Map<Integer, CMapAwareDocumentFont> fonts = new HashMap<>();
+        private long work;
+
+        /**
+         * Counts work against the limit of the page.
+         *
+         * @param units the amount of work that is about to be done
+         * @return {@code false} if the page has used up its work and rendering has to stop
+         */
+        private boolean spend(int units) {
+            if (work > MAX_PAGE_WORK) {
+                return false;
+            }
+            work += units;
+            if (work > MAX_PAGE_WORK) {
+                LOG.log(Level.WARNING, "Stopped rendering a page that needs more than {0} operations",
+                        MAX_PAGE_WORK);
+                return false;
+            }
+            return true;
+        }
     }
 
     /**
@@ -332,7 +414,7 @@ final class OpenPdfCorePageRenderer {
                 LOG.log(Level.FINE, "Aborting content stream early due to: {0}", e);
                 return;
             }
-            if (parsed.isEmpty()) {
+            if (parsed.isEmpty() || !page.spend(1)) {
                 return;
             }
             PdfLiteral op = (PdfLiteral) parsed.get(parsed.size() - 1);
@@ -451,10 +533,9 @@ final class OpenPdfCorePageRenderer {
             throws IOException {
         // Synthetic JPEG path: hdr told us to defer to ImageIO.
         if (components == 0) {
-            return ImageIO.read(new ByteArrayInputStream(decoded));
+            return readEncodedImage(decoded);
         }
-        int rowBytes = width * components;
-        if (decoded.length < rowBytes * height) {
+        if (!holdsRaster(decoded, width, height, components)) {
             return null;
         }
         switch (components) {
@@ -1210,8 +1291,18 @@ final class OpenPdfCorePageRenderer {
      * {@code /Matrix} entry applied on top of the current CTM. The current
      * graphics state and CTM are saved and restored around the call so the
      * form's content can't leak out.
+     *
+     * <p>A form that is already being drawn is skipped, and so is a form that is nested more
+     * than {@link #MAX_FORM_DEPTH} levels deep. A form that draws itself would never end.</p>
      */
     private void renderForm(PRStream form) {
+        if (!page.spend(FORM_WORK)) {
+            return;
+        }
+        if (formsInProgress.size() >= MAX_FORM_DEPTH || !formsInProgress.add(form)) {
+            LOG.log(Level.FINE, "Skipping Form XObject that draws itself or is nested too deeply");
+            return;
+        }
         AffineTransform savedTx = g2.getTransform();
         Shape savedClip = g2.getClip();
         GState savedState = state;
@@ -1230,13 +1321,14 @@ final class OpenPdfCorePageRenderer {
             }
             PdfDictionary formResources = form.getAsDict(PdfName.RESOURCES);
             PdfDictionary effective = formResources != null ? formResources : resources;
-            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective);
+            OpenPdfCorePageRenderer nested = new OpenPdfCorePageRenderer(g2, effective, page);
             nested.state = state;
             byte[] body = PdfReader.getStreamBytes(form);
             nested.processContent(body);
         } catch (IOException | RuntimeException e) {
             LOG.log(Level.FINE, "Skipping Form XObject due to: {0}", e);
         } finally {
+            formsInProgress.remove(form);
             state = savedState;
             g2.setTransform(savedTx);
             g2.setClip(savedClip);
@@ -1502,10 +1594,14 @@ final class OpenPdfCorePageRenderer {
         if (maskWidth <= 0 || maskHeight <= 0) {
             return base;
         }
-        byte[] maskGray = readSoftMaskGray(smaskStream, maskWidth, maskHeight);
-        if (maskGray == null) {
+        GrayRaster mask = readSoftMaskGray(smaskStream, maskWidth, maskHeight);
+        if (mask == null) {
             return base;
         }
+        // a JPEG encoded mask has the size that its data says, not the size that the dictionary says
+        maskWidth = mask.width();
+        maskHeight = mask.height();
+        byte[] maskGray = mask.data();
         int width = base.getWidth();
         int height = base.getHeight();
         BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -1526,11 +1622,17 @@ final class OpenPdfCorePageRenderer {
      * the same JPEG / Flate / uncompressed encodings as the base image raster path. Bit depths
      * other than 8 are rare for soft masks and not yet supported.
      */
-    private byte[] readSoftMaskGray(PRStream smaskStream, int width, int height) throws IOException {
+    private GrayRaster readSoftMaskGray(PRStream smaskStream, int width, int height) throws IOException {
         PdfObject filterObj = smaskStream.get(PdfName.FILTER);
         if (hasFilter(filterObj, PdfName.DCTDECODE) || hasFilter(filterObj, PdfName.JPXDECODE)) {
             BufferedImage decoded = decodeViaImageIO(smaskStream);
-            return decoded == null ? null : grayBytesFrom(decoded, width, height);
+            if (decoded == null) {
+                return null;
+            }
+            // The mask is scaled to the image it belongs to when it is applied. It is not scaled to the
+            // size in its dictionary first, which can be far larger than the data.
+            return new GrayRaster(grayBytesFrom(decoded, decoded.getWidth(), decoded.getHeight()),
+                    decoded.getWidth(), decoded.getHeight());
         }
         PdfNumber bpcN = smaskStream.getAsNumber(PdfName.BITSPERCOMPONENT);
         int bpc = bpcN == null ? 8 : bpcN.intValue();
@@ -1538,11 +1640,39 @@ final class OpenPdfCorePageRenderer {
             return null;
         }
         byte[] decoded = PdfReader.getStreamBytes(smaskStream);
-        int expected = width * height;
-        if (decoded.length < expected) {
+        if (!holdsRaster(decoded, width, height, 1)) {
             return null;
         }
-        return decoded.length == expected ? decoded : Arrays.copyOf(decoded, expected);
+        int expected = width * height;
+        return new GrayRaster(decoded.length == expected ? decoded : Arrays.copyOf(decoded, expected), width, height);
+    }
+
+    /**
+     * The pixels of a soft mask, one byte per pixel and row by row.
+     */
+    private static final class GrayRaster {
+
+        private final byte[] data;
+        private final int width;
+        private final int height;
+
+        private GrayRaster(byte[] data, int width, int height) {
+            this.data = data;
+            this.width = width;
+            this.height = height;
+        }
+
+        private byte[] data() {
+            return data;
+        }
+
+        private int width() {
+            return width;
+        }
+
+        private int height() {
+            return height;
+        }
     }
 
     /**
@@ -1604,14 +1734,15 @@ final class OpenPdfCorePageRenderer {
         }
         int baseComponents = imageComponents(indexedCs.getDirectObject(1));
         byte[] lookup = readIndexedLookup(indexedCs.getDirectObject(3));
-        if (baseComponents == 0 || lookup == null || lookup.length == 0) {
+        if ((baseComponents != 1 && baseComponents != 3 && baseComponents != 4)
+                || lookup == null || lookup.length == 0) {
             return null;
         }
         byte[] indices = PdfReader.getStreamBytes(stream);
-        int pixels = width * height;
-        if (indices.length < pixels) {
+        if (!holdsRaster(indices, width, height, 1)) {
             return null;
         }
+        int pixels = width * height;
         byte[] expanded = expandIndexedPalette(indices, lookup, pixels, baseComponents);
         return buildImageForBaseComponents(expanded, width, height, baseComponents);
     }
@@ -1628,7 +1759,7 @@ final class OpenPdfCorePageRenderer {
      * throwing &mdash; malformed PDFs do happen.
      */
     private static byte[] expandIndexedPalette(byte[] indices, byte[] lookup, int pixels, int baseComponents) {
-        byte[] expanded = new byte[pixels * baseComponents];
+        byte[] expanded = new byte[Math.multiplyExact(pixels, baseComponents)];
         int maxLookupIdx = Math.max(lookup.length - baseComponents, 0);
         for (int p = 0; p < pixels; p++) {
             int paletteOffset = Math.min((indices[p] & 0xFF) * baseComponents, maxLookupIdx);
@@ -1691,15 +1822,55 @@ final class OpenPdfCorePageRenderer {
     private BufferedImage decodeViaImageIO(PRStream stream) {
         try {
             byte[] raw = PdfReader.getStreamBytesRaw(stream);
-            BufferedImage img = ImageIO.read(new ByteArrayInputStream(raw));
+            BufferedImage img = readEncodedImage(raw);
             if (img != null) {
                 return img;
             }
             // Some PDFs apply additional filters before DCTDecode; fall back to fully decoded bytes.
             byte[] decoded = PdfReader.getStreamBytes(stream);
-            return ImageIO.read(new ByteArrayInputStream(decoded));
+            return readEncodedImage(decoded);
         } catch (IOException | RuntimeException e) {
             LOG.log(Level.FINE, "Skipping JPEG/JPX image XObject due to: {0}", e);
+            return null;
+        }
+    }
+
+    /**
+     * Decodes the data of a DCT or JPX encoded image. Unlike {@link ImageIO#read(java.io.InputStream)},
+     * this only uses a reader for JPEG or JPEG 2000, whatever the data looks like, and it reads
+     * the size from the header of the image before it decodes it. The memory for the decoded
+     * image is reserved for that size, so an image that announces more than
+     * {@link #MAX_ENCODED_IMAGE_PIXELS} pixels is not decoded.
+     *
+     * @param data the encoded image
+     * @return the image, or {@code null} if the data is not a JPEG or JPEG 2000 image that can be decoded
+     * @throws IOException if the image is too large or cannot be read
+     */
+    static BufferedImage readEncodedImage(byte[] data) throws IOException {
+        try (ImageInputStream input = ImageIO.createImageInputStream(new ByteArrayInputStream(data))) {
+            if (input == null) {
+                return null;
+            }
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
+            while (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                String format = reader.getFormatName().toLowerCase(Locale.ROOT);
+                if (!format.contains("jpeg") && !format.contains("jp2")) {
+                    reader.dispose();
+                    continue;
+                }
+                try {
+                    reader.setInput(input, true, true);
+                    long pixels = (long) reader.getWidth(0) * reader.getHeight(0);
+                    if (pixels > MAX_ENCODED_IMAGE_PIXELS) {
+                        throw new IOException("The image has " + pixels + " pixels, more than the "
+                                + MAX_ENCODED_IMAGE_PIXELS + " that are decoded");
+                    }
+                    return reader.read(0);
+                } finally {
+                    reader.dispose();
+                }
+            }
             return null;
         }
     }
@@ -1721,9 +1892,7 @@ final class OpenPdfCorePageRenderer {
                 return null;
             }
             byte[] decoded = PdfReader.getStreamBytes(stream);
-            int rowBytes = width * components;
-            int expected = rowBytes * height;
-            if (decoded.length < expected) {
+            if (!holdsRaster(decoded, width, height, components)) {
                 return null;
             }
             switch (components) {
@@ -1796,6 +1965,26 @@ final class OpenPdfCorePageRenderer {
         }
         PdfNumber n = params.getAsNumber(CS_N);
         return n == null ? 0 : n.intValue();
+    }
+
+    /**
+     * Checks that image data holds a raster of the size that the image declares. The size is
+     * calculated without overflow: the width and height come from the file, and their product
+     * does not have to fit in an {@code int}. An image is only created for a raster that passes
+     * this check, so that the memory for it is in proportion to the data that is there.
+     *
+     * @param data       the decoded image data, one byte per component
+     * @param width      the declared width in pixels
+     * @param height     the declared height in pixels
+     * @param components the number of components per pixel
+     * @return {@code true} if the data has at least {@code width * height * components} bytes
+     */
+    static boolean holdsRaster(byte[] data, int width, int height, int components) {
+        if (width <= 0 || height <= 0 || components <= 0 || components > 4) {
+            return false;
+        }
+        // the product of two int values fits in a long; multiplying it by the components might not
+        return (long) width * height <= data.length / components;
     }
 
     private static BufferedImage buildGrayImage(byte[] data, int width, int height) {
@@ -2093,11 +2282,21 @@ final class OpenPdfCorePageRenderer {
         if (!(ref instanceof PRIndirectReference indirect)) {
             return null;
         }
+        // a form that is drawn many times gets a new renderer every time, so the fonts are kept for the page
+        if (page.fonts.containsKey(indirect.getNumber())) {
+            CMapAwareDocumentFont known = page.fonts.get(indirect.getNumber());
+            if (known != null) {
+                fontCache.put(name, known);
+            }
+            return known;
+        }
         try {
             CMapAwareDocumentFont font = new CMapAwareDocumentFont(indirect);
+            page.fonts.put(indirect.getNumber(), font);
             fontCache.put(name, font);
             return font;
         } catch (RuntimeException ignored) {
+            page.fonts.put(indirect.getNumber(), null);
             return null;
         }
     }

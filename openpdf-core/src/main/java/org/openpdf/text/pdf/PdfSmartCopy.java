@@ -150,6 +150,11 @@ public class PdfSmartCopy extends PdfCopy {
         private final int MAX_LEVELS = 100;
         private byte[] b;
         private int hash;
+        /**
+         * The indirect objects that were serialized so far, with the position of their first occurrence in the
+         * key. Only used while the key is built.
+         */
+        private Map<Integer, Integer> serialized = new HashMap<>();
 
         // MD5 is only used as a content fingerprint to find equal streams, not for security
         @SuppressWarnings("java:S4790")
@@ -164,6 +169,7 @@ public class PdfSmartCopy extends PdfCopy {
             int level = MAX_LEVELS;
             serObject(str, level, bb, md5);
             this.b = bb.toByteArray();
+            this.serialized = null;
         }
 
         private void serObject(PdfObject obj, int level, ByteBuffer bb, MessageDigest md5) throws IOException {
@@ -174,7 +180,20 @@ public class PdfSmartCopy extends PdfCopy {
                 bb.append("$Lnull");
                 return;
             }
+            if (obj.isIndirect()) {
+                // An object that is reached more than once is written once. Later occurrences only point back to
+                // it, so that the size of the key does not grow with the number of paths that lead to an object.
+                Integer first = serialized.putIfAbsent(((PdfIndirectReference) obj).getNumber(), bb.size());
+                if (first != null) {
+                    bb.append("$R").append(String.valueOf(first));
+                    return;
+                }
+            }
             obj = PdfReader.getPdfObject(obj);
+            if (obj == null) {
+                bb.append("$Lnull");
+                return;
+            }
             if (obj.isStream()) {
                 bb.append("$B");
                 serDic((PdfDictionary) obj, level - 1, bb, md5);
